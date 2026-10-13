@@ -13,6 +13,14 @@ Rental marketplaces (Yoodlize, Leechy) are public by design, and friend-lending 
 
 A hutch is half display shelves, half closed cupboard — exactly the model: private by default, displayed by choice. The word comes from the Old French *huche*, a storage chest.
 
+## Repo
+
+| Path | What |
+|------|------|
+| `apps/ios` | The iPhone app (SwiftUI), shipped on the App Store |
+| `apps/web` | The static site at myhutch.app: what Hutch is, download link, privacy policy |
+| `docs` | Plan and decisions |
+
 ## Docs
 
 - [docs/PLAN.md](docs/PLAN.md) — phases, milestones, success tests

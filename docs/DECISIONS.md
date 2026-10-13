@@ -16,18 +16,29 @@ Each entry: what, status, and why. "Decided" means Antoine chose it; "Proposed" 
 
 **Consequences:** server can't search, match requests or send content-rich notifications; all of that runs on device. Key loss = data loss, so recovery (an emergency kit / recovery key) is a Phase 1 requirement, not an afterthought. Sharing protects against the platform, not against the circle — a neighbor who can see an item can screenshot it.
 
-## D3 — Platform: installable web app (PWA) on Cloudflare
-**Status:** Proposed — confirm before building.
+## D3 — Platform: native iPhone app + static website, in one monorepo
+**Status:** Decided (Oct 2026). Replaces an earlier proposal for a web app (PWA).
 
-**Why this over native iOS + CloudKit (the earlier recommendation):**
-1. Development happens from a phone via Claude Code on the web, which runs on Linux. It cannot build or run an iOS app (no Xcode/macOS). A web app can be built, tested and deployed entirely from there.
-2. Neighbors may be on Android. CloudKit sharing is Apple-only, which would force a rewrite at Phase 2.
-3. It uses the domain directly: myhutch.app *is* the app. No App Store review.
-4. `.app` requires HTTPS, which Cloudflare provides for free.
+**What:**
+- `apps/ios` — the iPhone app (SwiftUI), distributed through the App Store.
+- `apps/web` — a static site at myhutch.app: what Hutch is, an App Store download link, and the privacy policy and support pages the App Store requires.
 
-**Trade-offs accepted:** web crypto and storage are slightly less robust than native keychains; camera/barcode capture works but is less polished than native; iOS can evict PWA storage if unused for weeks, so encrypted sync/backup must ship in Phase 1.
+**Why native:** better camera and barcode capture, the Keychain and Secure Enclave for keys, and a real App Store presence.
 
-**Proposed stack:** TypeScript, a light framework (SvelteKit or React + Vite), IndexedDB locally, WebCrypto (AES-GCM for data, PBKDF2/Argon2 for key derivation), Cloudflare Pages + Workers + D1/R2 storing only encrypted blobs.
+**The constraint this creates, and how we handle it:** Claude Code sessions run on Linux and cannot build, run or test an iOS app — that needs macOS and Xcode. So:
+1. Every push runs `xcodebuild` build + tests on a GitHub Actions **macOS runner**. A session writes Swift; CI is the compiler. A PR is mergeable only when that check is green.
+2. The Xcode project is generated from a readable `project.yml` (XcodeGen), because `.xcodeproj` files are hard to edit correctly by hand.
+3. Logic (models, crypto, sync) lives in a Swift package with unit tests, so most correctness is checked by tests rather than by tapping through the UI.
+4. Antoine checks UI by installing TestFlight builds on his phone.
+
+**Costs to know:**
+- Apple Developer Program, $99/year, needed for TestFlight and the App Store.
+- macOS CI minutes are billed at a multiple of Linux minutes on GitHub's free tier for private repos, so the monthly allowance covers far fewer iOS builds than you'd expect. Keep the iOS workflow scoped to changes under `apps/ios`, and watch usage.
+- Feedback is slower: each iteration waits on a CI run of several minutes, not an instant local build.
+
+**Sync (proposed, confirm at M4):** CloudKit private database using encrypted fields, so Apple stores ciphertext and runs the servers. No backend to operate.
+
+**Open risk for Phase 2:** CloudKit sharing only works between Apple users. If a neighbor is on Android, Phase 2 needs either our own small backend (storing only ciphertext) or a web view of the shared shelf. Decide at M6.
 
 ## D4 — Build order: personal first, sharing later
 **Status:** Decided in principle.

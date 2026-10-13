@@ -8,12 +8,14 @@ Goal: Antoine catalogs his own things in an app that knows nothing he hasn't enc
 
 | # | Milestone | Done when |
 |---|-----------|-----------|
-| M0 | Confirm D3 (platform) and scaffold the project | App deploys to myhutch.app; CI runs tests on every push |
-| M1 | Local item store | Add / edit / delete / search items in IndexedDB; works offline |
-| M2 | Encryption at rest | Items and photos encrypted with a key derived from a passphrase; nothing readable in storage devtools |
-| M3 | Fast capture | Photo-first entry, barcode scan; decide D5 (AI capture) |
-| M4 | Encrypted sync + recovery | Ciphertext synced to Cloudflare; second device restores from passphrase + recovery kit; server holds no plaintext (verified by test) |
+| M0 | Monorepo scaffold + CI | `apps/ios` generates from `project.yml` and builds + tests green on a macOS runner; `apps/web` deploys to myhutch.app |
+| W1 | Website v1 | Landing page, privacy policy and support page live at myhutch.app (the App Store requires the last two) |
+| M1 | Local item store | Add / edit / delete / search items on device (SwiftData); works offline; model logic unit-tested |
+| M2 | Encryption at rest | Item data and photos encrypted with a key held in the Keychain; tests assert stored bytes are unreadable |
+| M3 | Fast capture | Photo-first entry and barcode scan with the camera; decide D5 (AI capture) |
+| M4 | Encrypted sync + recovery | Confirm the sync choice in D3; second device restores from a recovery key; tests assert synced payloads hold no plaintext |
 | M5 | Organize | Locations (garage, basement…), categories, value, receipts, warranty dates |
+| T1 | First TestFlight build | Antoine installs Hutch on his phone from TestFlight (needs the Apple Developer Program) |
 
 **Item model (starting point):** name, photos, category, location, condition, estimated value, purchase date, receipt, notes, and a `visibility` field: `private` (default) / `lendable` / `for_sale`. The field exists from day one even though only `private` works in Phase 1.
 
@@ -42,4 +44,10 @@ Goal: Antoine catalogs his own things in an app that knows nothing he hasn't enc
 
 ## Not doing (for now)
 
-Payments between neighbors (Venmo/Zelle is fine), public marketplace, native apps, a dedicated "neighborhood" discovery feature.
+Payments between neighbors (Venmo/Zelle is fine), public marketplace, an Android app, a dedicated "neighborhood" discovery feature.
+
+## Before M0 (Antoine)
+
+- Create the empty private repo `chtitoon/hutch`.
+- Join the Apple Developer Program ($99/year) before T1; App Store Connect API keys go into GitHub secrets for TestFlight uploads.
+- Point myhutch.app at Cloudflare Pages when W1 is ready.
