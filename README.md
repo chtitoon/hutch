@@ -25,4 +25,5 @@ A hutch is half display shelves, half closed cupboard — exactly the model: pri
 
 - [docs/PLAN.md](docs/PLAN.md) — phases, milestones, success tests
 - [docs/DECISIONS.md](docs/DECISIONS.md) — what's decided, what's open, and why
+- [docs/CONTEXT.md](docs/CONTEXT.md) — origin, research on existing apps, findings that shape the product
 - [CLAUDE.md](CLAUDE.md) — working rules for Claude Code sessions
