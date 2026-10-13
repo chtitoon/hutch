@@ -25,16 +25,16 @@ Each entry: what, status, and why. "Decided" means Antoine chose it; "Proposed" 
 
 **Why native:** better camera and barcode capture, the Keychain and Secure Enclave for keys, and a real App Store presence.
 
-**The constraint this creates, and how we handle it:** Claude Code sessions run on Linux and cannot build, run or test an iOS app — that needs macOS and Xcode. So:
-1. Every push runs `xcodebuild` build + tests on a GitHub Actions **macOS runner**. A session writes Swift; CI is the compiler. A PR is mergeable only when that check is green.
-2. The Xcode project is generated from a readable `project.yml` (XcodeGen), because `.xcodeproj` files are hard to edit correctly by hand.
-3. Logic (models, crypto, sync) lives in a Swift package with unit tests, so most correctness is checked by tests rather than by tapping through the UI.
-4. Antoine checks UI by installing TestFlight builds on his phone.
+**Where it's built (decided):** on Antoine's Mac, in `~/Projects/hutch`, with Xcode. Sessions build, test and run the app in the iPhone simulator locally. This replaced an earlier plan to use a GitHub macOS runner as the only compiler, which was slow (minutes per iteration) and expensive (macOS CI minutes cost a multiple of Linux minutes on GitHub's free tier for private repos). CI stays optional.
 
-**Costs to know:**
+**Supporting choices:**
+1. The Xcode project is generated from a readable `project.yml` (XcodeGen), because `.xcodeproj` files are hard to edit correctly by hand.
+2. Logic (models, crypto, sync) lives in a Swift package with unit tests, so most correctness is checked by tests rather than by tapping through the UI.
+3. UI is checked with simulator screenshots, then on Antoine's phone through TestFlight.
+
+**Costs and constraints:**
 - Apple Developer Program, $99/year, needed for TestFlight and the App Store.
-- macOS CI minutes are billed at a multiple of Linux minutes on GitHub's free tier for private repos, so the monthly allowance covers far fewer iOS builds than you'd expect. Keep the iOS workflow scoped to changes under `apps/ios`, and watch usage.
-- Feedback is slower: each iteration waits on a CI run of several minutes, not an instant local build.
+- Work that compiles Swift only happens when the Mac is on and linked to the session. With the Mac off, sessions are limited to docs and the website.
 
 **Sync (proposed, confirm at M4):** CloudKit private database using encrypted fields, so Apple stores ciphertext and runs the servers. No backend to operate.
 

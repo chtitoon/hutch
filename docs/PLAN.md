@@ -8,7 +8,7 @@ Goal: Antoine catalogs his own things in an app that knows nothing he hasn't enc
 
 | # | Milestone | Done when |
 |---|-----------|-----------|
-| M0 | Monorepo scaffold + CI | `apps/ios` generates from `project.yml` and builds + tests green on a macOS runner; `apps/web` deploys to myhutch.app |
+| M0 | Monorepo scaffold on the Mac | `apps/ios` generates from `project.yml`, builds and passes tests on a local iPhone simulator, and launches showing an empty "Hutch" screen; `apps/web` has a placeholder page |
 | W1 | Website v1 | Landing page, privacy policy and support page live at myhutch.app (the App Store requires the last two) |
 | M1 | Local item store | Add / edit / delete / search items on device (SwiftData); works offline; model logic unit-tested |
 | M2 | Encryption at rest | Item data and photos encrypted with a key held in the Keychain; tests assert stored bytes are unreadable |
@@ -48,6 +48,8 @@ Payments between neighbors (Venmo/Zelle is fine), public marketplace, an Android
 
 ## Before M0 (Antoine)
 
-- Create the empty private repo `chtitoon/hutch`.
+- Turn on the Mac, open the Claude desktop app, and link the session to it; the project lives in `~/Projects/hutch`.
+- Confirm Xcode is installed (and Homebrew, for `brew install xcodegen`).
+- Create the empty private repo `chtitoon/hutch` for backup and history.
 - Join the Apple Developer Program ($99/year) before T1; App Store Connect API keys go into GitHub secrets for TestFlight uploads.
 - Point myhutch.app at Cloudflare Pages when W1 is ready.

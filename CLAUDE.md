@@ -4,7 +4,7 @@ Read `docs/PLAN.md` and `docs/DECISIONS.md` at the start of every session. The p
 
 ## How sessions run
 
-- Antoine drives this project from his phone. Keep replies short and lead with the outcome; he can't comfortably read long diffs on a small screen.
+- Antoine often checks in from his phone while work runs on his Mac. Keep replies short and lead with the outcome; he can't comfortably read long diffs on a small screen.
 - One milestone (or one clear slice of one) per session. Work on a branch, open a PR, summarize what changed and how to check it in a few lines.
 - If a decision marked **Proposed** or **Open** blocks the work, stop and ask rather than choosing silently. Record the outcome in `docs/DECISIONS.md`.
 - When a milestone is done, tick it in `docs/PLAN.md` in the same PR.
@@ -25,11 +25,21 @@ Read `docs/PLAN.md` and `docs/DECISIONS.md` at the start of every session. The p
 
 ## Building the iOS app
 
-This environment is Linux: it cannot run Xcode, build the app or run iOS tests. The GitHub Actions macOS workflow is the compiler.
-- Push the branch, then read the CI result before calling anything done. Fix failures from the logs.
-- Never claim Swift code compiles or tests pass unless CI says so.
-- Keep logic in the Swift package so it's covered by unit tests; UI gets checked by Antoine on TestFlight.
-- Scope the iOS workflow to `apps/ios/**` changes: macOS minutes are expensive.
+Work happens on Antoine's Mac, in `~/Projects/hutch`, where Xcode is installed. Build and test locally:
+- Regenerate the project after changing `project.yml`: `xcodegen generate` in `apps/ios`.
+- Build and run tests against an iPhone simulator with `xcodebuild test` (pick an installed simulator with `xcrun simctl list devices available`).
+- Never call work done without a green local build and test run, and say which simulator it ran on.
+- For UI changes, launch the app in the simulator and take a screenshot (`xcrun simctl io booted screenshot`) so Antoine can see the result on his phone.
+- Keep logic in the Swift package so it's covered by unit tests.
+- CI on a GitHub macOS runner is an optional safety net, not the main loop: macOS minutes are expensive. If added, scope it to `apps/ios/**` and pull requests only.
+
+**If the session is not on the Mac** (a cloud session with no link to the laptop), it cannot build Swift. Say so, limit the work to docs or the website, or ask Antoine to open the session from his Mac.
+
+## Design: iPhone first
+
+- Design for iPhone screens first; support every current iPhone size, Dynamic Type and dark mode from the start.
+- Standard SwiftUI components and system behavior over custom chrome; one-handed reach for primary actions (add item, scan).
+- iPad and the website are secondary.
 
 ## Conventions
 
