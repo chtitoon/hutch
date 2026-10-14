@@ -6,7 +6,7 @@ const { frontmatter } = Astro.props;
 ---
 
 <Base title={frontmatter.title} description={frontmatter.description}>
-  <article class="prose">
+  <article class="page container">
     <slot />
   </article>
 </Base>

@@ -106,6 +106,19 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 
 **Alternative considered:** plain HTML. Simpler for three pages, but means copying shared parts into every page, and the site is likely to grow.
 
-**Hosting (decided, Oct 2026, W1):** Cloudflare Pages project `hutch`, connected to the GitHub repo rather than uploaded by hand. Merging to `main` deploys myhutch.app, and each PR touching `apps/web/` or `design/` gets a preview URL, so the site goes live through the same review-and-merge loop as everything else (D12) and needs no deploy credentials on the Mac. Pages runs `npm test`, so a broken build or link never ships. Astro pinned at 7.3.5, the newest release at least two weeks old when chosen. No web fonts: the system font stack avoids a third-party font request.
+**Hosting (decided, Oct 2026, W1):** Cloudflare Pages project `hutch`, connected to the GitHub repo rather than uploaded by hand. Merging to `main` deploys myhutch.app, and each PR touching `apps/web/` or `design/` gets a preview URL, so the site goes live through the same review-and-merge loop as everything else (D12) and needs no deploy credentials on the Mac. Pages runs `npm test`, so a broken build or link never ships. Astro pinned at 7.3.5, the newest release at least two weeks old when chosen. Web fonts are self-hosted (amended by D15).
 
 **Contact:** support@myhutch.app, forwarded to my Gmail by Cloudflare Email Routing, so my personal address stays off the site.
+
+## D15 — Palette: forest, warm grey and brass; self-hosted web fonts
+**Status:** Proposed (Oct 2026). Confirm before the iOS app or the app icon adopt it.
+
+**What:**
+- `design/tokens.json` now comes from the landing-page design: near-black green ink on warm off-white, a deep forest band color, sage for small labels and focus, and brass as the single warm accent. The token file also gains roles (muted and subtle ink, surfaces, borders, on-deep colors), two fonts (Bricolage Grotesque for display, Instrument Sans for text), weights, radii and a 4px spacing scale.
+- **Supersedes** the fresh-green palette and brand.md's blanket rejection of earth tones: what failed before was heavy, rustic wood tones, not a light palette with one brass accent.
+- **Amends D14:** the website now uses web fonts, self-hosted through pinned `@fontsource` packages and bundled into the build, so no request leaves myhutch.app and "no trackers" stays true.
+- On the website, simple line-drawn doors illustrate the private → lend → sell stages, and a house glyph stands in for the logo until #9.
+
+**Why:** the design reads calmer and more "home" than the bright green, which fits the "feels like home, never like a vault" value better.
+
+**Consequences:** the iOS app (generated colors in M0) and the app icon inherit these tokens. The icon description in brand.md is updated to forest but not yet redrawn. Brass fails contrast as text on light surfaces; it's limited to fills and markers. There are no dark-mode tokens yet, so the website renders light only (`color-scheme: light`) rather than inventing colors; the iOS app needs dark roles before M1.

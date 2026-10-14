@@ -6,11 +6,14 @@ const source = new URL('../../design/tokens.json', import.meta.url);
 const target = new URL('./src/styles/tokens.css', import.meta.url);
 
 const tokens = JSON.parse(readFileSync(source, 'utf8'));
+// Font stacks are arrays; quote family names that contain spaces.
+const toCss = (v) => (Array.isArray(v) ? v.map((f) => (f.includes(' ') ? `"${f}"` : f)).join(', ') : v);
+
 const lines = [];
 const walk = (node, path) => {
   for (const [key, value] of Object.entries(node)) {
     if (key.startsWith('$') || !value || typeof value !== 'object') continue;
-    if ('$value' in value) lines.push(`  --${[...path, key].join('-')}: ${value.$value};`);
+    if ('$value' in value) lines.push(`  --${[...path, key].join('-')}: ${toCss(value.$value)};`);
     else walk(value, [...path, key]);
   }
 };
