@@ -19,8 +19,7 @@ node_modules/
 dist/
 .wrangler/
 
-# Local output (screenshots go to the PR, not the repo)
-screenshots/
+# Local output
 *.log
 
 # Secrets and personal settings

@@ -30,7 +30,7 @@ Each entry: what, status, and why. "Decided" means I chose it; "Proposed" means 
 **Supporting choices:**
 1. The Xcode project is generated from a readable `project.yml` (XcodeGen), because `.xcodeproj` files are hard to edit correctly by hand.
 2. Logic (models, crypto, sync) lives in a Swift package with unit tests, so most correctness is checked by tests rather than by tapping through the UI.
-3. UI is checked with simulator screenshots, then on my phone through TestFlight.
+3. UI is checked through snapshot tests in each PR (D11), then on my phone through TestFlight.
 
 **Costs and constraints:**
 - Apple Developer Program, $99/year, needed for TestFlight and the App Store.
@@ -75,10 +75,14 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 
 **Why:** issues show up in the GitHub app on my phone, PRs close them automatically, and the history is kept. Milestones are the three phases; issues are the units of work, each with a "Done when." The milestone descriptions hold each phase's goal, order and success test; durable reasoning stays in these docs. There is no separate plan file, because a second copy of the plan would drift.
 
-## D11 — Screenshots live on an orphan branch, shown in PR comments
-**Status:** Decided (Oct 2026).
+## D11 — UI review through snapshot tests
+**Status:** Proposed (Oct 2026). The approach is decided; confirm the library with me in M1.
 
-**Why:** I review UI changes from my phone, so they belong in the PR. Committing images to `main` would bloat the repo forever; an orphan `screenshots` branch keeps them out of the code history while still displaying in PR comments.
+**What:** each screen renders to reference images (light, dark, large Dynamic Type) stored with its tests. GitHub shows changed images side by side in a PR's file changes, so I can review UI from my phone with no extra tooling, and an unintended change fails the tests.
+
+**Why not screenshots posted to the PR** (the earlier plan, on an orphan branch): custom plumbing to build and maintain, images from a private repo may not render in the GitHub mobile app, and screenshots are thrown away after one look. Snapshot tests give the same review plus regression protection.
+
+**Costs:** one third-party test-only library (a well-known open-source snapshot-testing package is the likely choice), and small reference images in the repo, which are real test assets.
 
 ## D12 — Agents can't merge
 **Status:** Decided (Oct 2026).

@@ -20,7 +20,7 @@ Work is tracked in GitHub: each **milestone** is a phase, each **issue** is one 
 2. **Check it's unblocked.** If it depends on an open `decision` issue or a decision marked **Proposed** or **Open** in `docs/decisions.md`, stop and ask. Record the answer in `docs/decisions.md` and close the decision issue.
 3. **Confirm the slice.** Restate the issue's "Done when" in one or two lines and say what you'll do this session. One issue, or one clear slice of one, per session.
 4. **Build on a branch** named `<issue-number>-<short-name>`, with tests.
-5. **Prove it.** Green `scripts/test` for every app you touched, plus screenshots for UI work (see Screenshots).
+5. **Prove it.** Green `scripts/test` for every app you touched, plus snapshot tests for UI work (see Reviewing UI changes).
 6. **Open a PR** that says `Closes #<issue>`, summarizes the change in a few lines, says how to check it, and records any new decision in `docs/decisions.md`.
 7. **Never merge.** I review and merge, usually from my phone.
 8. **Report briefly:** what changed, how to check it, what's next.
@@ -43,7 +43,6 @@ I often check in from my phone while work runs on my Mac. Keep replies short and
 - `apps/web` — static site for myhutch.app (landing, App Store link, privacy policy, support). Plain HTML/CSS or a minimal static generator; no tracking.
 - `design/` — the design system both apps follow: `tokens.json` (the single source of truth), `brand.md` (logo), `explorations/` (rejected rounds). Never hard-code a color or size in an app that should come from tokens.
 - `docs/` — plan, decisions, context.
-- `scripts/` — repo-wide helpers (e.g. attaching screenshots to a PR).
 
 ## Scripts: one way to do each thing
 
@@ -68,12 +67,13 @@ Work happens on my Mac, in `~/Projects/hutch`, with Xcode installed.
 
 **If the session is not on the Mac** (a cloud session with no link to the laptop), it cannot build Swift. Say so, limit the work to docs or the website, or ask me to open the session from my Mac.
 
-## Screenshots
+## Reviewing UI changes
 
-For any UI change, show me the result in the PR, so I can review it on my phone.
-- Capture the running simulator (light and dark mode for new screens).
-- Attach with `scripts/pr-screenshot <pr-number> <image>...` (created in M0). It commits the images to the orphan `screenshots` branch under `pr-<number>/` and posts them as a PR comment, so `main` never fills up with images.
-- Never commit screenshots to `main` or a feature branch.
+I review UI from my phone, through the PR (D11).
+- **From M1 on, every screen has snapshot tests:** it's rendered to reference images, in light and dark mode and at a large Dynamic Type size, stored next to its tests. A change to a screen shows up as before-and-after images in the PR's file changes, and an accidental change fails `scripts/test`.
+- Only update reference images on purpose, and say why in the PR.
+- Until snapshot tests exist (M0), describe any visual change in a line or two in the PR.
+- Never commit throwaway screenshots.
 
 ## Design: iPhone first
 
