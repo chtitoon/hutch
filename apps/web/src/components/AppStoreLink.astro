@@ -1,0 +1,10 @@
+---
+// The one place the App Store link lives. Until Hutch is on the App Store, it says so.
+const appStoreUrl: string | undefined = undefined;
+---
+
+{appStoreUrl ? (
+  <a class="button" href={appStoreUrl}>Download on the App Store</a>
+) : (
+  <p class="badge">Coming to iPhone</p>
+)}

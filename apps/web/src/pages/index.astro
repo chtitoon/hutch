@@ -1,0 +1,39 @@
+---
+import Base from '../layouts/Base.astro';
+import AppStoreLink from '../components/AppStoreLink.astro';
+---
+
+<Base>
+  <section class="hero">
+    <h1>Your things, privately kept.</h1>
+    <p class="lede">
+      Hutch is an iPhone app for keeping track of everything you own. It’s end-to-end encrypted,
+      so no one sees your inventory but you. Not even us.
+    </p>
+    <AppStoreLink />
+  </section>
+
+  <ul class="shelves">
+    <li>
+      <h2>Behind closed doors</h2>
+      <p>Everything you add starts private. Snap it, name it, and know what you have and where it is.</p>
+    </li>
+    <li>
+      <h2>A few things on the shelf<span class="soon">Later</span></h2>
+      <p>When you choose, open a small door for the neighbors you trust: the ladder, the folding table, the tent.</p>
+    </li>
+    <li>
+      <h2>Out the door<span class="soon">Later</span></h2>
+      <p>Sell what you no longer need, straight from your inventory, when it’s time.</p>
+    </li>
+  </ul>
+
+  <section class="callout">
+    <h2>What we can’t see</h2>
+    <ul>
+      <li>Your items, photos, notes and where things are kept are encrypted on your iPhone.</li>
+      <li>The keys never leave your device. We only ever hold data we can’t read.</li>
+      <li>No ads, no analytics, no trackers. On this site either.</li>
+    </ul>
+  </section>
+</Base>

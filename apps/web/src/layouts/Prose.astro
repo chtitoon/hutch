@@ -1,0 +1,12 @@
+---
+// Layout for the Markdown text pages (privacy policy, support).
+import Base from './Base.astro';
+
+const { frontmatter } = Astro.props;
+---
+
+<Base title={frontmatter.title} description={frontmatter.description}>
+  <article class="prose">
+    <slot />
+  </article>
+</Base>

@@ -105,3 +105,7 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 **Rules:** static mode only, no server rendering or Cloudflare adapter unless a real need appears. Pin the Astro version; Astro moves fast (v6 requires a recent Node and removed older APIs), so upgrades get their own PR.
 
 **Alternative considered:** plain HTML. Simpler for three pages, but means copying shared parts into every page, and the site is likely to grow.
+
+**Hosting (decided, Oct 2026, W1):** Cloudflare Pages project `hutch`, connected to the GitHub repo rather than uploaded by hand. Merging to `main` deploys myhutch.app, and each PR touching `apps/web/` or `design/` gets a preview URL, so the site goes live through the same review-and-merge loop as everything else (D12) and needs no deploy credentials on the Mac. Pages runs `npm test`, so a broken build or link never ships. Astro pinned at 7.3.5, the newest release at least two weeks old when chosen. No web fonts: the system font stack avoids a third-party font request.
+
+**Contact:** support@myhutch.app, forwarded to my Gmail by Cloudflare Email Routing, so my personal address stays off the site.
