@@ -96,3 +96,12 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 - **A public marketplace:** the opposite of private by default.
 - **An Android app:** iPhone first (D3). Android neighbors are handled in the Phase 2 sharing decision.
 - **Neighborhood discovery:** trust comes from people who already know each other, not from finding strangers nearby.
+
+## D14 — Website: Astro, static output
+**Status:** Decided (Oct 2026).
+
+**Why:** Astro builds plain HTML ahead of time and ships no JavaScript by default: fast, and fitting for a privacy-first product. Text pages (privacy policy, support) are Markdown; shared components keep the header, footer and App Store button in one place; it deploys simply to Cloudflare Pages, where the domain lives.
+
+**Rules:** static mode only, no server rendering or Cloudflare adapter unless a real need appears. Pin the Astro version; Astro moves fast (v6 requires a recent Node and removed older APIs), so upgrades get their own PR.
+
+**Alternative considered:** plain HTML. Simpler for three pages, but means copying shared parts into every page, and the site is likely to grow.
