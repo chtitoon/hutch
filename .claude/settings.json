@@ -2,9 +2,10 @@
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
   "permissions": {
     "allow": [
-      "Bash(apps/ios/scripts/*)",
-      "Bash(apps/web/scripts/*)",
-      "Bash(scripts/*)",
+      "Bash(make *)",
+      "Bash(npm run *)",
+      "Bash(npm install)",
+      "Bash(npm ci)",
       "Bash(xcodegen *)",
       "Bash(xcodebuild *)",
       "Bash(xcrun simctl *)",

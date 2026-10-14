@@ -68,7 +68,7 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 ## D9 — The Xcode project is generated, not committed
 **Status:** Decided (Oct 2026).
 
-**Why:** `project.yml` (XcodeGen) is the source of truth. Generated `.xcodeproj` files cause merge conflicts and are hard for agents to edit safely. Trade-off: after cloning, run `apps/ios/scripts/setup` before opening the project in Xcode.
+**Why:** `project.yml` (XcodeGen) is the source of truth. Generated `.xcodeproj` files cause merge conflicts and are hard for agents to edit safely. Trade-off: after cloning, run `make setup` in `apps/ios` before opening the project in Xcode.
 
 ## D10 — Work tracked in GitHub issues and milestones
 **Status:** Decided (Oct 2026).

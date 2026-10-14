@@ -20,7 +20,7 @@ Work is tracked in GitHub: each **milestone** is a phase, each **issue** is one 
 2. **Check it's unblocked.** If it depends on an open `decision` issue or a decision marked **Proposed** or **Open** in `docs/decisions.md`, stop and ask. Record the answer in `docs/decisions.md` and close the decision issue.
 3. **Confirm the slice.** Restate the issue's "Done when" in one or two lines and say what you'll do this session. One issue, or one clear slice of one, per session.
 4. **Build on a branch** named `<issue-number>-<short-name>`, with tests.
-5. **Prove it.** Green `scripts/test` for every app you touched, plus snapshot tests for UI work (see Reviewing UI changes).
+5. **Prove it.** Green `make test` for every app you touched, plus snapshot tests for UI work (see Reviewing UI changes).
 6. **Open a PR** that says `Closes #<issue>`, summarizes the change in a few lines, says how to check it, and records any new decision in `docs/decisions.md`.
 7. **Never merge.** I review and merge, usually from my phone.
 8. **Report briefly:** what changed, how to check it, what's next.
@@ -44,24 +44,26 @@ I often check in from my phone while work runs on my Mac. Keep replies short and
 - `design/` — the design system both apps follow: `tokens.json` (the single source of truth), `brand.md` (logo), `explorations/` (rejected rounds). Never hard-code a color or size in an app that should come from tokens.
 - `docs/` — plan, decisions, context.
 
-## Scripts: one way to do each thing
+## Commands: one way to do each thing
 
-Every app has the same four scripts in its own `scripts/` folder, so any session, on any app, runs things the same way. Always use them rather than typing raw commands; if a script is missing or wrong, fix the script.
+Each app uses its ecosystem's own task runner, with the same four task names, so any session runs things the same way. Always use these rather than typing raw commands; if one is missing or wrong, fix it.
 
-| Script | iOS (`apps/ios/scripts/`) | Web (`apps/web/scripts/`) |
-|--------|---------------------------|---------------------------|
-| `setup` | From a fresh clone: check Xcode and XcodeGen are installed, generate the project | Install anything the site needs |
-| `test` | Build and run all tests on an iPhone simulator; print which simulator; exit non-zero on any failure | Check the build, HTML and links |
+| Task | iOS: `make <task>` in `apps/ios` | Web: `npm run <task>` in `apps/web` |
+|------|-----------------------------------|-------------------------------------|
+| `setup` | From a fresh clone: check Xcode and XcodeGen, generate the project | Install dependencies |
+| `test` | Build and run all tests on an iPhone simulator; print which one; fail on any error | Check the build, HTML and links |
 | `run` | Build, boot a simulator, install and launch the app | Serve the site locally |
 | `tokens` | Regenerate Swift colors and constants from `design/tokens.json` | Regenerate CSS variables from `design/tokens.json` |
 
-Scripts must work from a clean clone, run non-interactively (no prompts), and fail loudly. They're created in issue M0 (iOS) and W1 (web).
+A root `Makefile` delegates, so from the top of the repo `make test` runs both apps, and `make ios-test` or `make web-test` runs one.
+
+Tasks must work from a clean clone, run non-interactively (no prompts), and fail loudly. The iOS Makefile and root Makefile are created in M0; the web `package.json` in W1.
 
 ## Building the iOS app
 
 Work happens on my Mac, in `~/Projects/hutch`, with Xcode installed.
-- Run `apps/ios/scripts/setup` after cloning and after changing `project.yml`.
-- Never call work done without a green `apps/ios/scripts/test`, and say which simulator it ran on.
+- Run `make setup` in `apps/ios` after cloning and after changing `project.yml`.
+- Never call work done without a green `make test` in `apps/ios`, and say which simulator it ran on.
 - Keep logic in the Swift package so it's covered by unit tests.
 - CI on a GitHub macOS runner is an optional safety net, not the main loop: macOS minutes are expensive. If added, scope it to `apps/ios/**` and pull requests only.
 
@@ -70,7 +72,7 @@ Work happens on my Mac, in `~/Projects/hutch`, with Xcode installed.
 ## Reviewing UI changes
 
 I review UI from my phone, through the PR (D11).
-- **From M1 on, every screen has snapshot tests:** it's rendered to reference images, in light and dark mode and at a large Dynamic Type size, stored next to its tests. A change to a screen shows up as before-and-after images in the PR's file changes, and an accidental change fails `scripts/test`.
+- **From M1 on, every screen has snapshot tests:** it's rendered to reference images, in light and dark mode and at a large Dynamic Type size, stored next to its tests. A change to a screen shows up as before-and-after images in the PR's file changes, and an accidental change fails `make test`.
 - Only update reference images on purpose, and say why in the PR.
 - Until snapshot tests exist (M0), describe any visual change in a line or two in the PR.
 - Never commit throwaway screenshots.
@@ -87,4 +89,4 @@ I review UI from my phone, through the PR (D11).
 - Tests alongside code.
 - Small PRs. Commit messages say *why*, not just what.
 - Secrets (Cloudflare tokens, eBay keys, App Store Connect keys) live in GitHub/Cloudflare secrets, never in the repo.
-- Agent tool settings, such as Claude Code's pre-approved commands in `.claude/settings.json`, are kept in step with the scripts above. When you add a script, allow it there too.
+- Agent tool settings, such as Claude Code's pre-approved commands in `.claude/settings.json`, are kept in step with the commands above. When you add a task, allow it there too.
