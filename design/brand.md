@@ -19,13 +19,7 @@ Status: direction chosen, final logo not yet drawn (Oct 2026).
 
 ## Color (proposed)
 
-| Role | Hex |
-|------|-----|
-| Accent, "fresh green" | `#2FB36B` |
-| Ink | `#14231C` |
-| Background | `#FAFDF9` |
-
-Use the accent sparingly in the interface and boldly in the icon. Alternatives considered: saffron `#FFB627`, ultramarine `#3D3BFF`.
+Fresh green accent, near-black ink, near-white background. Values live in [tokens.json](tokens.json). Use the accent sparingly in the interface and boldly in the icon. Alternatives considered: saffron `#FFB627`, ultramarine `#3D3BFF`.
 
 ## What was tried and rejected, and why
 
@@ -41,7 +35,7 @@ Draw the final wordmark by hand in Figma on a real geometric typeface, with the 
 
 ## Reference images
 
-In `docs/brand/`, in the order they were made:
+In [`explorations/`](explorations/), in the order they were made:
 - `round1-rejected-furniture.png` — literal furniture, earth tones.
 - `round2-rejected-added-shapes.png` — colored pieces added beside letters; symbol vanishes in black and white.
 - `round3-rejected-no-cut.png` — AI could not carve the cut.

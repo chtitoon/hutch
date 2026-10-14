@@ -1,6 +1,14 @@
 # Plan
 
-Three phases. Each has a success test; don't start the next phase until the current one passes. Milestones are sized so one Claude Code session from a phone can finish one.
+## Now
+
+**M0 — Monorepo scaffold on the Mac.** Blocked until Xcode and XcodeGen are installed (see "Before M0" at the bottom).
+
+*Agents: update this section in every PR that finishes a milestone. Completed milestones are marked ✅ in the tables.*
+
+---
+
+Three phases. Each has a success test; don't start the next phase until the current one passes. Milestones are sized so one agent session can finish one.
 
 ## Phase 1 — My private inventory
 

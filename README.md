@@ -1,30 +1,15 @@
-# Hutch
+# hutch
 
-**Your things, privately kept.** A private-first home inventory. Everything you own stays behind closed doors by default; you choose what to put on the shelf for trusted neighbors to borrow, and what to sell.
+**Your things, privately kept.**
 
-- Domain: [myhutch.app](https://myhutch.app)
-- Status: planning — see [docs/PLAN.md](docs/PLAN.md)
+Hutch is an iPhone app for keeping track of everything you own, end-to-end encrypted, so no one sees your inventory but you. When you choose, you open a small door: lend the ladder to a neighbor, the folding table for a party. And when it's time, sell something on eBay.
 
-## The idea in one paragraph
+Like the furniture it's named after: closed doors below, a few things on display.
 
-Rental marketplaces (Yoodlize, Leechy) are public by design, and friend-lending apps (Mooch, Stuffly) put your inventory on someone else's server in the clear. Hutch takes the 1Password approach instead: your inventory is end-to-end encrypted, the server only ever holds ciphertext, and sharing works by granting a small circle the key to a "Lendable" shelf. Selling is a deliberate act — you decrypt one item on your device and publish it to eBay.
+---
 
-## Why "Hutch"
+**→ [What's next](docs/plan.md#now)** · [The plan](docs/plan.md) · [Decisions](docs/decisions.md) · [Why it exists](docs/context.md) · [Design](design/README.md)
 
-A hutch is half display shelves, half closed cupboard — exactly the model: private by default, displayed by choice. The word comes from the Old French *huche*, a storage chest.
+**For agents:** start with [AGENTS.md](AGENTS.md).
 
-## Repo
-
-| Path | What |
-|------|------|
-| `apps/ios` | The iPhone app (SwiftUI), shipped on the App Store |
-| `apps/web` | The static site at myhutch.app: what Hutch is, download link, privacy policy |
-| `docs` | Plan and decisions |
-
-## Docs
-
-- [docs/PLAN.md](docs/PLAN.md) — phases, milestones, success tests
-- [docs/DECISIONS.md](docs/DECISIONS.md) — what's decided, what's open, and why
-- [docs/CONTEXT.md](docs/CONTEXT.md) — origin, research on existing apps, findings that shape the product
-- [docs/BRAND.md](docs/BRAND.md) — logo concept, colors, and the directions rejected
-- [CLAUDE.md](CLAUDE.md) — working rules for Claude Code sessions
+[myhutch.app](https://myhutch.app)
