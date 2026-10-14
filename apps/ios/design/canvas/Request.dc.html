@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hutch — Borrow request</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F5C4A;text-decoration:none}a:hover{color:#163F33}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #EEF0EC; color: #18201C; font-family: 'Hanken Grotesk', system-ui, sans-serif; display: flex; flex-direction: column; gap: 22px; padding: 56px 20px 32px; overflow: hidden">
+  <div style="display: flex; justify-content: space-between; align-items: center">
+    <a href="Main.dc.html" style="display: flex; align-items: center; gap: 4px; height: 44px; font-size: 16px; font-weight: 600"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="m15 6-6 6 6 6"></path></svg>Home</a>
+    <span style="padding: 6px 12px; border-radius: 999px; background: #DDE3DE; font-size: 13px; font-weight: 600; color: #2C3A33">Your phone</span>
+  </div>
+  <sc-if value="{{pending}}" hint-placeholder-val="{{ true }}">
+    <div style="display: flex; flex-direction: column; gap: 22px">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <div style="font-size: 14px; font-weight: 600; color: #4A5750">Borrow request</div>
+        <h1 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-style: italic; font-weight: 400; font-size: 32px; line-height: 1.1">Marie would like your Dutch oven</h1>
+      </div>
+      <div style="display: flex; flex-direction: column; border-radius: 18px; background: #FFFFFF; overflow: hidden">
+        <div style="display: flex; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid #E6EAE7; font-size: 15px"><span style="color: #4A5750">For</span><span style="font-weight: 600">This weekend</span></div>
+        <div style="display: flex; justify-content: space-between; padding: 14px 16px; border-bottom: 1px solid #E6EAE7; font-size: 15px"><span style="color: #4A5750">Back by</span><span style="font-weight: 600">Sun, Oct 18</span></div>
+        <div style="display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; font-size: 15px"><span style="color: #4A5750">Her note</span><span style="font-weight: 500">"Making stew for the block party!"</span></div>
+      </div>
+      <div style="font-size: 14px; line-height: 1.45; color: #4A5750">Marie has borrowed from you 3 times, always on time.</div>
+    </div>
+  </sc-if>
+  <sc-if value="{{accepted}}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; gap: 14px; padding: 24px 20px; border-radius: 20px; background: #F6E7D6">
+      <h1 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-style: italic; font-weight: 400; font-size: 30px; line-height: 1.1; color: #18201C">Lent to Marie</h1>
+      <div style="font-size: 15px; line-height: 1.45; color: #6B3A0E">It's now under "Out on loan." Marie gets a reminder on Saturday; you only hear from us if it's late.</div>
+    </div>
+  </sc-if>
+  <sc-if value="{{declined}}" hint-placeholder-val="{{ false }}">
+    <div style="display: flex; flex-direction: column; gap: 14px; padding: 24px 20px; border-radius: 20px; background: #FFFFFF">
+      <h1 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-style: italic; font-weight: 400; font-size: 30px; line-height: 1.1">Not this time</h1>
+      <div style="font-size: 15px; line-height: 1.45; color: #4A5750">Marie sees "Not available right now." No reason is shared.</div>
+    </div>
+  </sc-if>
+  <div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px">
+    <sc-if value="{{pending}}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; flex-direction: column; gap: 10px">
+        <button type="button" onClick="{{accept}}" style="height: 54px; border: 0; border-radius: 16px; background: #1F5C4A; color: #FFFFFF; font: inherit; font-size: 16px; font-weight: 600">Lend it</button>
+        <button type="button" onClick="{{decline}}" style="height: 54px; border: 1px solid #C9D1CB; border-radius: 16px; background: transparent; color: #18201C; font: inherit; font-size: 16px; font-weight: 600">Not this time</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
+      <a href="Main.dc.html" style="height: 54px; border-radius: 16px; background: #18201C; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600">Back to Home</a>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { status: 'pending' };
+  }
+  renderVals() {
+    var self = this;
+    var s = this.state.status;
+    return {
+      pending: s === 'pending',
+      accepted: s === 'accepted',
+      declined: s === 'declined',
+      done: s !== 'pending',
+      accept: function () { self.setState({ status: 'accepted' }); },
+      decline: function () { self.setState({ status: 'declined' }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -122,3 +122,21 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 **Why:** the design reads calmer and more "home" than the bright green, which fits the "feels like home, never like a vault" value better.
 
 **Consequences:** the iOS app (generated colors in M0) and the app icon inherit these tokens. The icon description in brand.md is updated to forest but not yet redrawn. Brass fails contrast as text on light surfaces; it's limited to fills and markers. There are no dark-mode tokens yet, so the website renders light only (`color-scheme: light`) rather than inventing colors; the iOS app needs dark roles before M1.
+
+## D16 — Location is free text in Phase 1
+**Status:** Proposed (Oct 2026). Confirm before M1 ships.
+
+**What:** an item's `location` is one optional free-text field, "Where it lives" ("Garage, blue bin"). Places emerge from use: the field suggests locations I've already typed, most recent first, and a new item starts with the last location I used, because I catalog a whole shelf at a time. There are no rooms or spots to set up first.
+
+**Why:** setting up rooms and spots before adding anything is a chore with no payoff yet, and abandoned data entry is what kills inventory apps (D4, docs/context.md). Real places don't fit a clean hierarchy either (boxes, shelves inside closets, the car). Search, not browsing a tree, is how I'll find things.
+
+**Consequences:** M5 decides whether locations become structured (nesting, a place screen, grouping); free text migrates cleanly into that. Insurance-style "room by room" views wait for M5.
+
+## D17 — M1 screens are specified in writing; the design canvas is a reference
+**Status:** Decided (Oct 2026).
+
+**What:** [`apps/ios/design/milestone1.md`](../apps/ios/design/milestone1.md) specifies every M1 screen, state, navigation path and piece of copy, and wins over any other source for M1 UI. The Claude Design canvas it was derived from is exported to `apps/ios/design/canvas/` as a visual reference, with its differences from the spec listed there.
+
+**Why:** coding sessions build better from precise words than from pictures they can't see, and the repo is the project's only memory (AGENTS.md). Exporting the canvas keeps the visual work in the repo too, but the canvas predates D15 and shows later milestones, so it can't be the source of truth.
+
+**Rules:** the canvas is the editable original and `canvas/` is a snapshot; change the design on the canvas, then re-export it in its own PR. Later milestones get their own `apps/ios/design/<milestone>.md` in the same shape.

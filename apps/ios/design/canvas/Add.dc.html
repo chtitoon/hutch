@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hutch — Add an item</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F5C4A;text-decoration:none}a:hover{color:#163F33}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #18201C; color: #18201C; font-family: 'Hanken Grotesk', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+  <div style="position: relative; height: 400px; box-sizing: border-box; padding: 84px 0 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; color: #C9D1CB">
+    <a href="Main.dc.html" aria-label="Close" style="position: absolute; top: 52px; left: 16px; width: 44px; height: 44px; border-radius: 999px; background: #2C3A33; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></a>
+    <svg width="170" height="170" viewBox="0 0 220 220" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" aria-hidden="true"><path d="M4 44V4h40M176 4h40v40M216 176v40h-40M44 216H4v-40"></path></svg>
+    <div style="font-size: 15px; color: #C9D1CB">Fit the whole item inside the frame</div>
+    <button type="button" aria-label="Take photo" style="width: 68px; height: 68px; flex: none; border-radius: 999px; border: 4px solid #FFFFFF; background: transparent; padding: 4px; box-sizing: border-box; display: flex"><span style="flex: 1; border-radius: 999px; background: #FFFFFF"></span></button>
+  </div>
+  <div style="flex: 1; display: flex; flex-direction: column; gap: 18px; padding: 22px 20px 32px; border-radius: 28px 28px 0 0; background: #EEF0EC">
+    <label style="display: flex; flex-direction: column; gap: 8px">
+      <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #4A5750">What is it</span>
+      <input type="text" value="Cordless drill" style="height: 50px; padding: 0 16px; border: 1px solid #D5DBD6; border-radius: 14px; background: #FFFFFF; font: inherit; font-size: 17px; color: #18201C">
+    </label>
+    <div style="display: flex; flex-direction: column; gap: 8px">
+      <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #4A5750">Where it lives</span>
+      <div role="radiogroup" aria-label="Room" style="display: flex; gap: 8px; flex-wrap: wrap">
+        <sc-for list="{{rooms}}" as="r" hint-placeholder-count="4">
+          <button type="button" role="radio" aria-checked="{{r.checked}}" onClick="{{r.pick}}" style="{{r.style}}">{{r.label}}</button>
+        </sc-for>
+      </div>
+    </div>
+    <button type="button" style="display: flex; align-items: center; gap: 12px; padding: 12px 16px; border: 0; border-radius: 16px; background: #FFFFFF; font: inherit; color: #18201C; text-align: left">
+      <span style="width: 40px; height: 40px; flex: none; border-radius: 12px; background: #DDE3DE; display: flex; align-items: center; justify-content: center; color: #1F5C4A"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"></path><path d="M9 8h6M9 12h6"></path></svg></span>
+      <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 600">Add the receipt</span><span style="font-size: 13px; color: #4A5750">We'll read the date and price for you</span></span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#A9B3AC" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="m9 6 6 6-6 6"></path></svg>
+    </button>
+    <a href="Room.dc.html" style="margin-top: auto; height: 54px; border-radius: 16px; background: #1F5C4A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600">{{saveLabel}}</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { room: 'Garage' };
+  }
+  renderVals() {
+    var self = this;
+    return {
+      saveLabel: 'Save to ' + this.state.room,
+      rooms: ['Kitchen', 'Living room', 'Basement', 'Garage'].map(function (r) {
+        var sel = self.state.room === r;
+        return {
+          label: r,
+          checked: sel ? 'true' : 'false',
+          style: 'height: 40px; padding: 0 14px; border-radius: 999px; font: inherit; font-size: 14px; font-weight: 600; ' + (sel ? 'border: 0; background: #18201C; color: #FFFFFF' : 'border: 1px solid #C9D1CB; background: transparent; color: #18201C'),
+          pick: function () { self.setState({ room: r }); }
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

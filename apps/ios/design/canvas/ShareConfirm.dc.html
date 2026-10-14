@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hutch — Make borrowable</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;family=Newsreader:ital,opsz,wght@1,6..72,400;1,6..72,500&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+a{color:#1F5C4A;text-decoration:none}a:hover{color:#163F33}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #5E6762; color: #18201C; font-family: 'Hanken Grotesk', system-ui, sans-serif; display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden">
+  <div style="display: flex; flex-direction: column; gap: 18px; padding: 10px 20px 32px; border-radius: 28px 28px 0 0; background: #EEF0EC; min-height: 760px; box-sizing: border-box">
+    <div style="align-self: center; width: 40px; height: 5px; border-radius: 999px; background: #C9D1CB"></div>
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <div style="font-size: 14px; font-weight: 600; color: #4A5750">Make borrowable</div>
+        <h1 style="margin: 0; font-family: 'Newsreader', Georgia, serif; font-style: italic; font-weight: 400; font-size: 30px; line-height: 1.1">Who can see your Dutch oven?</h1>
+      </div>
+      <a href="Item.dc.html" aria-label="Cancel" style="flex: none; width: 44px; height: 44px; border-radius: 999px; background: #DDE3DE; color: #18201C; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg></a>
+    </div>
+    <div style="display: flex; flex-direction: column; border-radius: 18px; background: #FFFFFF; overflow: hidden">
+      <sc-for list="{{people}}" as="p" hint-placeholder-count="3">
+        <button type="button" role="checkbox" aria-checked="{{p.checked}}" onClick="{{p.toggle}}" style="display: flex; align-items: center; gap: 12px; min-height: 58px; padding: 0 16px; border: 0; border-bottom: 1px solid #E6EAE7; background: transparent; font: inherit; color: #18201C; text-align: left">
+          <span style="width: 36px; height: 36px; border-radius: 999px; background: #DDE3DE; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; color: #2C3A33">{{p.initial}}</span>
+          <span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 600">{{p.name}}</span><span style="font-size: 13px; color: #4A5750">{{p.meta}}</span></span>
+          <span style="{{p.box}}"><sc-if value="{{p.on}}" hint-placeholder-val="{{ true }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg></sc-if></span>
+        </button>
+      </sc-for>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 10px">
+      <h2 style="margin: 0; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #4A5750">What they'll see</h2>
+      <div style="display: flex; gap: 14px; align-items: center; padding: 12px; border-radius: 18px; background: #FFFFFF; border: 1px dashed #A9B3AC">
+        <span style="width: 64px; height: 64px; flex: none; border-radius: 14px; background: #DDE3DE; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #4A5750">[photo]</span>
+        <span style="display: flex; flex-direction: column; gap: 3px"><span style="font-size: 16px; font-weight: 600">Cast-iron Dutch oven</span><span style="font-size: 13px; color: #4A5750">From Antoine · usually available</span></span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 12px; font-size: 13px; color: #2C3A33">
+        <span style="display: flex; gap: 6px; align-items: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F5C4A" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>Photo and name</span>
+        <span style="display: flex; gap: 6px; align-items: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4A5750" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>Where it's kept</span>
+        <span style="display: flex; gap: 6px; align-items: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1F5C4A" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="m5 12 5 5 9-10"></path></svg>If it's free now</span>
+        <span style="display: flex; gap: 6px; align-items: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4A5750" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>Price or receipt</span>
+      </div>
+    </div>
+    <a href="NeighborView.dc.html" style="margin-top: auto; height: 54px; border-radius: 16px; background: #1F5C4A; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 600">{{cta}}</a>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { sel: { marie: true, sam: true, priya: false } };
+  }
+  renderVals() {
+    var self = this;
+    var people = [
+      { id: 'marie', name: 'Marie D.', meta: 'Next door', initial: 'M' },
+      { id: 'sam', name: 'Sam K.', meta: 'Across the street', initial: 'S' },
+      { id: 'priya', name: 'Priya R.', meta: 'Two doors down', initial: 'P' }
+    ];
+    var count = people.filter(function (p) { return self.state.sel[p.id]; }).length;
+    return {
+      cta: count === 0 ? 'Choose at least one neighbor' : 'Show to ' + count + (count === 1 ? ' neighbor' : ' neighbors'),
+      people: people.map(function (p) {
+        var on = !!self.state.sel[p.id];
+        return {
+          name: p.name, meta: p.meta, initial: p.initial, on: on,
+          checked: on ? 'true' : 'false',
+          box: 'width: 24px; height: 24px; border-radius: 7px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; ' + (on ? 'background: #1F5C4A' : 'border: 2px solid #A9B3AC'),
+          toggle: function () {
+            var next = Object.assign({}, self.state.sel);
+            next[p.id] = !next[p.id];
+            self.setState({ sel: next });
+          }
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>
