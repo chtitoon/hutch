@@ -25,6 +25,10 @@ I wanted to borrow things from neighbors for a day (a lawn mower, an extra table
 - **Trust comes from existing relationships,** not ratings. Start with 4–6 households who already know each other.
 - **Data entry is what kills home-inventory apps.** Capture speed (photo-first, barcode) matters more than features.
 
+## The social plan for lending
+
+The findings above, turned into how Phase 2 starts: seed the shelf with 10–15 of my own items; ask 4–6 trusted neighbors for "2–3 things you'd lend," never a full inventory; and support "anyone have a ladder?" requests, not only browsing. This matters more than the code.
+
 ## The privacy model, in one line
 
 The 1Password approach: encrypt on device, the server holds only ciphertext, and sharing means giving a small circle the key to one shelf. It protects against the platform, not against the circle — a neighbor who can see an item can screenshot it.

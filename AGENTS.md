@@ -9,7 +9,7 @@ This repo and its GitHub issues are the project's only memory. When a conversati
 | When | Read |
 |------|------|
 | Every session | The open issues in the current GitHub milestone, and `docs/decisions.md` (what's settled, what's open) |
-| Before proposing product changes | `docs/plan.md` (phases and success tests) and `docs/context.md` (research, and why some obvious features are deliberately absent) |
+| Before proposing product changes | The [milestone](https://github.com/chtitoon/hutch/milestones) descriptions (each phase's goal and success test), `docs/context.md` (research) and D13 in `docs/decisions.md` (what's deliberately out of scope) |
 | Any UI, visual or web work | `design/README.md`, then `design/brand.md` |
 
 ## The work loop

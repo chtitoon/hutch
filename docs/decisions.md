@@ -73,7 +73,7 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 ## D10 — Work tracked in GitHub issues and milestones
 **Status:** Decided (Oct 2026).
 
-**Why:** issues show up in the GitHub app on my phone, PRs close them automatically, and the history is kept. Milestones are the three phases; issues are the units of work, each with a "Done when." `docs/plan.md` keeps the roadmap and the reasoning; it no longer tracks status.
+**Why:** issues show up in the GitHub app on my phone, PRs close them automatically, and the history is kept. Milestones are the three phases; issues are the units of work, each with a "Done when." The milestone descriptions hold each phase's goal, order and success test; durable reasoning stays in these docs. There is no separate plan file, because a second copy of the plan would drift.
 
 ## D11 — Screenshots live on an orphan branch, shown in PR comments
 **Status:** Decided (Oct 2026).
@@ -84,3 +84,11 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 **Status:** Decided (Oct 2026).
 
 **Why:** every change gets one human look before it lands. Agent settings deny merging and pushing to `main`.
+
+## D13 — Out of scope, for now
+**Status:** Decided (Oct 2026).
+
+- **Payments between neighbors:** Venmo or Zelle is fine, and the research found neighbors prefer lending for free (docs/context.md).
+- **A public marketplace:** the opposite of private by default.
+- **An Android app:** iPhone first (D3). Android neighbors are handled in the Phase 2 sharing decision.
+- **Neighborhood discovery:** trust comes from people who already know each other, not from finding strangers nearby.
