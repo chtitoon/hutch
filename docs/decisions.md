@@ -1,6 +1,6 @@
 # Decisions
 
-Each entry: what, status, and why. "Decided" means Antoine chose it; "Proposed" means it's a recommendation awaiting his confirmation.
+Each entry: what, status, and why. "Decided" means I chose it; "Proposed" means it's a recommendation awaiting my confirmation.
 
 ## D1 — Name and domain: Hutch, myhutch.app
 **Status:** Decided (domain registered on Cloudflare, Oct 2026).
@@ -12,7 +12,7 @@ Each entry: what, status, and why. "Decided" means Antoine chose it; "Proposed" 
 ## D2 — Privacy model: end-to-end encrypted, zero-knowledge
 **Status:** Decided (core requirement).
 
-**Why:** Antoine does not want a database on the web that knows what he owns. The 1Password model: encrypt on device, server stores ciphertext only, sharing via per-vault keys.
+**Why:** I don't want a database on the web that knows what I own. The 1Password model: encrypt on device, server stores ciphertext only, sharing via per-vault keys.
 
 **Consequences:** server can't search, match requests or send content-rich notifications; all of that runs on device. Key loss = data loss, so recovery (an emergency kit / recovery key) is a Phase 1 requirement, not an afterthought. Sharing protects against the platform, not against the circle — a neighbor who can see an item can screenshot it.
 
@@ -25,12 +25,12 @@ Each entry: what, status, and why. "Decided" means Antoine chose it; "Proposed" 
 
 **Why native:** better camera and barcode capture, the Keychain and Secure Enclave for keys, and a real App Store presence.
 
-**Where it's built (decided):** on Antoine's Mac, in `~/Projects/hutch`, with Xcode. Sessions build, test and run the app in the iPhone simulator locally. This replaced an earlier plan to use a GitHub macOS runner as the only compiler, which was slow (minutes per iteration) and expensive (macOS CI minutes cost a multiple of Linux minutes on GitHub's free tier for private repos). CI stays optional.
+**Where it's built (decided):** on my Mac, in `~/Projects/hutch`, with Xcode. Sessions build, test and run the app in the iPhone simulator locally. This replaced an earlier plan to use a GitHub macOS runner as the only compiler, which was slow (minutes per iteration) and expensive (macOS CI minutes cost a multiple of Linux minutes on GitHub's free tier for private repos). CI stays optional.
 
 **Supporting choices:**
 1. The Xcode project is generated from a readable `project.yml` (XcodeGen), because `.xcodeproj` files are hard to edit correctly by hand.
 2. Logic (models, crypto, sync) lives in a Swift package with unit tests, so most correctness is checked by tests rather than by tapping through the UI.
-3. UI is checked with simulator screenshots, then on Antoine's phone through TestFlight.
+3. UI is checked with simulator screenshots, then on my phone through TestFlight.
 
 **Costs and constraints:**
 - Apple Developer Program, $99/year, needed for TestFlight and the App Store.
@@ -43,7 +43,7 @@ Each entry: what, status, and why. "Decided" means Antoine chose it; "Proposed" 
 ## D4 — Build order: personal first, sharing later
 **Status:** Decided in principle.
 
-**Why:** most home-inventory apps die from abandoned data entry, not missing features. Phase 2 sharing (invites, identity, key rotation on revocation) is far more complex than Phase 1, and only worth building once Antoine has proven he keeps the inventory up to date.
+**Why:** most home-inventory apps die from abandoned data entry, not missing features. Phase 2 sharing (invites, identity, key rotation on revocation) is far more complex than Phase 1, and only worth building once I've proven I keep the inventory up to date.
 
 ## D5 — Photo-based AI capture
 **Status:** Open.

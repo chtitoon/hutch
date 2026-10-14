@@ -1,6 +1,6 @@
 # Working on Hutch
 
-Instructions for any coding agent working in this repo.
+My instructions for any coding agent working in this repo.
 
 This repo is the project's only memory. When a conversation produces a decision, a changed plan or a new finding, write it into the docs in the same PR; anything left only in a chat is lost.
 
@@ -14,7 +14,7 @@ This repo is the project's only memory. When a conversation produces a decision,
 
 ## The work loop
 
-1. **Find the work.** Open the milestone named under **Now** in `docs/plan.md`. If Antoine asked for something else, do that instead.
+1. **Find the work.** Open the milestone named under **Now** in `docs/plan.md`. If I asked for something else, do that instead.
 2. **Check it's unblocked.** If it depends on a decision marked **Proposed** or **Open**, stop and ask. Record the answer in `docs/decisions.md`.
 3. **Confirm the slice.** Restate the milestone's "Done when" in one or two lines and say what you'll do this session. One milestone, or one clear slice of one, per session.
 4. **Build on a branch,** with tests.
@@ -22,9 +22,9 @@ This repo is the project's only memory. When a conversation produces a decision,
 6. **Close the loop in the same PR:** tick the milestone in `docs/plan.md`, move **Now** to the next one, and record any new decision or finding.
 7. **Report briefly:** what changed, how to check it, what's next.
 
-## Talking to Antoine
+## Talking to me
 
-He often checks in from his phone while work runs on his Mac. Keep replies short and lead with the outcome; he can't comfortably read long diffs on a small screen.
+I often check in from my phone while work runs on my Mac. Keep replies short and lead with the outcome; I can't comfortably read long diffs on a small screen.
 
 ## Non-negotiables
 
@@ -43,15 +43,15 @@ He often checks in from his phone while work runs on his Mac. Keep replies short
 
 ## Building the iOS app
 
-Work happens on Antoine's Mac, in `~/Projects/hutch`, where Xcode is installed. Build and test locally:
+Work happens on my Mac, in `~/Projects/hutch`, where Xcode is installed. Build and test locally:
 - Regenerate the project after changing `project.yml`: `xcodegen generate` in `apps/ios`.
 - Build and run tests against an iPhone simulator with `xcodebuild test` (pick an installed simulator with `xcrun simctl list devices available`).
 - Never call work done without a green local build and test run, and say which simulator it ran on.
-- For UI changes, launch the app in the simulator and take a screenshot (`xcrun simctl io booted screenshot`) so Antoine can see the result on his phone.
+- For UI changes, launch the app in the simulator and take a screenshot (`xcrun simctl io booted screenshot`) so I can see the result on my phone.
 - Keep logic in the Swift package so it's covered by unit tests.
 - CI on a GitHub macOS runner is an optional safety net, not the main loop: macOS minutes are expensive. If added, scope it to `apps/ios/**` and pull requests only.
 
-**If the session is not on the Mac** (a cloud session with no link to the laptop), it cannot build Swift. Say so, limit the work to docs or the website, or ask Antoine to open the session from his Mac.
+**If the session is not on the Mac** (a cloud session with no link to the laptop), it cannot build Swift. Say so, limit the work to docs or the website, or ask me to open the session from my Mac.
 
 ## Design: iPhone first
 

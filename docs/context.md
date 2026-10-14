@@ -4,7 +4,7 @@ Why Hutch exists and what the research found. Read this before proposing product
 
 ## Origin
 
-Antoine wanted to borrow things from neighbors for a day (a lawn mower, an extra table) and to lend his own, without putting his household inventory on a public website. He also wanted to sell items on eBay when the time came.
+I wanted to borrow things from neighbors for a day (a lawn mower, an extra table) and to lend my own, without putting my household inventory on a public website. I also wanted to sell things on eBay when the time came.
 
 ## What already exists (Oct 2026) and why it doesn't fit
 

@@ -12,7 +12,7 @@ Three phases. Each has a success test; don't start the next phase until the curr
 
 ## Phase 1 — My private inventory
 
-Goal: Antoine catalogs his own things in an app that knows nothing he hasn't encrypted.
+Goal: I catalog my own things in an app that knows nothing I haven't encrypted.
 
 | # | Milestone | Done when |
 |---|-----------|-----------|
@@ -23,7 +23,7 @@ Goal: Antoine catalogs his own things in an app that knows nothing he hasn't enc
 | M3 | Fast capture | Photo-first entry and barcode scan with the camera; decide D5 (AI capture) |
 | M4 | Encrypted sync + recovery | Confirm the sync choice in D3; second device restores from a recovery key; tests assert synced payloads hold no plaintext |
 | M5 | Organize | Locations (garage, basement…), categories, value, receipts, warranty dates |
-| T1 | First TestFlight build | Antoine installs Hutch on his phone from TestFlight (needs the Apple Developer Program) |
+| T1 | First TestFlight build | I install Hutch on my phone from TestFlight (needs the Apple Developer Program) |
 
 **Item model (starting point):** name, photos, category, location, condition, estimated value, purchase date, receipt, notes, and a `visibility` field: `private` (default) / `lendable` / `for_sale`. The field exists from day one even though only `private` works in Phase 1.
 
@@ -38,7 +38,7 @@ Goal: Antoine catalogs his own things in an app that knows nothing he hasn't enc
 | M8 | Loans | Request → approved → out → returned, with dates, condition photos at handoff, reminders |
 | M9 | Revocation | Removing a member rotates the shelf key; they can't read items added afterward |
 
-**Social plan (matters more than the code):** seed with 10–15 of Antoine's own items; ask 4–6 trusted neighbors for "2–3 things you'd lend," not a full inventory; support "anyone have a ladder?" requests, not just listings.
+**Social plan (matters more than the code):** seed with 10–15 of my own items; ask 4–6 trusted neighbors for "2–3 things you'd lend," not a full inventory; support "anyone have a ladder?" requests, not just listings.
 
 **Success test:** at least 3 households lending to each other within a month of launch.
 
@@ -54,10 +54,9 @@ Goal: Antoine catalogs his own things in an app that knows nothing he hasn't enc
 
 Payments between neighbors (Venmo/Zelle is fine), public marketplace, an Android app, a dedicated "neighborhood" discovery feature.
 
-## Before M0 (Antoine)
+## Before M0 (my to-dos)
 
 - Clone the repo on the Mac: `git clone https://github.com/chtitoon/hutch ~/Projects/hutch`, and run the coding agent from that folder.
 - Confirm Xcode is installed (and Homebrew, for `brew install xcodegen`).
-- Create the empty private repo `chtitoon/hutch` for backup and history.
 - Join the Apple Developer Program ($99/year) before T1; App Store Connect API keys go into GitHub secrets for TestFlight uploads.
 - Point myhutch.app at Cloudflare Pages when W1 is ready.
