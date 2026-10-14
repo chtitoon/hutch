@@ -6,7 +6,7 @@ Hutch is an iPhone app for keeping track of everything you own, end-to-end encry
 
 Like the furniture it's named after: closed doors below, a few things on display. That idea runs through [the logo and the design](design/README.md), too.
 
-Hutch is being built one milestone at a time. The [plan](docs/plan.md) lays out the road, [where things stand](docs/plan.md#now) is at the top of it, and the [decisions](docs/decisions.md) record what's settled and why.
+Hutch is being built one milestone at a time. The [plan](docs/plan.md) lays out the road, [the milestones](https://github.com/chtitoon/hutch/milestones) show where things stand, and the [decisions](docs/decisions.md) record what's settled and why.
 
 ---
 

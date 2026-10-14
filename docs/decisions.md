@@ -54,3 +54,33 @@ Each entry: what, status, and why. "Decided" means I chose it; "Proposed" means 
 **Status:** Open — decide after Phase 1.
 
 Drives whether to rename (see D1), invest in multi-platform polish, or pursue the eBay angle more seriously.
+
+## D7 — Bundle ID: `app.myhutch.ios`
+**Status:** Decided (Oct 2026).
+
+**Why:** bundle IDs are reverse domain names, which keeps them globally unique. I own myhutch.app, so `app.myhutch.*` is mine. `app.hutch.*` would claim hutch.app, owned by someone else since 2018. A bundle ID can't change after App Store release.
+
+## D8 — Minimum iOS version: iOS 26
+**Status:** Decided (Oct 2026).
+
+**Why:** iOS 27 shipped in September 2026 and supports the same iPhones as iOS 26, so targeting 26 excludes no device that can run 27, while allowing modern SwiftUI and SwiftData APIs. Revisit each autumn.
+
+## D9 — The Xcode project is generated, not committed
+**Status:** Decided (Oct 2026).
+
+**Why:** `project.yml` (XcodeGen) is the source of truth. Generated `.xcodeproj` files cause merge conflicts and are hard for agents to edit safely. Trade-off: after cloning, run `apps/ios/scripts/setup` before opening the project in Xcode.
+
+## D10 — Work tracked in GitHub issues and milestones
+**Status:** Decided (Oct 2026).
+
+**Why:** issues show up in the GitHub app on my phone, PRs close them automatically, and the history is kept. Milestones are the three phases; issues are the units of work, each with a "Done when." `docs/plan.md` keeps the roadmap and the reasoning; it no longer tracks status.
+
+## D11 — Screenshots live on an orphan branch, shown in PR comments
+**Status:** Decided (Oct 2026).
+
+**Why:** I review UI changes from my phone, so they belong in the PR. Committing images to `main` would bloat the repo forever; an orphan `screenshots` branch keeps them out of the code history while still displaying in PR comments.
+
+## D12 — Agents can't merge
+**Status:** Decided (Oct 2026).
+
+**Why:** every change gets one human look before it lands. Agent settings deny merging and pushing to `main`.
