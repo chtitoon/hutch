@@ -38,3 +38,11 @@ Use the accent sparingly in the interface and boldly in the icon. Alternatives c
 ## Next step
 
 Draw the final wordmark by hand in Figma on a real geometric typeface, with the single wedge cut; AI tools got the idea but not the precision. Then derive the design system (type scale, spacing, corner radius, color roles) from it.
+
+## Reference images
+
+In `docs/brand/`, in the order they were made:
+- `round1-rejected-furniture.png` — literal furniture, earth tones.
+- `round2-rejected-added-shapes.png` — colored pieces added beside letters; symbol vanishes in black and white.
+- `round3-rejected-no-cut.png` — AI could not carve the cut.
+- `round4-closest-recraft.png` — **closest so far.** Right weight, color and placement (stem separated from the arch of the "h"), but too many cuts (u, t, second h), cuts are uniform rather than tapered, and curves are rough. Use as the starting point for the hand-drawn version.
