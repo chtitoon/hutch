@@ -17,7 +17,9 @@ Package.resolved.bak
 # Web
 node_modules/
 dist/
+.astro/
 .wrangler/
+.cloudflare/
 
 # Local output
 *.log

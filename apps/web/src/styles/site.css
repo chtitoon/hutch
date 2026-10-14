@@ -1,0 +1,409 @@
+/* Every color, font, radius and spacing value here comes from tokens.css
+   (generated from design/tokens.json). See DESIGN.md for the rules.
+   Type sizes and device geometry (the phone's corner radii) are local to
+   the page, not tokens. */
+
+:root {
+  /* Fontsource registers the variable font under its own family name; the token stack follows as fallback. */
+  --display: "Bricolage Grotesque Variable", var(--font-display);
+  --page-width: 1200px;
+  --prose-width: 720px;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: clip;
+  background: var(--color-background);
+  color: var(--color-ink);
+  font-family: var(--font-text);
+  font-weight: var(--font-weight-regular);
+  line-height: 1.5;
+}
+
+main { flex: 1; }
+
+h1, h2, h3 {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: var(--font-weight-bold);
+}
+
+p { margin: 0; }
+
+a {
+  color: var(--color-ink);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+a:hover { color: var(--color-sage); }
+:focus-visible {
+  outline: 2px solid var(--color-sage);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--page-width);
+  margin: 0 auto;
+  padding-left: var(--space-6);
+  padding-right: var(--space-6);
+}
+
+.eyebrow {
+  font-size: 14px;
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-sage);
+}
+
+/* Header */
+
+.site-header {
+  padding-top: var(--space-7);
+  padding-bottom: var(--space-7);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.wordmark {
+  font-family: var(--display);
+  font-weight: var(--font-weight-bold);
+  font-size: 24px;
+  letter-spacing: -0.02em;
+}
+.wordmark--small { font-size: 18px; color: var(--color-ink); }
+
+.site-nav {
+  display: flex;
+  gap: var(--space-7);
+  align-items: center;
+  font-size: 15px;
+}
+.site-nav a { text-decoration: none; }
+
+/* Status pill: the App Store slot */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 52px;
+  margin: 0;
+  padding: 0 22px;
+  border-radius: var(--radius-pill);
+  background: var(--color-ink);
+  color: var(--color-background);
+  font-weight: var(--font-weight-semibold);
+  font-size: 16px;
+  text-decoration: none;
+}
+.pill::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+
+.text-link { font-size: 16px; font-weight: var(--font-weight-medium); }
+
+/* Hero */
+
+.hero {
+  padding-top: var(--space-12);
+  padding-bottom: var(--space-28);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-16);
+  align-items: center;
+}
+
+.hero-copy {
+  flex: 1 1 460px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+}
+
+.hero-title {
+  font-size: clamp(48px, 7.2vw, 100px);
+  line-height: 0.96;
+  letter-spacing: -0.035em;
+}
+
+.lede {
+  max-width: 30ch;
+  font-size: clamp(18px, 1.6vw, 22px);
+  line-height: 1.5;
+  color: var(--color-ink-muted);
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  align-items: center;
+  padding-top: var(--space-2);
+}
+
+.hero-art {
+  flex: 1 1 340px;
+  min-width: 0;
+  display: flex;
+  justify-content: center;
+}
+
+/* Phone mockup */
+
+.phone { position: relative; width: 300px; max-width: 100%; }
+.phone::before {
+  content: "";
+  position: absolute;
+  inset: 40px -30px -30px 30px;
+  border-radius: 48px;
+  background: var(--color-surface-sunken);
+}
+
+.phone-frame {
+  position: relative;
+  border-radius: 46px;
+  background: var(--color-ink);
+  padding: var(--space-3);
+  box-shadow: 0 30px 60px color-mix(in srgb, var(--color-ink) 18%, transparent);
+}
+
+.phone-screen {
+  border-radius: 36px;
+  background: var(--color-surface);
+  padding: var(--space-10) var(--space-5) var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 560px;
+}
+
+.phone-title { display: flex; justify-content: space-between; align-items: baseline; }
+.phone-room { font-family: var(--display); font-weight: var(--font-weight-bold); font-size: 30px; letter-spacing: -0.02em; }
+.phone-count { font-size: 13px; color: var(--color-ink-subtle); }
+
+.phone-search {
+  height: 38px;
+  border-radius: var(--radius-sm);
+  background: var(--color-background);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-3);
+  font-size: 14px;
+  color: var(--color-ink-subtle);
+}
+
+.phone-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.phone-list li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.phone-thumb { width: 44px; height: 44px; border-radius: var(--radius-sm); flex: none; }
+.phone-thumb--sunken { background: var(--color-surface-sunken); }
+.phone-thumb--sage { background: var(--color-sage-tint); }
+.phone-thumb--border { background: var(--color-border); }
+.phone-thumb--background { background: var(--color-background); }
+
+.phone-item { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.phone-name { font-weight: var(--font-weight-semibold); font-size: 15px; }
+.phone-where { font-size: 13px; color: var(--color-ink-subtle); }
+
+.phone-lock {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  justify-content: center;
+  font-size: 12px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-sage);
+}
+
+/* Privacy band */
+
+.band { background: var(--color-deep); color: var(--color-on-deep); scroll-margin-top: 0; }
+.band :focus-visible { outline-color: var(--color-accent); }
+
+.band-inner {
+  padding-top: var(--space-28);
+  padding-bottom: var(--space-28);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.band-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.band-title {
+  max-width: 14ch;
+  font-size: clamp(36px, 4.8vw, 64px);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.band-lede { max-width: 38ch; font-size: 18px; line-height: 1.55; color: var(--color-on-deep-muted); }
+
+.points {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-10) 0 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: var(--space-10);
+  border-top: 1px solid var(--color-deep-rule);
+}
+.points li { display: flex; flex-direction: column; gap: var(--space-3); }
+.point-number { font-family: var(--display); font-size: 15px; font-weight: var(--font-weight-bold); color: var(--color-accent); }
+.points h3 { font-family: var(--font-text); font-size: 21px; font-weight: var(--font-weight-semibold); }
+.points p { font-size: 16px; line-height: 1.55; color: var(--color-on-deep-muted); }
+
+/* How it grows */
+
+.grows {
+  padding-top: var(--space-30);
+  padding-bottom: var(--space-30);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-14);
+}
+
+.section-head { display: flex; flex-direction: column; gap: var(--space-4); max-width: 640px; }
+.section-title { font-size: clamp(34px, 4.2vw, 56px); line-height: 1.04; letter-spacing: -0.03em; }
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-6);
+}
+
+.card {
+  border-radius: var(--radius-md);
+  padding: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.card--solid { background: var(--color-surface); box-shadow: 0 1px 0 var(--color-border); color: var(--color-ink); }
+.card--planned { border: 1.5px dashed var(--color-border-dashed); }
+.card--planned .door { color: var(--color-ink-subtle); }
+.card h3 { font-size: 26px; letter-spacing: -0.02em; color: var(--color-ink); }
+.card p { font-size: 16px; line-height: 1.55; color: var(--color-ink-muted); }
+
+.door-knob { fill: currentColor; }
+.door-leaf { fill: var(--color-background); }
+
+.badge {
+  align-self: flex-start;
+  font-size: 13px;
+  font-weight: var(--font-weight-semibold);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+.badge--launch { background: var(--color-sage-tint); color: var(--color-on-sage-tint); }
+.badge--planned { background: var(--color-surface-sunken); color: var(--color-ink-muted); }
+
+/* Closing card */
+
+.closing-wrap { padding-bottom: var(--space-30); }
+
+.closing {
+  background: var(--color-surface-sunken);
+  border-radius: var(--radius-lg);
+  padding: clamp(var(--space-10), 6vw, var(--space-22));
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.closing-title { max-width: 16ch; font-size: clamp(32px, 4vw, 52px); line-height: 1.04; letter-spacing: -0.03em; }
+
+/* Footer */
+
+.site-footer { border-top: 1px solid var(--color-border); }
+
+.site-footer-inner {
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-12);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: var(--color-ink-subtle);
+}
+
+.site-footer-links { display: flex; gap: var(--space-6); align-items: center; }
+
+/* Text pages: privacy, support, 404 */
+
+.page {
+  max-width: calc(var(--prose-width) + 2 * var(--space-6));
+  padding-top: var(--space-12);
+  padding-bottom: var(--space-28);
+}
+
+.page h1 {
+  font-size: clamp(40px, 5.6vw, 72px);
+  line-height: 1;
+  letter-spacing: -0.035em;
+  margin-bottom: var(--space-6);
+}
+
+.page h2 {
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  margin-top: var(--space-12);
+  margin-bottom: var(--space-3);
+}
+
+.page p, .page li {
+  font-size: 17px;
+  line-height: 1.6;
+  color: var(--color-ink-muted);
+}
+.page p + p, .page ul, .page ol { margin-top: var(--space-4); }
+.page ul, .page ol { padding-left: var(--space-5); margin-bottom: 0; }
+.page li + li { margin-top: var(--space-2); }
+.page strong { color: var(--color-ink); font-weight: var(--font-weight-semibold); }
+.page em:first-child:last-child { font-style: normal; font-size: 15px; color: var(--color-ink-subtle); }
+
+.page .eyebrow { margin-bottom: var(--space-4); }
+.page .lede { margin-bottom: var(--space-8); }

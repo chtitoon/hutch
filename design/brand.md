@@ -1,6 +1,6 @@
 # Brand
 
-Status: direction chosen, final logo not yet drawn (Oct 2026).
+Status: logo direction chosen, final logo not yet drawn; palette proposed in D15 (Oct 2026).
 
 ## Values the brand expresses
 
@@ -15,16 +15,22 @@ Status: direction chosen, final logo not yet drawn (Oct 2026).
 - **One** hidden detail in the whole word: in the first "h," a thin wedge-shaped cut separates the stem from the arch, hairline at the baseline and slightly wider at the top, so the arch and right leg read as a door swinging open from its frame.
 - **Carved, never added.** The symbol is negative space only. No extra shapes, overlays or second color. Test: it must be visible in plain black on white.
 - The letter must still read as an ordinary "h"; the door is a discovery, not a decoration.
-- **App icon:** the carved "h" alone, white on fresh green, with a wider cut than the wordmark so it survives at home-screen size.
+- **App icon:** the carved "h" alone, light on forest (`color.deep`), with a wider cut than the wordmark so it survives at home-screen size. (Was white on fresh green before D15; not yet redrawn.)
+- **Interim mark:** until the final logo exists (#9), the website uses a simple line-drawn house glyph beside the wordmark. It is a placeholder, not the logo.
 
-## Color (proposed)
+## Color (proposed, D15)
 
-Fresh green accent, near-black ink, near-white background. Values live in [tokens.json](tokens.json). Use the accent sparingly in the interface and boldly in the icon. Alternatives considered: saffron `#FFB627`, ultramarine `#3D3BFF`.
+Forest, warm grey and brass. Near-black green ink on a warm off-white, a deep forest for bold bands, a muted sage for small labels, and brass as the one warm accent. Values and roles live in [tokens.json](tokens.json); how the website applies them is in [apps/web/DESIGN.md](../apps/web/DESIGN.md).
+
+- **Brass (`color.accent`) is a marker, not a text color.** Use it for dots, numerals on forest and small fills; never as text on a light surface, where it fails contrast.
+- **Sage (`color.sage`)** carries small labels, link hover and the focus ring.
+
+This replaced the earlier fresh-green palette (D15). Alternatives considered then: saffron `#FFB627`, ultramarine `#3D3BFF`.
 
 ## What was tried and rejected, and why
 
-1. **Furniture pictures** (a drawn hutch, wardrobe, cabinet): too literal; looked like clip art. The metaphor explains the brand; it shouldn't be drawn.
-2. **Earth-tone palettes** (walnut, oak, olive, brass, terracotta): read as depressing and dated.
+1. **Furniture pictures** (a drawn hutch, wardrobe, cabinet): too literal; looked like clip art. The metaphor explains the brand; it shouldn't be drawn **as the logo**. Simple line drawings of a door (closed, ajar, open) are allowed on the website as illustrations of the private → lend → sell stages (D15).
+2. **Earth-tone palettes** (walnut, oak, olive, brass, terracotta): read as depressing and dated. **Superseded by D15:** a restrained forest, warm-grey and brass palette, kept light and airy, replaced fresh green. What failed before was heavy, rustic wood tones, not every warm color.
 3. **Colored accent pieces beside or on top of letters:** the symbol vanished in black and white, proving it was decoration, not design.
 4. **Cuts in several letters:** turned into a stencil typeface rather than one hidden symbol.
 5. **Uniform straight cuts:** read as seams or rendering errors; the cut needs a taper to read as a door ajar.

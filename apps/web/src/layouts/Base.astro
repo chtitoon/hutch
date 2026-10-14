@@ -1,0 +1,57 @@
+---
+// Self-hosted fonts (D15): bundled into dist/, so no request leaves myhutch.app.
+import '@fontsource-variable/bricolage-grotesque/opsz.css';
+import '@fontsource/instrument-sans/400.css';
+import '@fontsource/instrument-sans/500.css';
+import '@fontsource/instrument-sans/600.css';
+import '../styles/tokens.css';
+import '../styles/site.css';
+import HouseGlyph from '../components/HouseGlyph.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description = 'Know what you own and where it lives. Hutch is a home inventory for iPhone, encrypted on your device so no one else can see it.' } = Astro.props;
+const pageTitle = title ? `${title} · Hutch` : 'Hutch · Your things, privately kept';
+// build.format 'file' makes pathnames like /privacy.html; Pages serves them at /privacy.
+const canonicalPath = Astro.url.pathname.replace(/(index)?\.html$/, '');
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={new URL(canonicalPath, Astro.site)} />
+  </head>
+  <body>
+    <header class="site-header container">
+      <a class="brand" href="/" aria-label="Hutch home">
+        <HouseGlyph />
+        <span class="wordmark">hutch</span>
+      </a>
+      <nav class="site-nav" aria-label="Main">
+        <a href="/#privacy">How privacy works</a>
+        <a href="/support">Support</a>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="container site-footer-inner">
+        <nav class="site-footer-links" aria-label="Footer">
+          <span class="wordmark wordmark--small">hutch</span>
+          <a href="/privacy">Privacy</a>
+          <a href="/support">Support</a>
+        </nav>
+        <p>No analytics. No trackers. No cookies.</p>
+      </div>
+    </footer>
+  </body>
+</html>

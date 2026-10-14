@@ -1,0 +1,40 @@
+---
+// Illustration of the app's inventory screen. Swatch tints are token classes, not item photos.
+const items = [
+  { name: 'Extension ladder', where: 'Back wall · hooks', tint: 'sunken' },
+  { name: 'Folding table', where: 'Behind the car', tint: 'sage' },
+  { name: '4-person tent', where: 'Shelf 2 · blue bin', tint: 'border' },
+  { name: 'Cordless drill', where: 'Workbench drawer', tint: 'background' },
+  { name: 'Snow shovel', where: 'By the side door', tint: 'sunken' },
+];
+---
+
+<div class="phone">
+  <div class="phone-frame" role="img" aria-label="Hutch app showing a garage inventory: ladder, folding table, tent, drill and snow shovel, each with where it's kept">
+    <div class="phone-screen">
+      <div class="phone-title">
+        <span class="phone-room">Garage</span>
+        <span class="phone-count">24 things</span>
+      </div>
+      <div class="phone-search">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="6" cy="6" r="4.5" /><path d="m9.5 9.5 3 3" /></svg>
+        Where’s the…
+      </div>
+      <ul class="phone-list">
+        {items.map((item) => (
+          <li>
+            <span class={`phone-thumb phone-thumb--${item.tint}`}></span>
+            <span class="phone-item">
+              <span class="phone-name">{item.name}</span>
+              <span class="phone-where">{item.where}</span>
+            </span>
+          </li>
+        ))}
+      </ul>
+      <div class="phone-lock">
+        <svg width="12" height="14" viewBox="0 0 12 14" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="1" y="6" width="10" height="7" rx="1.5" /><path d="M3.5 6V4a2.5 2.5 0 0 1 5 0v2" /></svg>
+        Encrypted on this iPhone
+      </div>
+    </div>
+  </div>
+</div>
