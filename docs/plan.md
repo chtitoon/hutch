@@ -56,7 +56,7 @@ Payments between neighbors (Venmo/Zelle is fine), public marketplace, an Android
 
 ## Before M0 (Antoine)
 
-- Turn on the Mac, open the Claude desktop app, and link the session to it; the project lives in `~/Projects/hutch`.
+- Clone the repo on the Mac: `git clone https://github.com/chtitoon/hutch ~/Projects/hutch`, and run the coding agent from that folder.
 - Confirm Xcode is installed (and Homebrew, for `brew install xcodegen`).
 - Create the empty private repo `chtitoon/hutch` for backup and history.
 - Join the Apple Developer Program ($99/year) before T1; App Store Connect API keys go into GitHub secrets for TestFlight uploads.
