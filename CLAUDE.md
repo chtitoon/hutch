@@ -1,6 +1,6 @@
 # Working on Hutch
 
-Read `docs/PLAN.md` and `docs/DECISIONS.md` at the start of every session. The plan says what's next; decisions say what's settled and why. Before proposing any product change (new features, sharing, monetization), also read `docs/CONTEXT.md`: it explains what was researched and why some obvious-looking features are deliberately absent.
+Read `docs/PLAN.md` and `docs/DECISIONS.md` at the start of every session. The plan says what's next; decisions say what's settled and why. Before proposing any product change (new features, sharing, monetization), also read `docs/CONTEXT.md`: it explains what was researched and why some obvious-looking features are deliberately absent. For any visual or UI design work, read `docs/BRAND.md`.
 
 This repo is the project's only memory. When a conversation produces a decision, a changed plan or a new finding, write it into these docs in the same PR; anything left only in a chat is lost.
 
