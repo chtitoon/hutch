@@ -6,13 +6,13 @@ description: How Hutch handles your data. In short, it can't read it.
 
 # Privacy policy
 
-_Last updated October 13, 2026_
+_Last updated October 15, 2026_
 
 Hutch is built so that we can’t see what you own. This page explains what that means for the app and for this website.
 
 ## The short version
 
-- What you put in Hutch stays private. It is encrypted on your iPhone with keys that never leave your device.
+- What you put in Hutch stays private. It is encrypted on your iPhone with keys only you hold. We never have them.
 - We don’t collect analytics, show ads or use trackers, in the app or on this site.
 - We don’t sell or share data, because we don’t have readable data to sell or share.
 
