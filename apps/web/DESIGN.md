@@ -32,7 +32,7 @@ Values live in [`design/tokens.json`](../../design/tokens.json) and nowhere else
 | Header | `background` | House glyph (interim mark, #9) + wordmark; nav links in `ink`, hover `sage` |
 | Hero | `background` | `sage` eyebrow, display headline, `ink-muted` lede, status pill, phone mockup |
 | Privacy band (`#privacy`) | `deep` | Title `on-deep`, body `on-deep-muted`, `deep-rule` divider, `accent` numerals |
-| How it grows | `background` | Launch card: `surface`, solid, `border` shadow. Planned cards: no fill, dashed `border-dashed` |
+| Where we’re heading | `background` | Launch card: `surface`, solid, `border` shadow. Planned cards: no fill, dashed `border-dashed` |
 | Closing card | `surface-sunken`, `radius-lg` | Headline + status pill |
 | Footer | `background`, `border` top rule | `ink-subtle` text, `ink` links |
 

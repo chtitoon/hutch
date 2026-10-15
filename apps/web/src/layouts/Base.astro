@@ -13,7 +13,7 @@ interface Props {
   description?: string;
 }
 
-const { title, description = 'Know what you own and where it lives. Hutch is a home inventory for iPhone, encrypted on your device so no one else can see it.' } = Astro.props;
+const { title, description = 'Remember what you own and where it lives. Hutch is a home inventory for iPhone, encrypted on your device so no one else can see it.' } = Astro.props;
 const pageTitle = title ? `${title} · Hutch` : 'Hutch · Your things, privately kept';
 // build.format 'file' makes pathnames like /privacy.html; Pages serves them at /privacy.
 const canonicalPath = Astro.url.pathname.replace(/(index)?\.html$/, '');
