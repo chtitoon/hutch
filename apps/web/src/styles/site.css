@@ -292,7 +292,7 @@ a:hover { color: var(--color-sage); }
 .points h3 { font-family: var(--font-text); font-size: 21px; font-weight: var(--font-weight-semibold); }
 .points p { font-size: 16px; line-height: 1.55; color: var(--color-on-deep-muted); }
 
-/* How it grows */
+/* Where we’re heading */
 
 .grows {
   padding-top: var(--space-30);

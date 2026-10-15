@@ -5,7 +5,7 @@ Status: logo direction chosen, final logo not yet drawn; palette proposed in D15
 ## Values the brand expresses
 
 - **Privacy by default.** Nothing is visible to anyone unless you choose.
-- **Generosity by choice.** You open a small door for the neighbors you trust.
+- **Generosity by choice.** You open a small door for the people you trust.
 - **Calm confidence.** Feels like home, never like a vault or a security product.
 - **Modern optimism.** Fresh, bright and light; never rustic, nostalgic or heavy.
 
