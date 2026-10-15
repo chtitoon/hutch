@@ -1,0 +1,29 @@
+---
+// Small icon beside each "Where we’re heading" badge: what the item does at that stage, not the hutch metaphor
+// (the headings and the logo already carry the doors). Mirrors SF Symbols house, person.2 and tag in the app.
+interface Props {
+  stage: 'private' | 'lend' | 'sell';
+}
+
+const { stage } = Astro.props;
+---
+
+<svg class="stage-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+  {stage === 'private' && (
+    <path d="M4 10.5 12 4l8 6.5v9A1.5 1.5 0 0 1 18.5 21h-13A1.5 1.5 0 0 1 4 19.5z" />
+  )}
+  {stage === 'lend' && (
+    <>
+      <circle cx="9" cy="8" r="3" />
+      <path d="M3.5 20v-1a5.5 5.5 0 0 1 11 0v1" />
+      <circle cx="16.5" cy="9" r="2.5" />
+      <path d="M16.5 14a4 4 0 0 1 4 4v2" />
+    </>
+  )}
+  {stage === 'sell' && (
+    <>
+      <path d="M3 4.5A1.5 1.5 0 0 1 4.5 3H11l10 10-8 8L3 11z" />
+      <circle class="stage-icon-fill" cx="7.5" cy="7.5" r="1.25" />
+    </>
+  )}
+</svg>

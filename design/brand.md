@@ -29,7 +29,7 @@ This replaced the earlier fresh-green palette (D15). Alternatives considered the
 
 ## What was tried and rejected, and why
 
-1. **Furniture pictures** (a drawn hutch, wardrobe, cabinet): too literal; looked like clip art. The metaphor explains the brand; it shouldn't be drawn **as the logo**. Simple line drawings of a door (closed, ajar, open) are allowed on the website as illustrations of the private → lend → sell stages (D15).
+1. **Furniture pictures** (a drawn hutch, wardrobe, cabinet): too literal; looked like clip art. The metaphor explains the brand; it shouldn't be drawn **as the logo**. Door drawings for the private → lend → sell stages were tried on the website and dropped (D15): with the door already in the copy and the logo, a third door read as heavy-handed. Stage icons show the action instead (house, people, tag).
 2. **Earth-tone palettes** (walnut, oak, olive, brass, terracotta): read as depressing and dated. **Superseded by D15:** a restrained forest, warm-grey and brass palette, kept light and airy, replaced fresh green. What failed before was heavy, rustic wood tones, not every warm color.
 3. **Colored accent pieces beside or on top of letters:** the symbol vanished in black and white, proving it was decoration, not design.
 4. **Cuts in several letters:** turned into a stencil typeface rather than one hidden symbol.

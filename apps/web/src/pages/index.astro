@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import AppStoreLink from '../components/AppStoreLink.astro';
 import PhoneMockup from '../components/PhoneMockup.astro';
-import Door from '../components/Door.astro';
+import StageIcon from '../components/StageIcon.astro';
 
 const points = [
   { title: 'Encrypted on your iPhone', body: 'Items, photos, notes and locations are encrypted the moment you add them, before they’re stored or synced.' },
@@ -11,9 +11,9 @@ const points = [
 ];
 
 const stages = [
-  { door: 'closed', badge: 'At launch', title: 'Behind closed doors', body: 'Snap it, name it, say where it lives. Everything you add is private by default.' },
-  { door: 'ajar', badge: 'Planned', title: 'A few things on the shelf', body: 'Choose what to lend to people you trust: the ladder, the tent, the pasta maker…' },
-  { door: 'out', badge: 'Planned', title: 'Out the door', body: 'When it’s time, sell what you no longer need straight from your inventory.' },
+  { icon: 'private', badge: 'At launch', title: 'Behind closed doors', body: 'Snap it, name it, say where it lives. Everything you add is private by default.' },
+  { icon: 'lend', badge: 'Planned', title: 'A few things on the shelf', body: 'Choose what to lend to people you trust: the ladder, the tent, the pasta maker…' },
+  { icon: 'sell', badge: 'Planned', title: 'Out the door', body: 'When it’s time, sell what you no longer need straight from your inventory.' },
 ] as const;
 ---
 
@@ -59,8 +59,10 @@ const stages = [
     <div class="cards">
       {stages.map((stage) => (
         <article class:list={['card', stage.badge === 'At launch' ? 'card--solid' : 'card--planned']}>
-          <Door state={stage.door} />
-          <span class:list={['badge', stage.badge === 'At launch' ? 'badge--launch' : 'badge--planned']}>{stage.badge}</span>
+          <div class="card-meta">
+            <StageIcon stage={stage.icon} />
+            <span class:list={['badge', stage.badge === 'At launch' ? 'badge--launch' : 'badge--planned']}>{stage.badge}</span>
+          </div>
           <h3>{stage.title}</h3>
           <p>{stage.body}</p>
         </article>

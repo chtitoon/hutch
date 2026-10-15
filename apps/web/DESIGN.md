@@ -44,5 +44,5 @@ Text pages (privacy, support, 404) use the same header and footer, a narrow colu
 |-----------|-----------|
 | `AppStoreLink.astro` | The status pill (`ink` fill, `background` text, `accent` dot). Becomes the App Store link once Hutch is listed. |
 | `PhoneMockup.astro` | The inventory screen illustration. The screen is `surface`, the search field `background`, and item swatches cycle through `surface-sunken`, `sage-tint`, `border` and `background`. |
-| `Door.astro` | Line-drawn door: `closed` (in `ink`), `ajar` and `out` (in `ink-subtle` on planned cards). Draws in `currentColor`. |
+| `StageIcon.astro` | 22px line icon beside each roadmap badge: `private` (house), `lend` (two people), `sell` (tag), matching the SF Symbols the app will use. `ink-muted` on the launch card, `ink-subtle` on planned cards. Draws in `currentColor`. |
 | `HouseGlyph.astro` | Interim mark beside the wordmark, in `currentColor`. Replaced by the final logo (#9). |
