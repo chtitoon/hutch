@@ -321,13 +321,12 @@ a:hover { color: var(--color-sage); }
 .card--solid { background: var(--color-surface); box-shadow: 0 1px 0 var(--color-border); color: var(--color-ink); }
 .card--planned { border: 1.5px dashed var(--color-border-dashed); }
 .card-meta { display: flex; align-items: center; gap: var(--space-3); }
-.door { flex: none; color: var(--color-ink-muted); }
-.card--planned .door { color: var(--color-ink-subtle); }
+.stage-icon { flex: none; color: var(--color-ink-muted); }
+.card--planned .stage-icon { color: var(--color-ink-subtle); }
 .card h3 { font-size: 26px; letter-spacing: -0.02em; color: var(--color-ink); }
 .card p { font-size: 16px; line-height: 1.55; color: var(--color-ink-muted); }
 
-.door-knob { fill: currentColor; }
-.door-leaf { fill: var(--color-background); }
+.stage-icon-fill { fill: currentColor; }
 
 .badge {
   font-size: 13px;
