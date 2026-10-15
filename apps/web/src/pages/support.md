@@ -16,7 +16,7 @@ It helps to include your iPhone model, your iOS version and the Hutch version (i
 Not yet. It’s being built one step at a time, starting with your private inventory.
 
 **Can you see what I’ve added?**
-No. Your inventory is encrypted on your iPhone, and the keys never leave it. See the [privacy policy](/privacy).
+No. Your inventory is encrypted on your iPhone with keys only you hold, so we can’t read it. See the [privacy policy](/privacy).
 
 **I lost my phone. Can you recover my data?**
 We can’t, because we never have your keys. Your recovery key can. Keep it somewhere safe, away from your phone.
