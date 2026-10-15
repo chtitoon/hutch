@@ -1,0 +1,96 @@
+<!doctype html>
+<!-- The link-preview card for myhutch.app (1200×630), rendered to public/og.png by `npm run og`.
+     Colors and fonts come from the same tokens and self-hosted fonts as the site. See DESIGN.md. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="../node_modules/@fontsource-variable/bricolage-grotesque/opsz.css">
+<link rel="stylesheet" href="../node_modules/@fontsource/instrument-sans/500.css">
+<link rel="stylesheet" href="../node_modules/@fontsource/instrument-sans/600.css">
+<link rel="stylesheet" href="../src/styles/tokens.css">
+<style>
+  :root { --display: "Bricolage Grotesque Variable", var(--font-display); }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    position: relative;
+    background: var(--color-deep);
+    color: var(--color-on-deep);
+    font-family: var(--font-text);
+  }
+
+  /* Light from a door left ajar: the logo's tapered cut, hairline at the floor, wider at the top. */
+  .glow {
+    position: absolute; inset: 0;
+    background: radial-gradient(420px 360px at 900px 300px, color-mix(in srgb, var(--color-accent) 20%, transparent), transparent 70%);
+  }
+  .halo { position: absolute; inset: 0; filter: blur(22px); opacity: 0.6; }
+  .gap, .halo i, .spill i { position: absolute; display: block; }
+  .gap, .halo i { clip-path: polygon(0 0, 100% 0, 52% 100%, 48% 100%); }
+  .gap {
+    left: 880px; top: 64px; width: 32px; height: 472px;
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--color-accent) 70%, var(--color-on-deep)), var(--color-accent));
+  }
+  .halo i { left: 860px; top: 54px; width: 72px; height: 482px; background: var(--color-accent); }
+  /* The light falling across the floor toward you, spreading the way the door swings. */
+  .spill { position: absolute; inset: 0; filter: blur(3px); }
+  .spill i {
+    left: 560px; top: 536px; width: 640px; height: 94px;
+    clip-path: polygon(50.3% 0, 50.6% 0, 100% 100%, 12% 100%);
+    background: linear-gradient(to bottom, color-mix(in srgb, var(--color-accent) 50%, transparent), color-mix(in srgb, var(--color-accent) 6%, transparent));
+  }
+  .floor {
+    position: absolute; left: 0; right: 0; top: 536px;
+    height: 1px; background: var(--color-deep-rule);
+  }
+
+  .copy { position: absolute; left: 80px; top: 72px; width: 660px; }
+  .brand { display: flex; align-items: center; gap: var(--space-3); }
+  .brand svg { width: 40px; height: 40px; }
+  .wordmark { font-family: var(--display); font-weight: var(--font-weight-bold); font-size: 40px; letter-spacing: -0.03em; line-height: 1; }
+  h1 {
+    margin-top: 96px;
+    font-family: var(--display);
+    font-weight: var(--font-weight-bold);
+    font-size: 92px;
+    line-height: 0.96;
+    letter-spacing: -0.035em;
+  }
+  .lede {
+    margin-top: var(--space-7);
+    max-width: 30ch;
+    color: var(--color-on-deep-muted);
+    font-size: 27px;
+    font-weight: var(--font-weight-medium);
+    line-height: 1.35;
+  }
+  .foot {
+    position: absolute; left: 80px; top: 560px;
+    display: flex; align-items: center; gap: var(--space-3);
+    color: var(--color-on-deep-muted);
+    font-size: 22px; font-weight: var(--font-weight-semibold);
+  }
+  .foot::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--color-accent); }
+</style>
+</head>
+<body>
+  <div class="glow"></div>
+  <div class="floor"></div>
+  <div class="spill"><i></i></div>
+  <div class="halo"><i></i></div>
+  <div class="gap"></div>
+
+  <div class="copy">
+    <div class="brand">
+      <!-- Interim mark (HouseGlyph.astro) until the final logo, #9. -->
+      <svg viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 11 14 4l10 7v13H4z" /><path d="M14 11v13M9 16h1M18 16h1" />
+      </svg>
+      <span class="wordmark">hutch</span>
+    </div>
+    <h1>Your things, privately kept.</h1>
+    <p class="lede">A home inventory for iPhone, encrypted so only you can see it.</p>
+  </div>
+  <p class="foot">myhutch.app</p>
+</body>
+</html>

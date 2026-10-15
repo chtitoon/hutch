@@ -46,3 +46,11 @@ Text pages (privacy, support, 404) use the same header and footer, a narrow colu
 | `PhoneMockup.astro` | The inventory screen illustration. The screen is `surface`, the search field `background`, and item swatches cycle through `surface-sunken`, `sage-tint`, `border` and `background`. |
 | `StageIcon.astro` | 22px line icon beside each roadmap badge: `private` (house), `lend` (two people), `sell` (tag), matching the SF Symbols the app will use. `ink-muted` on the launch card, `ink-subtle` on planned cards. Draws in `currentColor`. |
 | `HouseGlyph.astro` | Interim mark beside the wordmark, in `currentColor`. Replaced by the final logo (#9). |
+
+## Link preview
+
+When someone shares a myhutch.app link, apps show `public/og.png` (1200×630), set through the Open Graph tags in `Base.astro`. The card is a real page, [`og/card.html`](og/card.html), using the same tokens and self-hosted fonts as the site, so it can't drift from the brand.
+
+- **Forest** (`deep`) background, headline and wordmark in `on-deep`, the line below in `on-deep-muted`.
+- **The light:** a tall `accent` sliver, hairline at the floor and wider at the top, with a soft glow and a spill of light across the floor. It is the logo's hidden detail (the tapered cut of a door left ajar) at full size, shown as light rather than drawn as a door: home, private, and warm inside.
+- `npm run og` re-renders the PNG in headless Chromium. `npm test` fails if the card, the tokens or the fonts changed since the last render (`og/card.sha256`), so a token change can't leave a stale image.

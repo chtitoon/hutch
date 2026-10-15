@@ -122,3 +122,12 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 **Why:** the design reads calmer and more "home" than the bright green, which fits the "feels like home, never like a vault" value better.
 
 **Consequences:** the iOS app (generated colors in M0) and the app icon inherit these tokens. The icon description in brand.md is updated to forest but not yet redrawn. Brass fails contrast as text on light surfaces; it's limited to fills and markers. There are no dark-mode tokens yet, so the website renders light only (`color-scheme: light`) rather than inventing colors; the iOS app needs dark roles before M1.
+
+## D16 — Link preview: the door's light, rendered from the site's own tokens
+**Status:** Proposed (Oct 2026).
+
+**What:** sharing myhutch.app shows a 1200×630 card (`apps/web/public/og.png`): forest background, "Your things, privately kept.", and a tall brass sliver of light (the logo's tapered cut, hairline at the floor) spilling onto the floor. The card is an HTML page (`apps/web/og/card.html`) on the site's tokens and fonts, rendered by `npm run og` in headless Chromium via a pinned `playwright-core` dev dependency. The PNG is committed; `npm test` fails if the card, tokens or fonts changed since it was rendered.
+
+**Why:** the site had no Open Graph tags, so shared links showed a bare URL. Light through a door ajar carries the brand's feeling (home, private, open when you choose) without drawing a door, which D15 found heavy-handed. Rendering in a real browser keeps the variable display font exactly as on the site; the usual Node image generators can't read its woff2 files. Rendering only on demand keeps the Cloudflare build browser-free.
+
+**Consequences:** changing a token or the card means running `npm run og` once, on a machine with a Playwright browser (`npx playwright-core install chromium`). When the final logo lands (#9), the card's interim house glyph is swapped for it.
