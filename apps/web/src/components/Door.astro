@@ -1,5 +1,6 @@
 ---
-// Line drawings of a door for the "Where we’re heading" cards: closed, ajar (lend), open with an arrow (sell).
+// Small door glyph beside each "Where we’re heading" badge: closed, ajar (lend), an arrow out (sell).
+// Kept at icon size so the metaphor is a hint, not the picture.
 interface Props {
   state: 'closed' | 'ajar' | 'out';
 }
@@ -7,25 +8,23 @@ interface Props {
 const { state } = Astro.props;
 ---
 
-<svg class="door" width="56" height="72" viewBox="0 0 56 72" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true">
-  <rect x="4" y="4" width="48" height="64" rx="3" />
+<svg class="door" width="20" height="24" viewBox="0 0 20 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
   {state === 'closed' && (
     <>
-      <rect x="10" y="10" width="36" height="58" />
-      <circle class="door-knob" cx="39" cy="40" r="2" />
+      <rect x="3" y="2" width="14" height="20" rx="1.5" />
+      <circle class="door-knob" cx="13.5" cy="12.5" r="1" />
     </>
   )}
   {state === 'ajar' && (
     <>
-      <path d="M10 10h36v58H10z" stroke-dasharray="3 4" />
-      <path class="door-leaf" d="M10 10l20 6v58l-20-6z" />
-      <path d="M40 30h4M40 40h4M40 50h4" />
+      <rect x="3" y="2" width="14" height="20" rx="1.5" />
+      <path class="door-leaf" d="M3 2l7 2.5v15L3 22z" />
     </>
   )}
   {state === 'out' && (
     <>
-      <path d="M10 10l-6 4v52l6 2z" />
-      <path d="M22 39h20M35 32l7 7-7 7" />
+      <path d="M12 7V3.5A1.5 1.5 0 0 0 10.5 2h-7A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h7a1.5 1.5 0 0 0 1.5-1.5V17" />
+      <path d="M7 12h11M14.5 8.5L18 12l-3.5 3.5" />
     </>
   )}
 </svg>

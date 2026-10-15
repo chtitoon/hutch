@@ -117,7 +117,7 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 - `design/tokens.json` now comes from the landing-page design: near-black green ink on warm off-white, a deep forest band color, sage for small labels and focus, and brass as the single warm accent. The token file also gains roles (muted and subtle ink, surfaces, borders, on-deep colors), two fonts (Bricolage Grotesque for display, Instrument Sans for text), weights, radii and a 4px spacing scale.
 - **Supersedes** the fresh-green palette and brand.md's blanket rejection of earth tones: what failed before was heavy, rustic wood tones, not a light palette with one brass accent.
 - **Amends D14:** the website now uses web fonts, self-hosted through pinned `@fontsource` packages and bundled into the build, so no request leaves myhutch.app and "no trackers" stays true.
-- On the website, simple line-drawn doors illustrate the private → lend → sell stages, and a house glyph stands in for the logo until #9.
+- On the website, small line-drawn door icons, set beside each roadmap badge, mark the private → lend → sell stages, and a house glyph stands in for the logo until #9.
 
 **Why:** the design reads calmer and more "home" than the bright green, which fits the "feels like home, never like a vault" value better.
 

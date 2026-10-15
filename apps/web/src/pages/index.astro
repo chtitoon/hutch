@@ -59,8 +59,10 @@ const stages = [
     <div class="cards">
       {stages.map((stage) => (
         <article class:list={['card', stage.badge === 'At launch' ? 'card--solid' : 'card--planned']}>
-          <Door state={stage.door} />
-          <span class:list={['badge', stage.badge === 'At launch' ? 'badge--launch' : 'badge--planned']}>{stage.badge}</span>
+          <div class="card-meta">
+            <Door state={stage.door} />
+            <span class:list={['badge', stage.badge === 'At launch' ? 'badge--launch' : 'badge--planned']}>{stage.badge}</span>
+          </div>
           <h3>{stage.title}</h3>
           <p>{stage.body}</p>
         </article>
