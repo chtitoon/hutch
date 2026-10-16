@@ -8,7 +8,7 @@ Values live in [`design/tokens.json`](../../design/tokens.json) and nowhere else
 - **Spacing from the scale.** Layout gaps and padding use `--space-*` (the name is the multiple of 4px). Small component internals (badge padding, list-row padding) and device geometry (the phone's corner radii) are local to the component.
 - **Corners:** `radius-sm` for inputs and thumbnails, `radius-md` for cards, `radius-lg` for large panels, `radius-pill` for pills and badges.
 - **Fonts:** `font-display` for headings, the wordmark and numerals (weights `bold`, `medium`); `font-text` for everything else (`regular`, `medium`, `semibold`). Both are self-hosted from `@fontsource` packages imported in `Base.astro`. Never link a font CDN.
-- **Light only, for now.** There are no dark-mode tokens, so pages declare `color-scheme: light` and render the same in dark mode. Add dark roles to `tokens.json` before styling dark mode; don't invert colors ad hoc.
+- **Light and dark follow the system.** The `color-dark` group in `tokens.json` gives dark values for the color roles; `npm run tokens` emits them under `prefers-color-scheme: dark`, and pages declare `color-scheme: light dark`. Roles it leaves out (`deep`, `on-deep*`, `deep-rule`, `accent`) are the same in both modes. To change a dark color, edit its token; never invert colors ad hoc or add per-component dark rules.
 
 ## Contrast
 
@@ -29,7 +29,7 @@ Values live in [`design/tokens.json`](../../design/tokens.json) and nowhere else
 
 | Section | Background | Notes |
 |---------|-----------|-------|
-| Header | `background` | House glyph (interim mark, #9) + wordmark; nav links in `ink`, hover `sage` |
+| Header | `background` | The logo (mark in `sage`, wordmark in `ink`); nav links in `ink`, hover `sage` |
 | Hero | `background` | `sage` eyebrow, display headline, `ink-muted` lede, status pill, phone mockup |
 | Privacy band (`#privacy`) | `deep` | Title `on-deep`, body `on-deep-muted`, `deep-rule` divider, `accent` numerals |
 | Where we’re heading | `background` | Launch card: `surface`, solid, `border` shadow. Planned cards: no fill, dashed `border-dashed` |
@@ -43,9 +43,9 @@ Text pages (privacy, support, 404) use the same header and footer, a narrow colu
 | Component | What it is |
 |-----------|-----------|
 | `AppStoreLink.astro` | The status pill (`ink` fill, `background` text, `accent` dot). Becomes the App Store link once Hutch is listed. |
-| `PhoneMockup.astro` | The inventory screen illustration. The screen is `surface`, the search field `background`, and item swatches cycle through `surface-sunken`, `sage-tint`, `border` and `background`. |
+| `PhoneMockup.astro` | The inventory screen illustration. The frame and its shadow are `device` (dark in both modes). The screen is `surface`, the search field `background`, and item swatches cycle through `surface-sunken`, `sage-tint`, `border` and `background`. |
 | `StageIcon.astro` | 22px line icon beside each roadmap badge: `private` (house), `lend` (two people), `sell` (tag), matching the SF Symbols the app will use. `ink-muted` on the launch card, `ink-subtle` on planned cards. Draws in `currentColor`. |
-| `HouseGlyph.astro` | Interim mark beside the wordmark, in `currentColor`. Replaced by the final logo (#9). |
+| `Logo.astro` | The logo as inline SVG, traced from `design/light/logo.svg`: house-with-keyhole mark in `sage`, "hutch" in `ink`, so it follows light and dark mode. |
 
 ## Link preview
 

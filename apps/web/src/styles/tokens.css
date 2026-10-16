@@ -16,6 +16,7 @@
   --color-sage: #3E7A62;
   --color-sage-tint: #E2EDE7;
   --color-on-sage-tint: #2C5A48;
+  --color-device: #1B2420;
   --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
   --font-text: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-weight-regular: 400;
@@ -42,4 +43,21 @@
   --space-24: 96px;
   --space-28: 112px;
   --space-30: 120px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-ink: #EEEDE8;
+    --color-ink-muted: #BAC4BD;
+    --color-ink-subtle: #98A39C;
+    --color-background: #152319;
+    --color-surface: #1D2E24;
+    --color-surface-sunken: #0F1A13;
+    --color-border: #2B3D32;
+    --color-border-dashed: #3C5144;
+    --color-sage: #6AAA86;
+    --color-sage-tint: #24402F;
+    --color-on-sage-tint: #B5DCC6;
+    --color-device: #0A120D;
+  }
 }
