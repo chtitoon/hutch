@@ -54,3 +54,7 @@ When someone shares a myhutch.app link, apps show `public/og.png` (1200×630), s
 - **Forest** (`deep`) background, headline and wordmark in `on-deep`, the line below in `on-deep-muted`.
 - **The light:** a tall `accent` sliver, hairline at the floor and wider at the top, with a soft glow and a spill of light across the floor. It is the logo's hidden detail (the tapered cut of a door left ajar) at full size, shown as light rather than drawn as a door: home, private, and warm inside.
 - `npm run og` re-renders the PNG in headless Chromium. `npm test` fails if the card, the tokens or the fonts changed since the last render (`og/card.sha256`), so a token change can't leave a stale image.
+
+## Favicon
+
+`public/favicon.svg` is the house-and-keyhole mark from [`design/light/icon.svg`](../../design/light/icon.svg), without its background square, in `sage` (the dark `sage` in dark mode). `npm run tokens` generates it with the CSS variables, and `npm test` fails if it is stale.

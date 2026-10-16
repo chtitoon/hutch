@@ -27,6 +27,7 @@ const canonicalPath = Astro.url.pathname.replace(/(index)?\.html$/, '');
     <meta name="color-scheme" content="light dark" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="canonical" href={new URL(canonicalPath, Astro.site)} />
     <!-- Link previews (Messages, WhatsApp, Slack, social). The card is og/card.html, rendered by `npm run og`. -->
     <meta property="og:type" content="website" />
