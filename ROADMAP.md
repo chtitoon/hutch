@@ -168,6 +168,12 @@ Hutch public on the App Store.
 #### W3 — Font swap no longer shifts the layout
 **Status:** done, [PR #35](https://github.com/chtitoon/hutch/pull/35), from closed [PR #38](https://github.com/chtitoon/hutch/pull/38). **Why:** visitors saw `/support` jump when the fonts arrived.
 
+#### W4 — Text never changes once drawn
+**Status:** done, [PR #44](https://github.com/chtitoon/hutch/pull/44). **Why:** W3 kept blocks of text in place, but the swap from Arial to the web fonts still showed: letters changed shape, words shifted and two headings rewrapped, so the page looked like it moved on arrival.
+
+- [x] Fonts are preloaded and `font-display: optional`: used from the first paint when they arrive in time, never swapped in later
+- [x] With fonts delayed 1.5 s, headings keep their positions after first paint (they moved on main); with fonts delayed 30 ms, the headline renders in Bricolage Grotesque
+
 ## Phase 2 — Lend to a trusted circle
 
 **Goal:** the neighbors I trust can see and borrow the few things I put on the shelf.

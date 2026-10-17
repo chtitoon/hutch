@@ -38,7 +38,7 @@ Layout gaps and padding come from `--space-*`. These cases are local to a compon
 
 Both families are self-hosted from pinned `@fontsource` packages and bundled into `dist/`, so no request leaves myhutch.app (D15). Never link a font CDN or a remote stylesheet. The site doesn't import the packages directly: `fonts.mjs` (`npm run fonts`) cuts them down to the characters and weights the site uses and writes `src/fonts/` and `src/styles/fonts.css`, which `Base.astro` imports (see "Fonts" in `PERFORMANCE.md`). Setting either family at another weight means adding that weight in `fonts.mjs`. The display font keeps Fontsource's name, "Bricolage Grotesque Variable", which is why that name leads the display family in DESIGN.md. The link-preview card still uses the full packages.
 
-Each web font is followed by a "Fallback" face, declared in `site.css`: Arial (Liberation Sans on Linux) sized like the web font, so nothing moves when the web fonts arrive (#36). Its `src` is only `local()`, the one kind of `@font-face` that `design:lint:css` allows. Changing a font means recomputing its fallback (see the comment in `site.css`).
+Each web font is followed by a "Fallback" face, declared in `site.css`: Arial (Liberation Sans on Linux) sized like the web font, so a page that misses the web fonts keeps the same layout (#36). The web fonts are `font-display: optional` and preloaded: used if they arrive within about 100 ms, never swapped in after text is drawn (W4). Its `src` is only `local()`, the one kind of `@font-face` that `design:lint:css` allows. Changing a font means recomputing its fallback (see the comment in `site.css`).
 
 ## Sections (landing page)
 

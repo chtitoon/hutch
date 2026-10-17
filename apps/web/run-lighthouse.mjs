@@ -5,7 +5,7 @@
 // run on the PR only.
 // One Chrome for all runs and the performance category only: about 5 s a run instead of 10 with
 // `lhci collect`, with the same results. Lighthouse's default waits stay: shorter ones can stop
-// recording before a late font swap shifts the layout. Lighthouse isn't a dependency, so the
+// recording before a late load shifts the layout (as the font swap did before W4). Lighthouse isn't a dependency, so the
 // Cloudflare build stays lean; the workflow installs it (`npm install --no-save lighthouse@…`).
 import { createServer } from 'node:http';
 import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';

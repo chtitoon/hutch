@@ -4,6 +4,9 @@
 import '../styles/fonts.css';
 import '../styles/tokens.css';
 import '../styles/site.css';
+import bricolage700 from '../fonts/bricolage-grotesque-700.woff2?url';
+import instrument400 from '../fonts/instrument-sans-400.woff2?url';
+import instrument600 from '../fonts/instrument-sans-600.woff2?url';
 import Logo from '../components/Logo.astro';
 
 interface Props {
@@ -25,6 +28,12 @@ const canonicalPath = Astro.url.pathname.replace(/(index)?\.html$/, '');
     <meta name="color-scheme" content="light dark" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
+    <!-- Fonts are font-display: optional, so they're used only if they arrive about 100 ms into the
+         load and text never changes once drawn. Preloading starts them as the HTML arrives, so they
+         usually make it; every page sets text in all three. -->
+    <link rel="preload" href={bricolage700} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={instrument400} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={instrument600} as="font" type="font/woff2" crossorigin />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="canonical" href={new URL(canonicalPath, Astro.site)} />
     <!-- Link previews (Messages, WhatsApp, Slack, social). The card is og/card.html, rendered by `npm run og`. -->
