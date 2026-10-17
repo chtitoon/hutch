@@ -51,6 +51,8 @@ Each web font is followed by a "Fallback" face, declared in `site.css`: Arial (L
 | Closing card | `surface-sunken`, `radius-lg` | `headline-lg` headline + status pill |
 | Footer | `background`, `border` top rule | The wordmark in `headline-sm`, `body-sm` text in `ink-subtle`, `ink` links |
 
+Space between sections scales with the screen width (`clamp()` over `vw`): `spacing.16` on an iPhone, up to `spacing.28` (`spacing.30` around the roadmap and closing card) on a wide screen. Fixed desktop spacing left a phone scrolling through empty bands. The roadmap cards and the closing card belong together, so the gap between them is smaller, at most `spacing.16`.
+
 Text pages (privacy, support, 404) use the same header and footer, a `layout-prose-width` column, `headline-lg` and `headline-md` headings, and `body-md` text in `ink-muted` with `ink` for bold.
 
 ## Components
