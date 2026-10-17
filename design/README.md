@@ -16,4 +16,4 @@ One design system, two apps. The iPhone app and myhutch.app both draw their colo
 
 ## Status
 
-Logo chosen (D17): `light/logo.svg` and `dark/logo.svg`; the app icon is not yet drawn. Palette, type, radius and spacing are proposed in D15, taken from the landing-page design. On the web, see [apps/web/DESIGN.md](../apps/web/DESIGN.md) for how they're applied.
+Logo chosen (D17): `light/logo.svg` and `dark/logo.svg`; the app icon is `light/icon.svg`, the mark alone. Palette, type, radius and spacing are proposed in D15, taken from the landing-page design. On the web, see [apps/web/DESIGN.md](../apps/web/DESIGN.md) for how they're applied.
