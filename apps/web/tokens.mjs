@@ -1,5 +1,6 @@
 // Turns the tokens in DESIGN.md's front matter (the repo root) into CSS custom properties.
-// A color ending in -dark overrides its role under prefers-color-scheme: dark.
+// A color ending in -dark overrides its role under prefers-color-scheme: dark, and a type
+// level ending in -wide overrides its level from the `breakpoint-wide` spacing token up.
 // It also writes public/favicon.svg: the icon's mark from design/light/icon.svg,
 // in sage, switching to the dark sage in dark mode.
 // `node tokens.mjs` writes both files; `--check` fails if either is stale.
@@ -35,18 +36,43 @@ for (const w of weights) {
   if (!weightNames[w]) throw new Error(`font weight ${w} has no name in tokens.mjs`);
 }
 
+// Each type level becomes a \`font\` shorthand plus its letter spacing, which \`font\` doesn't set.
+const levels = Object.entries(tokens.typography);
+const typeLines = (name, t) => [
+  `--type-${name}: ${t.fontWeight} ${t.fontSize}/${t.lineHeight} ${stack(t.fontFamily)};`,
+  `--type-${name}-tracking: ${t.letterSpacing ?? 'normal'};`,
+];
+const wide = levels.filter(([k]) => k.endsWith('-wide')).map(([k, t]) => [k.slice(0, -'-wide'.length), t]);
+for (const [name] of wide) {
+  if (!tokens.typography[name]) throw new Error(`${name}-wide has no base level ${name}`);
+}
+
+// Numbered spacing is the 4px scale; named spacing is layout (widths). Breakpoints can't be
+// custom properties (media queries don't read them), so they're used here, not emitted.
+const spacing = Object.entries(tokens.spacing);
+const breakpoint = tokens.spacing['breakpoint-wide'];
+
 const lines = [
   ...Object.entries(light).map(([k, v]) => `--color-${k}: ${v};`),
   ...Object.entries(fonts).map(([k, v]) => `--font-${k}: ${stack(v)};`),
   ...weights.map((w) => `--font-weight-${weightNames[w]}: ${w};`),
+  ...levels.filter(([k]) => !k.endsWith('-wide')).flatMap(([k, t]) => typeLines(k, t)),
   ...Object.entries(tokens.rounded).map(([k, v]) => `--radius-${k}: ${v};`),
-  ...Object.entries(tokens.spacing).map(([k, v]) => `--space-${k}: ${v};`),
+  ...spacing.filter(([k]) => /^\d+$/.test(k)).map(([k, v]) => `--space-${k}: ${v};`),
+  ...spacing.filter(([k]) => !/^\d+$/.test(k) && !k.startsWith('breakpoint-')).map(([k, v]) => `--layout-${k}: ${v};`),
 ];
+const wideLines = wide.flatMap(([k, t]) => typeLines(k, t));
 const darkLines = Object.entries(dark).map(([k, v]) => `--color-${k}: ${v};`);
 
 const css = `/* Generated from DESIGN.md by \`npm run tokens\`. Do not edit. */
 :root {
 ${lines.map((l) => `  ${l}`).join('\n')}
+}
+
+@media (min-width: ${breakpoint}) {
+  :root {
+${wideLines.map((l) => `    ${l}`).join('\n')}
+  }
 }
 
 @media (prefers-color-scheme: dark) {

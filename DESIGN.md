@@ -59,10 +59,11 @@ colors:
   primary: "{colors.ink}"
 
 typography:
-  # Display family: Bricolage Grotesque, weights 500 and 700, optical sizing on.
+  # Display family: Bricolage Grotesque, weights 500 and 700, optical sizing on. The web
+  # self-hosts the variable font under its own name, listed first; other platforms skip it.
   # Text family: Instrument Sans, weights 400, 500 and 600.
   headline-display:
-    fontFamily: &display Bricolage Grotesque, ui-sans-serif, system-ui, sans-serif
+    fontFamily: &display Bricolage Grotesque Variable, Bricolage Grotesque, ui-sans-serif, system-ui, sans-serif
     fontSize: 48px
     fontWeight: 700
     lineHeight: 0.96
@@ -190,6 +191,10 @@ spacing:
   "24": 96px
   "28": 112px
   "30": 120px
+  # Layout: the page column, the reading column, and where -wide type levels start.
+  page-width: 1200px
+  prose-width: 720px
+  breakpoint-wide: 1024px
 
 # Every text-on-background pair the design uses, so the linter checks its contrast (WCAG AA, 4.5:1).
 # A pair whose colors have -dark values has a -dark twin, checked the same way.
@@ -377,7 +382,7 @@ Sizes are fixed per level, not fluid. A level ending in `-wide` is the same styl
 
 A 4px spacing scale; a token's name is its multiple of 4px (`6` is 24px). Layout gaps and padding come from the scale. Generous vertical space between sections; related things sit in cards with roomy padding (`8`, 32px).
 
-Design for iPhone first. The website is a single centered column with a 24px gutter (`6`) that widens into two columns where there's room.
+Design for iPhone first. The website is a centered column (`page-width`, 1200px) with a 24px gutter (`6`) that splits into two columns where there's room; text pages use a narrower reading column (`prose-width`, 720px). `breakpoint-wide` (1024px) is where type switches to its `-wide` sizes.
 
 ## Elevation & Depth
 
