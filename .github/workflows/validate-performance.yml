@@ -24,7 +24,7 @@ env:
 
 jobs:
   lighthouse:
-    name: Validate page speed
+    name: Validate Page Speed
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:

@@ -23,7 +23,7 @@ defaults:
 
 jobs:
   website:
-    name: Validate website build
+    name: Validate Website Build
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
