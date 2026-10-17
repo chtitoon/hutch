@@ -79,7 +79,7 @@ Each PR ticks its item's boxes and updates its status here, so the plan changes 
 ### M2 — Encryption at rest
 **Status:** later
 
-**Why:** zero-knowledge starts on the device (non-negotiable 1, D2): an inventory is a map of my home, and it shouldn't be readable without my key. It comes before the item store so that there is never an unencrypted store, not even for one milestone, and nothing to migrate later.
+**Why:** zero-knowledge starts on the device (non-negotiable 1, D2): an inventory is a map of my home, and it shouldn't be readable without my key. It comes before the item store so that there is never an unencrypted store, not even briefly, and nothing to migrate later.
 
 **Goal:** nothing about my items is readable on the device without my key.
 
