@@ -2,7 +2,7 @@
 # clean (references, contrast in light and dark) and the website's styles use only its tokens.
 # A required check on main, so it runs on every PR with no path filter: a required check that
 # never starts would block unrelated PRs. On Linux it takes under a minute.
-name: Validate Design
+name: Design Lint
 
 on:
   pull_request:
@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: validate-design-${{ github.ref }}
+  group: design-lint-${{ github.ref }}
   cancel-in-progress: true
 
 defaults:
@@ -22,7 +22,7 @@ defaults:
 
 jobs:
   design:
-    name: Design
+    name: Design Lint
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5

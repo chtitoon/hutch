@@ -23,7 +23,7 @@ defaults:
 
 jobs:
   website:
-    name: Website
+    name: Web Build
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
