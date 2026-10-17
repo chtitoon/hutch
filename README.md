@@ -19,7 +19,7 @@ Like the furniture it's named after: closed doors below, a few things on display
 
 Hutch is being built one phase at a time.
 
-- 🗺️ [Milestones](https://github.com/chtitoon/hutch/milestones): the road, and where things stand
+- 🗺️ [Roadmap](ROADMAP.md): the road, and where things stand
 - ⚖️ [Decisions](DECISIONS.md): what's settled, and why
 
 ---
