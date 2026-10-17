@@ -5,7 +5,7 @@ One design system, two apps. The iPhone app and myhutch.app both draw their colo
 | File | What it is |
 |------|-----------|
 | [tokens.json](tokens.json) | **Source of truth.** Colors, fonts and weights, corner radius and spacing (D15). |
-| [brand.md](brand.md) | The logo: a door left ajar, carved into the "h." Values, rules, rejected directions. |
+| [brand.md](brand.md) | The logo: a house with a keyhole, beside the "hutch" wordmark. Values, rules, rejected directions. |
 | [explorations/](explorations/) | Images from each logo round, kept so mistakes aren't repeated. |
 
 ## How the apps use it
@@ -16,4 +16,4 @@ One design system, two apps. The iPhone app and myhutch.app both draw their colo
 
 ## Status
 
-Logo direction chosen; final wordmark not yet drawn (#9). Palette, type, radius and spacing are proposed in D15, taken from the landing-page design. On the web, see [apps/web/DESIGN.md](../apps/web/DESIGN.md) for how they're applied.
+Logo chosen (D17): `light/logo.svg` and `dark/logo.svg`; the app icon is not yet drawn. Palette, type, radius and spacing are proposed in D15, taken from the landing-page design. On the web, see [apps/web/DESIGN.md](../apps/web/DESIGN.md) for how they're applied.

@@ -11,7 +11,7 @@ This repo and its GitHub issues are the project's only memory. When a conversati
 | Every session | The open issues in the current GitHub milestone, and `docs/decisions.md` (what's settled, what's open) |
 | Before proposing product changes | The [milestone](https://github.com/chtitoon/hutch/milestones) descriptions (each phase's goal and success test), `docs/context.md` (research) and D13 in `docs/decisions.md` (what's deliberately out of scope) |
 | Any UI, visual or web work | `design/README.md`, then `design/brand.md`; for the website, also `apps/web/DESIGN.md` |
-| iOS screen work | The milestone's spec in `apps/ios/design/` (e.g. `milestone1.md`); it wins over the design canvas (D17) |
+| iOS screen work | The milestone's spec in `apps/ios/design/` (e.g. `milestone1.md`); it wins over the design canvas (D19) |
 
 ## The work loop
 

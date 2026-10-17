@@ -80,9 +80,12 @@ a:hover { color: var(--color-sage); }
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
   text-decoration: none;
 }
+
+.logo { display: block; height: 34px; width: auto; }
+.logo-mark { fill: var(--color-sage); }
+.logo-word { fill: var(--color-ink); }
 
 .wordmark {
   font-family: var(--display);
@@ -187,9 +190,9 @@ a:hover { color: var(--color-sage); }
 .phone-frame {
   position: relative;
   border-radius: 46px;
-  background: var(--color-ink);
+  background: var(--color-device);
   padding: var(--space-3);
-  box-shadow: 0 30px 60px color-mix(in srgb, var(--color-ink) 18%, transparent);
+  box-shadow: 0 30px 60px color-mix(in srgb, var(--color-device) 18%, transparent);
 }
 
 .phone-screen {
@@ -292,7 +295,7 @@ a:hover { color: var(--color-sage); }
 .points h3 { font-family: var(--font-text); font-size: 21px; font-weight: var(--font-weight-semibold); }
 .points p { font-size: 16px; line-height: 1.55; color: var(--color-on-deep-muted); }
 
-/* How it grows */
+/* Where we’re heading */
 
 .grows {
   padding-top: var(--space-30);
@@ -320,15 +323,15 @@ a:hover { color: var(--color-sage); }
 }
 .card--solid { background: var(--color-surface); box-shadow: 0 1px 0 var(--color-border); color: var(--color-ink); }
 .card--planned { border: 1.5px dashed var(--color-border-dashed); }
-.card--planned .door { color: var(--color-ink-subtle); }
+.card-meta { display: flex; align-items: center; gap: var(--space-3); }
+.stage-icon { flex: none; color: var(--color-ink-muted); }
+.card--planned .stage-icon { color: var(--color-ink-subtle); }
 .card h3 { font-size: 26px; letter-spacing: -0.02em; color: var(--color-ink); }
 .card p { font-size: 16px; line-height: 1.55; color: var(--color-ink-muted); }
 
-.door-knob { fill: currentColor; }
-.door-leaf { fill: var(--color-background); }
+.stage-icon-fill { fill: currentColor; }
 
 .badge {
-  align-self: flex-start;
   font-size: 13px;
   font-weight: var(--font-weight-semibold);
   padding: 4px 10px;

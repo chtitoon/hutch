@@ -1,6 +1,6 @@
 # M1 — Local item store: screens and behavior
 
-The build spec for issue #2. It says what every M1 screen shows, what each control does, how the screens connect, and which states each one must handle. Build from this document; when it and anything else disagree, this document wins for M1 UI (D17).
+The build spec for issue #2. It says what every M1 screen shows, what each control does, how the screens connect, and which states each one must handle. Build from this document; when it and anything else disagree, this document wins for M1 UI (D19).
 
 Visual reference: the [Hutch iPhone design canvas](https://claude.ai/artifact/4W3du15YUNdN3JE38wtxVH), page "Milestone 1", with its source files exported to [`canvas/`](canvas/). The canvas was drawn before D15 and shows features from later milestones (warranty, receipts, resale value), so treat it as layout inspiration only; [`canvas/README.md`](canvas/README.md) lists the differences. Colors, type and scope come from this spec and `design/tokens.json`.
 
@@ -40,7 +40,7 @@ The model is the full one from issue #2, even though M1's screens edit only part
 | `id` | `UUID` | new | — | Stable identity; never shown. |
 | `name` | `String` | — | Yes, required | Trimmed of leading and trailing whitespace; must be non-empty after trimming; at most 120 characters. |
 | `photos` | ordered list of photos | empty | Yes | At most 10. The first is the cover. Stored as image data with external storage, so M2 can encrypt them. |
-| `location` | `String?` | `nil` | Yes, free text | "Where it lives," e.g. "Garage, blue bin." Free text in M1 (D16); M5 decides whether it becomes structured. |
+| `location` | `String?` | `nil` | Yes, free text | "Where it lives," e.g. "Garage, blue bin." Free text in M1 (D18); M5 decides whether it becomes structured. |
 | `notes` | `String` | empty | Yes | Multi-line, at most 2,000 characters. |
 | `condition` | enum `Condition?` | `nil` | Yes | `new`, `likeNew`, `good`, `fair`, `worn`. Shown as "New", "Like new", "Good", "Fair", "Worn". |
 | `purchaseDate` | `Date?` | `nil` | Yes | Date only; no time. |
@@ -183,7 +183,7 @@ A sheet with a `Form`. Add starts empty (or with a pre-filled name from search, 
 2. **Photos** (header "Photos"). A horizontal row of square thumbnails (72×72, `radius.sm`), then an add tile with a `plus` symbol, **"Add"**. The add tile offers a menu: **Take Photo** (system camera via `UIImagePickerController`/camera picker; hidden on devices without a camera) and **Choose from Library** (`PhotosPicker`, multiple selection up to the remaining limit). Each thumbnail has a remove button (an `xmark.circle.fill` badge, 44pt hit area, label "Remove photo") and can be dragged to reorder; the first is marked "Cover" with a small caption under it. At 10 photos the add tile disappears and a footer says **"Up to 10 photos."** Photos are downscaled on import (longest side 2048px, JPEG/HEIC quality ~0.8) to keep the store small.
    - Photo-first, camera-led capture is M3. M1 just needs adding a photo to work.
 
-3. **Where it lives** (header). A text field, placeholder **"e.g. Garage, blue bin"**. While it's focused, up to 5 suggestions from location suggestions (above) appear as a list directly under the field, filtered by what's typed (prefix and word match, case- and diacritic-insensitive). Tapping one fills the field. In Add mode, the field starts with the last used location, selected so typing replaces it, because people catalog a whole shelf at a time (D16). Optional; may be empty.
+3. **Where it lives** (header). A text field, placeholder **"e.g. Garage, blue bin"**. While it's focused, up to 5 suggestions from location suggestions (above) appear as a list directly under the field, filtered by what's typed (prefix and word match, case- and diacritic-insensitive). Tapping one fills the field. In Add mode, the field starts with the last used location, selected so typing replaces it, because people catalog a whole shelf at a time (D18). Optional; may be empty.
 
 4. **Details** (header "Details", footer "Optional."):
    - **Condition:** a picker row, "Condition", with "None" plus the five values. Menu style.

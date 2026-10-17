@@ -20,10 +20,10 @@ Each `.dc.html` file is one 390×844 screen: HTML with inline styles, plus a sma
 
 ## How to use them
 
-- **The spec wins.** For M1, build from [`../milestone1.md`](../milestone1.md), not from these files (D17). These are a visual reference: layout, hierarchy, spacing rhythm and tone.
+- **The spec wins.** For M1, build from [`../milestone1.md`](../milestone1.md), not from these files (D19). These are a visual reference: layout, hierarchy, spacing rhythm and tone.
 - **Known differences from the spec**, because the canvas was drawn before D15 and before M1 was trimmed:
   - Colors and fonts are not the tokens (sage-grey and lacquer green, Hanken Grotesk and Newsreader). Use `design/tokens.json`.
-  - The canvas shows features from later milestones: rooms and spots, warranty, receipts, resale value (M5, Phase 3). M1 has a free-form "Where it lives" (D16) and no warranty, receipt or value UI.
+  - The canvas shows features from later milestones: rooms and spots, warranty, receipts, resale value (M5, Phase 3). M1 has a free-form "Where it lives" (D18) and no warranty, receipt or value UI.
   - Home has a tab bar and "On this phone only"; M1 has neither (see the spec's Navigation and "What M1 must not claim").
   - Add is camera-first, which is M3. M1's Add is the form in the spec.
 - **The Later page** holds the Phase 2 lending flows. They're parked, not approved designs; revisit them when Phase 2 starts.

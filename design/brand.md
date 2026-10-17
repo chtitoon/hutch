@@ -1,22 +1,22 @@
 # Brand
 
-Status: logo direction chosen, final logo not yet drawn; palette proposed in D15 (Oct 2026).
+Status: logo chosen (D17, Oct 2026); palette proposed in D15 (Oct 2026).
 
 ## Values the brand expresses
 
 - **Privacy by default.** Nothing is visible to anyone unless you choose.
-- **Generosity by choice.** You open a small door for the neighbors you trust.
+- **Generosity by choice.** You open a small door for the people you trust.
 - **Calm confidence.** Feels like home, never like a vault or a security product.
 - **Modern optimism.** Fresh, bright and light; never rustic, nostalgic or heavy.
 
-## The logo: a door left slightly ajar, carved into the "h"
+## The logo: a house with a keyhole (D17)
 
-- Lowercase wordmark **hutch** in a bold, geometric, contemporary sans-serif.
-- **One** hidden detail in the whole word: in the first "h," a thin wedge-shaped cut separates the stem from the arch, hairline at the baseline and slightly wider at the top, so the arch and right leg read as a door swinging open from its frame.
-- **Carved, never added.** The symbol is negative space only. No extra shapes, overlays or second color. Test: it must be visible in plain black on white.
-- The letter must still read as an ordinary "h"; the door is a discovery, not a decoration.
-- **App icon:** the carved "h" alone, light on forest (`color.deep`), with a wider cut than the wordmark so it survives at home-screen size. (Was white on fresh green before D15; not yet redrawn.)
-- **Interim mark:** until the final logo exists (#9), the website uses a simple line-drawn house glyph beside the wordmark. It is a placeholder, not the logo.
+- **Mark:** a rounded, line-drawn house with a keyhole in the middle, in sage. Home first; the keyhole says it's yours to open.
+- **Wordmark:** lowercase **hutch** in a bold, geometric, contemporary sans-serif, in ink, to the right of the mark.
+- **Files:** [`light/logo.svg`](light/logo.svg) (on the warm off-white) and [`dark/logo.svg`](dark/logo.svg), [`dark/logo-transparent.svg`](dark/logo-transparent.svg) (on night forest). The website draws it inline from tokens (`apps/web/src/components/Logo.astro`): mark `color.sage`, wordmark `color.ink`, so the same shape works in both modes.
+- **App icon:** the house-and-keyhole mark alone, not yet drawn.
+
+This replaced the earlier direction, a door left ajar carved into the "h" of the wordmark (#9), which was never drawn to a finished state.
 
 ## Color (proposed, D15)
 
@@ -29,7 +29,7 @@ This replaced the earlier fresh-green palette (D15). Alternatives considered the
 
 ## What was tried and rejected, and why
 
-1. **Furniture pictures** (a drawn hutch, wardrobe, cabinet): too literal; looked like clip art. The metaphor explains the brand; it shouldn't be drawn **as the logo**. Simple line drawings of a door (closed, ajar, open) are allowed on the website as illustrations of the private → lend → sell stages (D15).
+1. **Furniture pictures** (a drawn hutch, wardrobe, cabinet): too literal; looked like clip art. The metaphor explains the brand; it shouldn't be drawn **as the logo**. Door drawings for the private → lend → sell stages were tried on the website and dropped (D15): with the door already in the copy and the logo, a third door read as heavy-handed. Stage icons show the action instead (house, people, tag).
 2. **Earth-tone palettes** (walnut, oak, olive, brass, terracotta): read as depressing and dated. **Superseded by D15:** a restrained forest, warm-grey and brass palette, kept light and airy, replaced fresh green. What failed before was heavy, rustic wood tones, not every warm color.
 3. **Colored accent pieces beside or on top of letters:** the symbol vanished in black and white, proving it was decoration, not design.
 4. **Cuts in several letters:** turned into a stencil typeface rather than one hidden symbol.
@@ -37,7 +37,7 @@ This replaced the earlier fresh-green palette (D15). Alternatives considered the
 
 ## Next step
 
-Draw the final wordmark by hand in Figma on a real geometric typeface, with the single wedge cut; AI tools got the idea but not the precision. Then derive the design system (type scale, spacing, corner radius, color roles) from it.
+Draw the app icon from the mark, then a clean vector master of the logo (the current files are AI-traced, with uneven curves).
 
 ## Reference images
 
@@ -45,4 +45,4 @@ In [`explorations/`](explorations/), in the order they were made:
 - `round1-rejected-furniture.png` — literal furniture, earth tones.
 - `round2-rejected-added-shapes.png` — colored pieces added beside letters; symbol vanishes in black and white.
 - `round3-rejected-no-cut.png` — AI could not carve the cut.
-- `round4-closest-recraft.png` — **closest so far.** Right weight, color and placement (stem separated from the arch of the "h"), but too many cuts (u, t, second h), cuts are uniform rather than tapered, and curves are rough. Use as the starting point for the hand-drawn version.
+- `round4-closest-recraft.png` — closest to the carved-"h" direction: right weight, color and placement, but too many cuts, uniform rather than tapered, and rough curves. That direction was dropped for the house-and-keyhole logo (D17).

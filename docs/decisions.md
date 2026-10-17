@@ -117,13 +117,33 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 - `design/tokens.json` now comes from the landing-page design: near-black green ink on warm off-white, a deep forest band color, sage for small labels and focus, and brass as the single warm accent. The token file also gains roles (muted and subtle ink, surfaces, borders, on-deep colors), two fonts (Bricolage Grotesque for display, Instrument Sans for text), weights, radii and a 4px spacing scale.
 - **Supersedes** the fresh-green palette and brand.md's blanket rejection of earth tones: what failed before was heavy, rustic wood tones, not a light palette with one brass accent.
 - **Amends D14:** the website now uses web fonts, self-hosted through pinned `@fontsource` packages and bundled into the build, so no request leaves myhutch.app and "no trackers" stays true.
-- On the website, simple line-drawn doors illustrate the private → lend → sell stages, and a house glyph stands in for the logo until #9.
+- On the website, small icons beside each roadmap badge mark the private → lend → sell stages: house, two people, tag (SF Symbols `house`, `person.2`, `tag` in the app). Not doors: the headings ("Behind closed doors", "Out the door") and the logo already carry the door, and a third one made the metaphor heavy-handed. No lock for private: Hutch should feel like home, not a vault. A house glyph stands in for the logo until #9.
 
 **Why:** the design reads calmer and more "home" than the bright green, which fits the "feels like home, never like a vault" value better.
 
 **Consequences:** the iOS app (generated colors in M0) and the app icon inherit these tokens. The icon description in brand.md is updated to forest but not yet redrawn. Brass fails contrast as text on light surfaces; it's limited to fills and markers. There are no dark-mode tokens yet, so the website renders light only (`color-scheme: light`) rather than inventing colors; the iOS app needs dark roles before M1.
 
-## D16 — Location is free text in Phase 1
+## D16 — Link preview: the door's light, rendered from the site's own tokens
+**Status:** Proposed (Oct 2026).
+
+**What:** sharing myhutch.app shows a 1200×630 card (`apps/web/public/og.png`): forest background, "Your things, privately kept.", and a tall brass sliver of light (the logo's tapered cut, hairline at the floor) spilling onto the floor. The card is an HTML page (`apps/web/og/card.html`) on the site's tokens and fonts, rendered by `npm run og` in headless Chromium via a pinned `playwright-core` dev dependency. The PNG is committed; `npm test` fails if the card, tokens or fonts changed since it was rendered.
+
+**Why:** the site had no Open Graph tags, so shared links showed a bare URL. Light through a door ajar carries the brand's feeling (home, private, open when you choose) without drawing a door, which D15 found heavy-handed. Rendering in a real browser keeps the variable display font exactly as on the site; the usual Node image generators can't read its woff2 files. Rendering only on demand keeps the Cloudflare build browser-free.
+
+**Consequences:** changing a token or the card means running `npm run og` once, on a machine with a Playwright browser (`npx playwright-core install chromium`). When the final logo lands (#9), the card's interim house glyph is swapped for it.
+
+## D17 — The house-and-keyhole logo, and dark mode on the website
+**Status:** Decided (Oct 2026).
+
+**What:**
+- The website header uses the new logo (`design/light/logo.svg`, `design/dark/logo.svg`): a rounded line-drawn house with a keyhole, beside a bold "hutch" wordmark. It is inlined as `Logo.astro`, traced from the light file, with the mark in `sage` and the wordmark in `ink` so one shape serves both modes. It replaces the interim house glyph.
+- `tokens.json` gains a `color-dark` group: dark values for the light-surface roles, starting from the dark logo's night-forest background. The forest band, brass and on-deep roles keep one value. A new `device` role keeps the phone frame dark in both modes. The site follows the system setting (`color-scheme: light dark`).
+
+**Why:** a real logo instead of a placeholder, in colors that come from the tokens. Dark mode follows the system, as the iPhone app will.
+
+**Consequences:** this is the brand's logo. It replaces the "door carved into the h" direction (#9), which was never finished, and the app icon is drawn from the house mark. The link-preview card (D16) shows the logo too, with the mark in a new `sage-on-deep` role. Supersedes D15's "light only" note for the website. The iOS app can generate its dark colors from the same `color-dark` group.
+
+## D18 — Location is free text in Phase 1
 **Status:** Proposed (Oct 2026). Confirm before M1 ships.
 
 **What:** an item's `location` is one optional free-text field, "Where it lives" ("Garage, blue bin"). Places emerge from use: the field suggests locations I've already typed, most recent first, and a new item starts with the last location I used, because I catalog a whole shelf at a time. There are no rooms or spots to set up first.
@@ -132,7 +152,7 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 
 **Consequences:** M5 decides whether locations become structured (nesting, a place screen, grouping); free text migrates cleanly into that. Insurance-style "room by room" views wait for M5.
 
-## D17 — M1 screens are specified in writing; the design canvas is a reference
+## D19 — M1 screens are specified in writing; the design canvas is a reference
 **Status:** Decided (Oct 2026).
 
 **What:** [`apps/ios/design/milestone1.md`](../apps/ios/design/milestone1.md) specifies every M1 screen, state, navigation path and piece of copy, and wins over any other source for M1 UI. The Claude Design canvas it was derived from is exported to `apps/ios/design/canvas/` as a visual reference, with its differences from the spec listed there.
