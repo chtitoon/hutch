@@ -22,7 +22,7 @@ defaults:
 
 jobs:
   design:
-    name: Design Lint
+    name: DESIGN.md and styles
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
