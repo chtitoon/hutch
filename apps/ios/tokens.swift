@@ -119,21 +119,51 @@ func hex(_ group: String, _ role: String) -> String {
     guard let color = value?["$value"] as? String else { fail("design/tokens.json has no \(group).\(role)") }
     return color
 }
-func iconImage(background: String?, mark: String) -> Data {
-    let backdrop = background.map { #"<rect width="2048" height="2048" fill="\#($0)"/>"# } ?? ""
-    let svg = #"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" width="1024" height="1024">\#(backdrop)<path fill-rule="evenodd" fill="\#(mark)" d="\#(iconMark)"/></svg>"#
-    // The App Store rejects an opaque icon that has an alpha channel, so those render without one.
-    let alpha: CGImageAlphaInfo = background == nil ? .premultipliedLast : .noneSkipLast
-    let png = NSMutableData()
+/// Draws an SVG into a square bitmap of `size` pixels. The App Store rejects an opaque icon
+/// that has an alpha channel, so opaque renders have none.
+func render(_ svg: String, size: Int, opaque: Bool) -> CGContext {
+    let alpha: CGImageAlphaInfo = opaque ? .noneSkipLast : .premultipliedLast
     guard let image = NSImage(data: Data(svg.utf8)),
-          let context = CGContext(data: nil, width: 1024, height: 1024, bitsPerComponent: 8, bytesPerRow: 0,
-                                  space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: alpha.rawValue),
-          let output = CGImageDestinationCreateWithData(png, "public.png" as CFString, 1, nil)
+          let context = CGContext(data: nil, width: size, height: size, bitsPerComponent: 8, bytesPerRow: 0,
+                                  space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: alpha.rawValue)
     else { fail("Can't render the app icon") }
     NSGraphicsContext.saveGraphicsState()
     NSGraphicsContext.current = NSGraphicsContext(cgContext: context, flipped: false)
-    image.draw(in: NSRect(x: 0, y: 0, width: 1024, height: 1024))
+    image.draw(in: NSRect(x: 0, y: 0, width: size, height: size))
     NSGraphicsContext.restoreGraphicsState()
+    return context
+}
+
+// The mark fills this share of the icon's width or height, whichever is larger, centered.
+// The file leaves wide margins, so the icon zooms in: the square viewBox is sized from the mark's
+// own bounds, measured by rendering it once at the file's scale and finding its painted pixels.
+let markShare = 0.75
+let markBounds: (minX: Int, minY: Int, maxX: Int, maxY: Int) = {
+    let svg = #"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" width="2048" height="2048"><path fill-rule="evenodd" d="\#(iconMark)"/></svg>"#
+    let context = render(svg, size: 2048, opaque: false)
+    let pixels = context.data!.assumingMemoryBound(to: UInt8.self)
+    var bounds = (minX: Int.max, minY: Int.max, maxX: Int.min, maxY: Int.min)
+    for y in 0..<2048 {  // Bitmap rows run top to bottom, like SVG coordinates.
+        for x in 0..<2048 where pixels[y * context.bytesPerRow + x * 4 + 3] > 0 {
+            bounds = (min(bounds.minX, x), min(bounds.minY, y), max(bounds.maxX, x + 1), max(bounds.maxY, y + 1))
+        }
+    }
+    guard bounds.minX < bounds.maxX else { fail("design/light/icon.svg's mark is empty") }
+    return bounds
+}()
+let iconViewBox: String = {
+    let side = Double(max(markBounds.maxX - markBounds.minX, markBounds.maxY - markBounds.minY)) / markShare
+    let centerX = Double(markBounds.minX + markBounds.maxX) / 2, centerY = Double(markBounds.minY + markBounds.maxY) / 2
+    return "\(centerX - side / 2) \(centerY - side / 2) \(side) \(side)"
+}()
+
+func iconImage(background: String?, mark: String) -> Data {
+    // The backdrop covers the whole zoomed viewBox, whatever its origin.
+    let backdrop = background.map { #"<rect x="-4096" y="-4096" width="12288" height="12288" fill="\#($0)"/>"# } ?? ""
+    let svg = #"<svg xmlns="http://www.w3.org/2000/svg" viewBox="\#(iconViewBox)" width="1024" height="1024">\#(backdrop)<path fill-rule="evenodd" fill="\#(mark)" d="\#(iconMark)"/></svg>"#
+    let png = NSMutableData()
+    let context = render(svg, size: 1024, opaque: background != nil)
+    guard let output = CGImageDestinationCreateWithData(png, "public.png" as CFString, 1, nil) else { fail("Can't encode the app icon") }
     CGImageDestinationAddImage(output, context.makeImage()!, nil)
     guard CGImageDestinationFinalize(output) else { fail("Can't encode the app icon") }
     return png as Data
