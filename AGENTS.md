@@ -15,11 +15,11 @@ This repo is the project's only memory. When a conversation produces a decision,
 
 ## The work loop
 
-Work is planned in `ROADMAP.md` (D20): each **phase** has a goal and a success test, and each **milestone** (M0, W1…) is one unit of work with a "Why" and the boxes that make it done. Open questions are **Open** or **Proposed** entries in `DECISIONS.md`, not milestones.
+Work is planned in `ROADMAP.md` (D20): each **phase** has a goal and a success test, and each **milestone** (M0, W1…) is one unit of work with a "Why" and a **definition of done** (its boxes). Open questions are **Open** or **Proposed** entries in `DECISIONS.md`, not milestones.
 
 1. **Find the work.** In `ROADMAP.md`, take the earliest phase's first milestone that isn't done or in progress. If what it **Requires** isn't there yet (a decision still **Open** or **Proposed**, an account, a test), stop and ask. If I asked for something else, do that instead.
 2. **Check it's unblocked.** When a decision it needs is settled, record the answer in `DECISIONS.md` in the same PR.
-3. **Confirm the slice.** Restate the milestone's boxes in one or two lines and say what you'll do this session. One milestone, or one clear slice of one, per session.
+3. **Confirm the slice.** Restate the milestone's definition of done in one or two lines and say what you'll do this session. One milestone, or one clear slice of one, per session.
 4. **Build on a branch** named `<milestone-id>-<short-name>` (e.g. `m2-item-store`), with tests.
 5. **Prove it.** Green `make test` for every app you touched, plus snapshot tests for UI work (see Reviewing UI changes).
 6. **Open a PR** that names the milestone, summarizes the change in a few lines, says how to check it, and records any new decision in `DECISIONS.md`. In the same PR, update `ROADMAP.md`: tick the boxes it meets and set the milestone's status: **in progress** with the PR link while boxes remain, **done** with the PR link when all are ticked; when a phase starts or finishes, update its status in the front matter too. Never tick a box the PR doesn't prove; a box that turns out wrong is reworded in the same PR, and the PR says why.
