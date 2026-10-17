@@ -14,9 +14,10 @@
   --color-sage-on-deep: #6AAA86;
   --color-deep-rule: #3A5A4E;
   --color-accent: #D4A24C;
-  --color-sage: #3E7A62;
+  --color-sage: #3D7961;
   --color-sage-tint: #E2EDE7;
   --color-on-sage-tint: #2C5A48;
+  --color-marker: #D4A24C;
   --color-device: #1B2420;
   --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
   --font-text: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
@@ -104,6 +105,7 @@
     --color-sage: #6AAA86;
     --color-sage-tint: #24402F;
     --color-on-sage-tint: #B5DCC6;
+    --color-marker: #A87A2C;
     --color-device: #0A120D;
   }
 }

@@ -44,7 +44,7 @@ colors:
   # Brass. Fills and markers only (dots, numerals on deep); never text on a light surface.
   accent: "#D4A24C"
   # Small labels and eyebrows, link hover, the focus ring. Lighter in dark mode to keep contrast.
-  sage: "#3E7A62"
+  sage: "#3D7961"
   sage-dark: "#6AAA86"
   # Background of positive badges.
   sage-tint: "#E2EDE7"
@@ -52,6 +52,9 @@ colors:
   # Text on sage-tint.
   on-sage-tint: "#2C5A48"
   on-sage-tint-dark: "#B5DCC6"
+  # The brass dot on the status pill. Deeper in dark mode, where the pill turns light.
+  marker: "#D4A24C"
+  marker-dark: "#A87A2C"
   # Hardware drawn on the page (the phone frame) and its shadow. Dark in both modes.
   device: "#1B2420"
   device-dark: "#0A120D"
@@ -218,6 +221,14 @@ components:
   page-caption-dark:
     backgroundColor: "{colors.background-dark}"
     textColor: "{colors.ink-subtle-dark}"
+  page-label:
+    backgroundColor: "{colors.background}"
+    textColor: "{colors.sage}"
+    typography: "{typography.label-caps}"
+  page-label-dark:
+    backgroundColor: "{colors.background-dark}"
+    textColor: "{colors.sage-dark}"
+    typography: "{typography.label-caps}"
   card-text:
     backgroundColor: "{colors.surface}"
     textColor: "{colors.ink}"
@@ -282,6 +293,12 @@ components:
     typography: "{typography.label-lg}"
     rounded: "{rounded.pill}"
     height: 52px
+  pill-marker-graphic:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.marker}"
+  pill-marker-graphic-dark:
+    backgroundColor: "{colors.ink-dark}"
+    textColor: "{colors.marker-dark}"
   band-text:
     backgroundColor: "{colors.deep}"
     textColor: "{colors.on-deep}"
@@ -357,6 +374,7 @@ Each token is a role, not a swatch. Use the role that describes the job (`ink-mu
 - **Forest:** `deep` for bold bands, with `on-deep` and `on-deep-muted` text, `deep-rule` dividers and `sage-on-deep` for the logo mark.
 - **Brass (`accent`) is a marker, not a text color.** Dots, numerals on forest and small fills; never text on a light surface, where it fails contrast.
 - **Sage (`sage`)** carries small labels and eyebrows, link hover and the focus ring; `sage-tint` with `on-sage-tint` makes positive badges.
+- **`marker`** is the brass dot on the status pill. It's brass on the dark pill, and a deeper brass in dark mode, where the pill turns light and plain brass would fade (D18).
 - **`device`** is hardware drawn on the page (the phone frame and its shadow); it stays dark in both modes.
 
 ### Light and dark follow the system
@@ -396,7 +414,7 @@ Soft, rounded and friendly, like the logo's house. `sm` (12px) for inputs and th
 
 The component entries in the tokens are the color pairs the linter checks, not a component library. Each platform builds its components from the standard ones first (SwiftUI on iPhone, plain HTML on the web) and documents them in its own guide.
 
-- **Status pill** (`pill`): an `ink` capsule with `background` text and a brass dot, 52px tall. Later the App Store link.
+- **Status pill** (`pill`): an `ink` capsule with `background` text and a `marker` dot, 52px tall. Later the App Store link.
 - **Badges** (`badge-positive`, `badge-planned`): `label-sm` in a pill; sage-tint for what ships at launch, sunken for what's planned.
 - **Cards:** `surface` and solid for what exists, no fill and a dashed `border-dashed` outline for what's planned.
 - **Focus ring:** 2px `sage` on light surfaces, `accent` inside the forest band.

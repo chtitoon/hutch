@@ -114,7 +114,7 @@ a:hover { color: var(--color-sage); }
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--color-accent);
+  background: var(--color-marker);
 }
 
 .text-link { font: var(--type-label-lg); letter-spacing: var(--type-label-lg-tracking); }
