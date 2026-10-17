@@ -5,12 +5,13 @@
 # Per page, in KB as the browser downloads them before compression. Every page gets `default`;
 # `pages` can raise a limit for one page (key: its file in dist/, e.g. index.html). Measured
 # 2026-10-17: the largest page (index.html) was 11.2 KB HTML, 13.1 KB CSS, 125.4 KB fonts,
-# 2.4 KB images, 0 JS, 152.1 KB total.
+# 2.4 KB images, 0 JS, 152.1 KB total. CSS then grew to 17.0 KB with DESIGN.md's type scale (D18)
+# and the fallback fonts (#36), so its budget moved from 15 to 20 KB.
 budgets:
   default:
     total_kb: 175
     html_kb: 13
-    css_kb: 15
+    css_kb: 20
     fonts_kb: 140
     images_kb: 4
     js_kb: 0

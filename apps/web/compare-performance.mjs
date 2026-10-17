@@ -10,9 +10,9 @@
 // main, one per line, so unchanged pages (identical files, identical results) aren't measured.
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import yaml from 'js-yaml';
+import { parse } from 'yaml';
 
-const spec = yaml.load(readFileSync(new URL('./PERFORMANCE.md', import.meta.url), 'utf8').match(/^---\n([\s\S]*?)\n---/)[1]);
+const spec = parse(readFileSync(new URL('./PERFORMANCE.md', import.meta.url), 'utf8').match(/^---\n([\s\S]*?)\n---/)[1]);
 const { lighthouse } = spec;
 
 if (process.argv[2] === '--runs') {

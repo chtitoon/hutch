@@ -13,9 +13,9 @@ import { extname, join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 import lighthouse from 'lighthouse';
 import * as chromeLauncher from 'chrome-launcher';
-import yaml from 'js-yaml';
+import { parse } from 'yaml';
 
-const spec = yaml.load(readFileSync(new URL('./PERFORMANCE.md', import.meta.url), 'utf8').match(/^---\n([\s\S]*?)\n---/)[1]);
+const spec = parse(readFileSync(new URL('./PERFORMANCE.md', import.meta.url), 'utf8').match(/^---\n([\s\S]*?)\n---/)[1]);
 const [mainDist, prDist, outDir, ...pages] = process.argv.slice(2);
 
 const types = { '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.webp': 'image/webp', '.avif': 'image/avif', '.woff2': 'font/woff2', '.woff': 'font/woff' };

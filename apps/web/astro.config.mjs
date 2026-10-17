@@ -6,6 +6,6 @@ export default defineConfig({
   output: 'static',
   trailingSlash: 'never',
   // The one stylesheet goes inline in each page: a separate file blocked the first paint by
-  // a full round trip on mobile (PERFORMANCE.md, D18).
+  // a full round trip on mobile (PERFORMANCE.md, D19).
   build: { format: 'file', inlineStylesheets: 'always' },
 });

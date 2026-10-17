@@ -3,11 +3,11 @@
 // `--report` prints each page's measured sizes, used to set the budgets.
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { extname, join, posix } from 'node:path';
-import yaml from 'js-yaml';
+import { parse } from 'yaml';
 
 const file = (path) => new URL(path, import.meta.url).pathname;
 const dist = file('./dist/');
-const spec = yaml.load(readFileSync(file('./PERFORMANCE.md'), 'utf8').match(/^---\n([\s\S]*?)\n---/)[1]);
+const spec = parse(readFileSync(file('./PERFORMANCE.md'), 'utf8').match(/^---\n([\s\S]*?)\n---/)[1]);
 const site = new URL(spec.origins.site);
 
 const size = (path) => {

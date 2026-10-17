@@ -1,4 +1,4 @@
-# Lighthouse on main and the PR, compared with the limits in apps/web/PERFORMANCE.md (D18).
+# Lighthouse on main and the PR, compared with the limits in apps/web/PERFORMANCE.md (D19).
 # Linux runner, pull requests touching the website only. Budgets on file sizes run in `npm test` instead,
 # which is Cloudflare's deploy gate; this check needs a browser, so it lives here.
 name: Web Performance
@@ -7,6 +7,7 @@ on:
   pull_request:
     paths:
       - 'apps/web/**'
+      - 'DESIGN.md'
       - 'design/**'
 
 permissions:
