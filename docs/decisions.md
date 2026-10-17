@@ -141,4 +141,4 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 
 **Why:** a real logo instead of a placeholder, in colors that come from the tokens. Dark mode follows the system, as the iPhone app will.
 
-**Consequences:** this is the brand's logo. It replaces the "door carved into the h" direction (#9), which was never finished, and the app icon is drawn from the house mark. The link-preview card (D16) still shows the old glyph and needs a redraw with this logo. Supersedes D15's "light only" note for the website. The iOS app can generate its dark colors from the same `color-dark` group.
+**Consequences:** this is the brand's logo. It replaces the "door carved into the h" direction (#9), which was never finished, and the app icon is drawn from the house mark. The link-preview card (D16) shows the logo too, with the mark in a new `sage-on-deep` role. Supersedes D15's "light only" note for the website. The iOS app can generate its dark colors from the same `color-dark` group.
