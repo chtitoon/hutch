@@ -4,7 +4,9 @@
 // Exits 1 if the PR breaks a limit or regresses beyond the noise margin. Writes the PR comment to
 // <file> only when something got faster and nothing got slower.
 // `node compare-performance.mjs --runs` prints how many runs to collect per side.
-import { readFileSync, readdirSync, writeFileSync } from 'node:fs';
+// `node compare-performance.mjs --changed <main-dist> <pr-dist>` prints the PR's pages that differ from
+// main, one per line, so unchanged pages (identical files, identical results) aren't measured.
+import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import yaml from 'js-yaml';
 
@@ -13,6 +15,21 @@ const { lighthouse } = spec;
 
 if (process.argv[2] === '--runs') {
   console.log(lighthouse.runs);
+  process.exit(0);
+}
+
+// A page changed if its HTML did. Asset names carry a content hash, so a changed asset changes the
+// HTML that links it; files without a hash (favicon.svg) are compared directly, and any change there
+// counts for every page.
+if (process.argv[2] === '--changed') {
+  const [, , , mainDist, prDist] = process.argv;
+  const files = (dir) => readdirSync(dir, { recursive: true }).filter((f) => !f.startsWith('_astro') && /\.\w+$/.test(f));
+  const same = (f) => existsSync(join(mainDist, f)) && readFileSync(join(mainDist, f)).equals(readFileSync(join(prDist, f)));
+  const prFiles = files(prDist);
+  const pages = prFiles.filter((f) => f.endsWith('.html'));
+  const sharedChanged = prFiles.filter((f) => !f.endsWith('.html')).some((f) => !same(f))
+    || files(mainDist).some((f) => !f.endsWith('.html') && !existsSync(join(prDist, f)));
+  for (const page of pages) if (sharedChanged || !same(page)) console.log(`/${page.split('\\').join('/')}`);
   process.exit(0);
 }
 

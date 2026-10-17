@@ -59,7 +59,7 @@ myhutch.app should load instantly on a mid-range phone over a weak connection. S
 | Where | What | Blocks |
 |-------|------|--------|
 | `npm test` → `check-performance.mjs` | Budgets, origins and image rules, read from the built files. No browser (D16 keeps the Cloudflare build browser-free). | The Cloudflare deploy |
-| GitHub Actions → `compare-performance.mjs` | Lighthouse on main and the PR, alternating runs, medians compared. | The PR's check |
+| GitHub Actions → `compare-performance.mjs` | Lighthouse on main and the PR, alternating runs, medians compared. Only pages whose built files differ from main are measured: identical files give identical results. | The PR's check |
 
 The Actions check fails when any page is past a Lighthouse limit or when a metric regresses beyond the noise margin. When the PR makes the site measurably faster, it posts one comment with before and after numbers (updated on each push, removed if the gain disappears). When nothing changed beyond noise, it stays quiet and green.
 
