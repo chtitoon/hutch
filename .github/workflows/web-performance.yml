@@ -24,7 +24,7 @@ env:
 
 jobs:
   lighthouse:
-    name: Lighthouse vs main
+    name: Lighthouse
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
