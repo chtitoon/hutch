@@ -34,7 +34,7 @@ phases:
 
 # Roadmap
 
-The plan for Hutch: three phases, each a list of work items. It replaces the GitHub milestones and issues ([D20](DECISIONS.md#d20--the-plan-lives-in-roadmapmd)).
+The plan for Hutch: three phases, each a list of work items.
 
 **How to read it.** Each item has an ID (M0, W1, T1…), a status, why we need it, its goal, a "Done when" checklist and what it depends on.
 
