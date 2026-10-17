@@ -67,7 +67,7 @@ Text pages (privacy, support, 404) use the same header and footer, a `layout-pro
 When someone shares a myhutch.app link, apps show `public/og.png` (1200×630), set through the Open Graph tags in `Base.astro`. The card is a real page, [`og/card.html`](og/card.html), using the same tokens and self-hosted fonts as the site, so it can't drift from the brand (D16).
 
 - **Forest** (`deep`) background; the logo with its mark in `sage-on-deep` and wordmark in `on-deep`; headline (`preview-headline`) in `on-deep`, the line below (`preview-lede`) in `on-deep-muted`.
-- **The light:** a tall `accent` sliver, hairline at the floor and wider at the top, with a soft glow and a spill of light across the floor. Light through a door left ajar, shown as light rather than drawn as a door: home, private, and warm inside. Its geometry is fixed pixels on a fixed-size image.
+- **The light:** a tall, narrow `accent` gap of even width, with a soft glow and a wedge of light on the floor that leaves the gap at its full width and widens toward the viewer. (A sliver tapering to a hairline at the floor was tried first: the floor light fanned out of a single point and read as a spotlight or a blade, not a door.) Light through a door left ajar, shown as light rather than drawn as a door: home, private, and warm inside. Its geometry is fixed pixels on a fixed-size image.
 - `npm run og` re-renders the PNG in headless Chromium. `npm test` fails if the card, the tokens or the fonts changed since the last render (`og/card.sha256`), so a token change can't leave a stale image. Comments in `tokens.css` don't count.
 
 ## Favicon
