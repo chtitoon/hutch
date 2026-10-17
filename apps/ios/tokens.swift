@@ -137,7 +137,7 @@ func render(_ svg: String, size: Int, opaque: Bool) -> CGContext {
 // The mark fills this share of the icon's width or height, whichever is larger, centered.
 // The file leaves wide margins, so the icon zooms in: the square viewBox is sized from the mark's
 // own bounds, measured by rendering it once at the file's scale and finding its painted pixels.
-let markShare = 0.75
+let markShare = 0.6
 let markBounds: (minX: Int, minY: Int, maxX: Int, maxY: Int) = {
     let svg = #"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2048 2048" width="2048" height="2048"><path fill-rule="evenodd" d="\#(iconMark)"/></svg>"#
     let context = render(svg, size: 2048, opaque: false)
