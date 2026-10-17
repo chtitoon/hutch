@@ -6,13 +6,14 @@
 // - type: font-family only var(--font-*), font only var(--type-*), no raw font-size,
 //   line-height, letter-spacing or font-weight
 // - external-font: no @import, @font-face (except local()-only fallbacks) or remote url(); fonts
-//   come from @fontsource packages
+//   come from @fontsource packages, cut down by fonts.mjs into src/styles/fonts.css (generated, not scanned)
 // - raw-spacing: margin, padding and gap use var(--space-*), except the allowlist in DESIGN.md
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 const root = new URL('.', import.meta.url).pathname;
 const tokensFile = 'src/styles/tokens.css';
+const fontsFile = 'src/styles/fonts.css';
 const tokensCss = readFileSync(join(root, tokensFile), 'utf8');
 const defined = new Set([...tokensCss.matchAll(/(--[\w-]+):/g)].map((m) => m[1]));
 const colorByValue = new Map([...tokensCss.matchAll(/(--color-[\w-]+): (#[0-9A-Fa-f]+);/g)].map((m) => [m[2].toLowerCase(), m[1]]).reverse());
@@ -100,7 +101,7 @@ const checkCss = (file, css, offset = 0, fullText = css) => {
   const text = css.replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' '));
   // An @font-face whose src is only local() resizes an installed font and loads nothing; any other is a font file.
   for (const m of text.matchAll(/@import\b|@font-face\b(?![^{]*\{[^}]*\bsrc:(\s*local\([^)]*\)\s*,?)+\s*[;}])|url\(\s*["']?(https?:)?\/\//g)) {
-    failures.push(`${file}:${lineAt(fullText, offset + m.index)}  external-font  ${m[0]} — fonts and styles are self-hosted: import an @fontsource package in Base.astro`);
+    failures.push(`${file}:${lineAt(fullText, offset + m.index)}  external-font  ${m[0]} — fonts and styles are self-hosted: a font goes through fonts.mjs`);
   }
   const stack = [];
   let start = 0;
@@ -133,14 +134,14 @@ const checkMarkup = (file, html) => {
     if (/^#|^(rgb|hsl)a?\(/.test(v) || named.has(v.toLowerCase())) failures.push(`${file}:${lineAt(html, m.index)}  raw-color  ${m[1]}="${v}" — draw in currentColor or a class whose color is a var(--color-*) role; ${colorHint(v)}`);
   }
   for (const m of html.matchAll(/<link\b[^>]*href="(https?:)?\/\/[^"]*"[^>]*>/g)) {
-    if (/rel="(stylesheet|preconnect|preload)"/.test(m[0])) failures.push(`${file}:${lineAt(html, m.index)}  external-font  ${m[0]} — fonts and styles are self-hosted: import an @fontsource package in Base.astro`);
+    if (/rel="(stylesheet|preconnect|preload)"/.test(m[0])) failures.push(`${file}:${lineAt(html, m.index)}  external-font  ${m[0]} — fonts and styles are self-hosted: a font goes through fonts.mjs`);
   }
 };
 
 const files = [
   ...readdirSync(join(root, 'src'), { recursive: true }).map((f) => join('src', f)),
   'og/card.html',
-].filter((f) => /\.(css|astro|html|md)$/.test(f) && f !== tokensFile);
+].filter((f) => /\.(css|astro|html|md)$/.test(f) && f !== tokensFile && f !== fontsFile);
 
 for (const file of files) {
   const text = readFileSync(join(root, file), 'utf8');
