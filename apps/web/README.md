@@ -10,7 +10,6 @@ Static website: what Hutch is, the App Store link, privacy policy and support pa
 | `npm test` | Check tokens are current, build, validate the HTML, check internal links, check every page against the budgets in `PERFORMANCE.md` |
 | `npm run run` | Serve the site locally with live reload |
 | `npm run tokens` | Regenerate `src/styles/tokens.css` from `design/tokens.json` |
-| `npm run new-page -- <slug> "<Title>"` | Start a Markdown page at `/<slug>` that already meets `PERFORMANCE.md` |
 | `node check-performance.mjs --report` | After a build, print each page's bytes by kind (for setting budgets) |
 
 ## Where things live

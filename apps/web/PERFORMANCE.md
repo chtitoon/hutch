@@ -87,7 +87,7 @@ The comparison settings come from 60 Lighthouse runs of the unchanged site (3 ba
 
 ## Before adding a page or feature
 
-1. **Static by default.** Start with `npm run new-page -- <slug> "<Title>"`: a Markdown page on the shared layout, with no script and nothing new to load.
+1. **Static by default.** A text page is a Markdown file in `src/pages/` on the shared layout (copy `support.md`'s front matter): no script and nothing new to load.
 2. **Self-hosted assets only.** Fonts, images and icons go in the repo and ship from myhutch.app. No CDN links, embeds, widgets or third-party scripts, ever.
 3. **Sized, modern images.** SVG for drawings and icons; WebP or AVIF for photos, exported at the size they're shown; `width` and `height` on every `<img>`.
 4. **No JavaScript without a stated need.** If a page needs a script, say why in the PR and raise that page's `js_kb` under `pages`, nowhere else.

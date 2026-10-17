@@ -11,5 +11,4 @@ Instructions for agents working in `apps/web`. The root `AGENTS.md` still applie
 
 ## Rules
 
-- Start a new page with `npm run new-page -- <slug> "<Title>"`: it starts out within `PERFORMANCE.md`'s rules.
 - A green `npm test` is required, and it's also Cloudflare's deploy gate: a page that breaks a budget can't ship. If a budget has to grow, change it in `PERFORMANCE.md` in the same PR and say why.
