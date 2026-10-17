@@ -36,9 +36,9 @@ Each entry: what, status, and why. "Decided" means I chose it; "Proposed" means 
 - Apple Developer Program, $99/year, needed for TestFlight and the App Store.
 - Work that compiles Swift only happens when the Mac is on and linked to the session. With the Mac off, sessions are limited to docs and the website.
 
-**Sync (proposed, confirm at M4):** CloudKit private database using encrypted fields, so Apple stores ciphertext and runs the servers. No backend to operate.
+**Sync (proposed, confirm at M4):** CloudKit private database using encrypted fields, so Apple stores ciphertext and runs the servers. No backend to operate. Must be settled before M4, which depends on it (ROADMAP.md). Moved from issue #17.
 
-**Open risk for Phase 2:** CloudKit sharing only works between Apple users. If a neighbor is on Android, Phase 2 needs either our own small backend (storing only ciphertext) or a web view of the shared shelf. Decide at M6.
+**Open risk for Phase 2:** CloudKit sharing only works between Apple users. If a neighbor is on Android, Phase 2 needs either our own small backend (storing only ciphertext) or a web view of the shared shelf. Decide before M6, which depends on it (ROADMAP.md). Moved from issue #19.
 
 ## D4 — Build order: personal first, sharing later
 **Status:** Decided in principle.
@@ -48,12 +48,12 @@ Each entry: what, status, and why. "Decided" means I chose it; "Proposed" means 
 ## D5 — Photo-based AI capture
 **Status:** Open.
 
-**Tension:** sending photos to a cloud model to auto-fill items breaks zero-knowledge. Options: manual entry + barcode only; on-device model; or explicit opt-in per photo with a clear warning. Decide during Phase 1, milestone M3.
+**Tension:** sending photos to a cloud model to auto-fill items breaks zero-knowledge. Options: manual entry + barcode only; on-device model; or explicit opt-in per photo with a clear warning. Decide during Phase 1, while building M3, which depends on it (ROADMAP.md). Moved from issue #18.
 
 ## D6 — Personal tool vs. product
 **Status:** Open — decide after Phase 1.
 
-Drives whether to rename (see D1), invest in multi-platform polish, or pursue the eBay angle more seriously.
+Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-platform polish, or pursue the eBay angle more seriously. Moved from issue #20.
 
 ## D7 — Bundle ID: `app.myhutch.ios`
 **Status:** Decided (Oct 2026).
@@ -71,7 +71,7 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 **Why:** `project.yml` (XcodeGen) is the source of truth. Generated `.xcodeproj` files cause merge conflicts and are hard for agents to edit safely. Trade-off: after cloning, run `make setup` in `apps/ios` before opening the project in Xcode.
 
 ## D10 — Work tracked in GitHub issues and milestones
-**Status:** Decided (Oct 2026).
+**Status:** Decided (Oct 2026). Superseded by D20 once it's confirmed.
 
 **Why:** issues show up in the GitHub app on my phone, PRs close them automatically, and the history is kept. Milestones are the three phases; issues are the units of work, each with a "Done when." The milestone descriptions hold each phase's goal, order and success test; durable reasoning stays in these docs. There is no separate plan file, because a second copy of the plan would drift.
 
@@ -171,3 +171,16 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 **Why:** speed was a value (D14: static, no JavaScript) but nothing checked it, and a single photo or third-party embed could quietly undo it. One file keeps the rule and its reason together, so agents and I read the same thing and change numbers in one place. Byte budgets need no browser, so they fit the deploy gate without breaking D16's browser-free Cloudflare build. Timing metrics need a browser and are noisy, so they run in Actions, where comparing against main on the same machine cancels most of the noise; Linux minutes are cheap, unlike the macOS minutes D3 avoids.
 
 **Consequences:** growing a budget is a visible one-line change to `PERFORMANCE.md` in the PR. The first real photo will need the images budget raised. Lighthouse is installed in the workflow only (pinned), so it adds nothing to the Cloudflare build. It runs through its Node API with one Chrome (`run-lighthouse.mjs`) rather than `lhci collect`, which launched Chrome and a server for every run: same results, about half the time, and unchanged pages aren't measured at all. The Actions check isn't required for merging unless set in branch protection.
+
+## D20 — The plan lives in ROADMAP.md
+**Status:** Proposed (Oct 2026). Supersedes D10.
+
+**What:** `ROADMAP.md` at the repo root holds the plan, in two layers like `DESIGN.md`: YAML front matter with each phase's id, title, status and a `public` block (the website's roadmap card), and prose with each phase's goal, order and success test, then one entry per work item (ID, status, why, goal, "Done when", depends on). It replaces the GitHub milestones and issues. The open `decision` issues moved into this file (D3, D5, D6). The work loop in AGENTS.md picks the next item from it, and each PR ticks its item's boxes and updates its status.
+
+**Why:**
+- **Intent outlives closed tasks.** A closed issue drops out of view and takes its reasoning with it; the roadmap keeps what's done beside what's left, and why each item exists.
+- **One source, in the repo, reviewed with the code.** The plan changes in the same diff as the work, so they can't disagree, and a session without GitHub access still sees it. D10 rejected a plan file because a second copy would drift; this removes the other copy instead.
+
+**What's lost:** triage from the GitHub app on my phone, and notifications on issues. "Closes #" no longer marks work done: the ROADMAP.md diff in each PR does, readable in the PR's file changes. Issue numbers in older PRs and decisions (#9, #36…) still resolve on GitHub, as history.
+
+**How to reverse:** create a milestone per phase from its section and an issue per open item from its entry, move Open decisions back to `decision` issues if wanted, restore D10's work loop in AGENTS.md, and delete ROADMAP.md's prose (the front matter can stay if the website reads it).

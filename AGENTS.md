@@ -2,27 +2,27 @@
 
 My instructions for any coding agent working in this repo.
 
-This repo and its GitHub issues are the project's only memory. When a conversation produces a decision, a changed plan or a new finding, write it into the docs or the issue in the same PR; anything left only in a chat is lost.
+This repo is the project's only memory. When a conversation produces a decision, a changed plan or a new finding, write it into the docs or `ROADMAP.md` in the same PR; anything left only in a chat is lost.
 
 ## What to read
 
 | When | Read |
 |------|------|
-| Every session | The open issues in the current GitHub milestone, and `DECISIONS.md` (what's settled, what's open) |
-| Before proposing product changes | The [milestone](https://github.com/chtitoon/hutch/milestones) descriptions (each phase's goal and success test), `CONTEXT.md` (research) and D13 in `DECISIONS.md` (what's deliberately out of scope) |
+| Every session | `ROADMAP.md` (the plan, and what's next) and `DECISIONS.md` (what's settled, what's open) |
+| Before proposing product changes | Each phase's goal and success test in `ROADMAP.md`, `CONTEXT.md` (research) and D13 in `DECISIONS.md` (what's deliberately out of scope) |
 | Any UI, visual or web work | `DESIGN.md` (the design system), then the platform's guide: `apps/ios/DESIGN.md` or `apps/web/DESIGN.md` |
 | Work inside an app | That app's own `AGENTS.md`, if it has one (`apps/web/AGENTS.md`) |
 
 ## The work loop
 
-Work is tracked in GitHub: each **milestone** is a phase, each **issue** is one unit of work with a "Done when." Issues labeled `decision` are open questions, not build tasks.
+Work is planned in `ROADMAP.md` (D20): each **phase** is a section, each **item** (M0, W1…) is one unit of work with a "Why" and a "Done when." Open questions are **Open** or **Proposed** entries in `DECISIONS.md`, not items.
 
-1. **Find the work.** `gh issue list --milestone "<earliest open milestone>" --state open`. Take the lowest-numbered open issue that isn't labeled `decision` or `blocked`. If I asked for something else, do that instead.
-2. **Check it's unblocked.** If it depends on an open `decision` issue or a decision marked **Proposed** or **Open** in `DECISIONS.md`, stop and ask. Record the answer in `DECISIONS.md` and close the decision issue.
-3. **Confirm the slice.** Restate the issue's "Done when" in one or two lines and say what you'll do this session. One issue, or one clear slice of one, per session.
-4. **Build on a branch** named `<issue-number>-<short-name>`, with tests.
+1. **Find the work.** In `ROADMAP.md`, take the earliest phase's first item marked **next** that isn't blocked and doesn't depend on a decision marked **Open** or **Proposed**. If I asked for something else, do that instead.
+2. **Check it's unblocked.** If it depends on a decision marked **Proposed** or **Open** in `DECISIONS.md`, stop and ask. Record the answer in `DECISIONS.md`.
+3. **Confirm the slice.** Restate the item's "Done when" in one or two lines and say what you'll do this session. One item, or one clear slice of one, per session.
+4. **Build on a branch** named `<item-id>-<short-name>` (e.g. `m1-item-store`), with tests.
 5. **Prove it.** Green `make test` for every app you touched, plus snapshot tests for UI work (see Reviewing UI changes).
-6. **Open a PR** that says `Closes #<issue>`, summarizes the change in a few lines, says how to check it, and records any new decision in `DECISIONS.md`.
+6. **Open a PR** that names the item, summarizes the change in a few lines, says how to check it, and records any new decision in `DECISIONS.md`. In the same PR, update `ROADMAP.md`: tick the item's "Done when" boxes it meets and update its status (when it's done, collapse it to one line with the PR link and mark the following item **next**); when a phase starts or finishes, update its status in the front matter too.
 7. **Never merge.** I review and merge, usually from my phone.
 8. **Report briefly:** what changed, how to check it, what's next.
 
@@ -44,7 +44,7 @@ I often check in from my phone while work runs on my Mac. Keep replies short and
 - `apps/web` — static site for myhutch.app (landing, App Store link, privacy policy, support), built with Astro in static mode (D14). Text pages in Markdown; no client-side JavaScript unless a page truly needs it; no tracking.
 - `DESIGN.md` — the design system both apps follow, in Google's DESIGN.md format (D18): tokens in the front matter (the single source of truth), brand, logo and rules in the prose. Never hard-code a color or size in an app that should come from tokens; the website's `npm test` fails if you do.
 - `design/` — asset files only: the logo in `light/` and `dark/`, and `explorations/` (rejected rounds).
-- `DECISIONS.md` (what's settled, what's open) and `CONTEXT.md` (research) at the root.
+- `ROADMAP.md` (the plan), `DECISIONS.md` (what's settled, what's open) and `CONTEXT.md` (research) at the root.
 
 ## Commands: one way to do each thing
 
