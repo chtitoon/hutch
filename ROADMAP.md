@@ -38,10 +38,10 @@ The plan for Hutch: three phases, each with its goal, what makes it done, and th
 
 **How to read it.**
 
-- **Milestones** are the road, in build order: each one builds on those above it. Each has a goal and why we need it, and **Needs** only when something outside the list must happen first (a decision, an account, a test passed). Its detail (screens, tasks) is worked out when it starts, not here.
+- **Milestones** are the road, in build order: each one builds on those above it. Each has a goal and why we need it, and **Requires** only when something outside the list must happen first (a decision, an account, a test passed). Its detail (screens, tasks) is worked out when it starts, not here.
 - **Done when** is the phase's definition of done: every box ticked and the success test passed. Each box ends with a link to the milestone that delivers it, and a milestone is done when all of its boxes are ticked.
 - **Status** is written only when it's news: `done` or `in progress`, with the PR, or `blocked`, with why. A milestone without one hasn't started. What's next isn't marked: it's the first milestone not done. Phases are `done`, `in-progress` or `planned`, in the front matter above.
-- Open questions are **Open** or **Proposed** entries in [DECISIONS.md](DECISIONS.md), linked from the milestones that need them.
+- Open questions are **Open** or **Proposed** entries in [DECISIONS.md](DECISIONS.md), linked from the milestones that require them.
 
 Each PR ticks the boxes it meets and updates statuses here, so the plan changes in the same diff as the code (see the work loop in [AGENTS.md](AGENTS.md)).
 
@@ -59,7 +59,7 @@ Each PR ticks the boxes it meets and updates statuses here, so the plan changes 
 A clean, repeatable foundation every later session builds on.
 
 - **Why:** every later session builds, tests and runs on it; without it, no session can prove its work.
-- **Needs:** Xcode and XcodeGen on the Mac.
+- **Requires:** Xcode and XcodeGen on the Mac.
 - **Prior work:** [PR #32](https://github.com/chtitoon/hutch/pull/32), branch `1-monorepo-scaffold`: the XcodeGen project, the `HutchCore` package with one test, the iOS and root Makefiles, Swift tokens generated from `design/` (before [DESIGN.md](DESIGN.md)), the logo screen and the app icon. Closed, not merged.
 
 #### M1 — Encryption at rest
@@ -71,20 +71,20 @@ Nothing about my items is readable on the device without my key.
 Add, edit, delete and search my items on the phone, behind Face ID.
 
 - **Why:** the inventory is the product; capture, sync and sharing all work on these items.
-- **Needs:** [PR #22](https://github.com/chtitoon/hutch/pull/22)'s decision on location as free text, decided (never merged).
+- **Requires:** [PR #22](https://github.com/chtitoon/hutch/pull/22)'s decision on location as free text, decided (never merged).
 - **Prior work:** [PR #22](https://github.com/chtitoon/hutch/pull/22), branch `2-m1-design-spec`: a screen spec for the item store, written when it was M1 (`apps/ios/design/milestone1.md`), the design canvas export, and two proposed decisions, on location as free text and on the written spec winning over the canvas. Closed, not merged.
 
 #### M3 — Fast capture
 Adding an item is fast enough that I actually catalog my things.
 
 - **Why:** data entry is what kills home-inventory apps ([CONTEXT.md](CONTEXT.md#research-findings-that-shape-the-product)), and the success test is about it.
-- **Needs:** [D5](DECISIONS.md#d5--photo-based-ai-capture) decided (Open today).
+- **Requires:** [D5](DECISIONS.md#d5--photo-based-ai-capture) decided (Open today).
 
 #### M4 — Encrypted sync and recovery
 My inventory survives a lost phone, and the server still learns nothing.
 
 - **Why:** on one phone, losing it loses everything; and losing the only key must never do that either ([non-negotiable 4](AGENTS.md#non-negotiables)).
-- **Needs:** the sync approach in [D3](DECISIONS.md#d3--platform-native-iphone-app--static-website-in-one-monorepo) confirmed (Proposed today).
+- **Requires:** the sync approach in [D3](DECISIONS.md#d3--platform-native-iphone-app--static-website-in-one-monorepo) confirmed (Proposed today).
 
 #### M5 — Organize
 Find things by where they are and what they're worth.
@@ -100,13 +100,13 @@ Final artwork and a fuller design system, alongside the rest.
 Hutch on my own phone.
 
 - **Why:** the success test runs on my phone, with my real things.
-- **Needs:** Apple Developer Program membership ($99/year).
+- **Requires:** Apple Developer Program membership ($99/year).
 
 #### A1 — App Store release
 Hutch public on the App Store.
 
 - **Why:** "At launch" on the site means anyone can get it, not just me.
-- **Needs:** the success test passed.
+- **Requires:** the success test passed.
 
 #### W1 — Website v1
 - **Status:** done, [PR #21](https://github.com/chtitoon/hutch/pull/21)
@@ -189,7 +189,7 @@ Hutch public on the App Store.
 Chosen items on a shelf my circle can see.
 
 - **Why:** lending starts with choosing what to show; a separate key keeps everything else private.
-- **Needs:** [D3](DECISIONS.md#d3--platform-native-iphone-app--static-website-in-one-monorepo)'s Phase 2 sharing platform decided.
+- **Requires:** [D3](DECISIONS.md#d3--platform-native-iphone-app--static-website-in-one-monorepo)'s Phase 2 sharing platform decided.
 
 #### M7 — Circle invites
 Invite the few neighbors I trust.
