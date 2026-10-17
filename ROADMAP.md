@@ -51,7 +51,7 @@ Each PR ticks the boxes it meets and updates statuses here, so the plan changes 
 
 **Goal:** I keep a list of my things on my iPhone, and all of it is encrypted, so only I can read it.
 
-**Order:** scaffold, encryption at rest, local store, fast capture, encrypted sync with recovery, organize, then the website (the App Store needs its privacy policy) and a first TestFlight build; the final logo can happen alongside.
+**Order:** scaffold, encryption at rest, local store, fast capture, encrypted sync with recovery, organize, then the website (the App Store needs its privacy policy), a first TestFlight build and, once the success test passes, the App Store release; the final logo can happen alongside.
 
 **Success test:** 50 real items cataloged within two weeks of fast capture shipping, without forcing it. If not, improve capture before anything else. Don't start Phase 2 until this passes.
 
@@ -62,12 +62,14 @@ Each PR ticks the boxes it meets and updates statuses here, so the plan changes 
 - [ ] Tests assert that nothing the app writes to disk contains plaintext [M1, M2]
 - [ ] Synced payloads are ciphertext only, and tests assert the server can't read them [M4]
 - [ ] Every item is `private`; nothing in Phase 1 can make it lendable or for sale (non-negotiable 2) [M2]
+- [ ] Opening Hutch, or coming back to it, needs Face ID or the device passcode [M2]
 - [ ] Every crypto choice is explained in the PR that makes it (non-negotiable 3) [M1, M4]
 - [ ] No third-party analytics, trackers or SDKs that report anywhere, in the app or on the site (non-negotiable 5) [all]
 
 **Never lose it**
 - [ ] The sync approach is settled in [D3](DECISIONS.md#d3--platform-native-iphone-app--static-website-in-one-monorepo) [M4]
-- [ ] A second device restores everything from a recovery key [M4]
+- [ ] A new iPhone signed into my Apple account gets the key through iCloud Keychain and restores everything ([D21](DECISIONS.md#d21--recovery-icloud-keychain-plus-a-printable-recovery-kit)) [M4]
+- [ ] A printable recovery kit restores everything on a new device without my Apple account (D21) [M4]
 - [ ] Recovery shipped before or with sync, never after (non-negotiable 4) [M4]
 
 **Keep an inventory**
@@ -98,6 +100,9 @@ Each PR ticks the boxes it meets and updates statuses here, so the plan changes 
 - [ ] The privacy policy matches what the app actually does [T1]
 - [ ] A signed build on TestFlight, installed on my phone [T1]
 - [ ] The App Store Connect API key is a GitHub secret, never in the repo [T1]
+- [ ] The name is revisited before going public, as D1 requires [A1]
+- [ ] Hutch is live on the App Store; its App Privacy label says no data is collected [A1]
+- [ ] The site's "Coming to iPhone" pill becomes the App Store link [A1]
 
 **Proven**
 - [ ] The success test passed
@@ -107,11 +112,12 @@ Each PR ticks the boxes it meets and updates statuses here, so the plan changes 
 
 - **M0 — Monorepo scaffold on the Mac** · next. A clean, repeatable foundation: the XcodeGen project (`app.myhutch.ios`, iOS 26), a Swift package with a first test, the four `make` tasks, an empty screen in generated colors. *Why:* every later session builds, tests and runs on it; without it, no session can prove its work. *Depends on:* Xcode and XcodeGen on the Mac. *Prior work:* [PR #32](https://github.com/chtitoon/hutch/pull/32), branch `1-monorepo-scaffold`: the XcodeGen project, the `HutchCore` package with one test, the iOS and root Makefiles, Swift tokens generated from `design/` (before DESIGN.md), the logo screen and the app icon. Closed, not merged.
 - **M1 — Encryption at rest** · later. Nothing about my items is readable on the device without my key. *Why:* zero-knowledge starts on the device (D2): an inventory is a map of my home. It comes before the store so there's never an unencrypted one, not even briefly, and nothing to migrate later. *Depends on:* M0.
-- **M2 — Local item store** · later. Add, edit, delete and search my items on the phone, written only through M1's encryption. *Why:* the inventory is the product; capture, sync and sharing all work on these items. *Depends on:* M1; dark-mode color roles in `DESIGN.md` (D15, D17); PR #22's decision on location as free text, confirmed. *Prior work:* [PR #22](https://github.com/chtitoon/hutch/pull/22), branch `2-m1-design-spec`: a screen spec for the item store, written when it was M1 (`apps/ios/design/milestone1.md`), the design canvas export, and two proposed decisions, on location as free text and on the written spec winning over the canvas. Closed, not merged.
+- **M2 — Local item store** · later. Add, edit, delete and search my items on the phone, written only through M1's encryption, behind Face ID. *Why:* the inventory is the product; capture, sync and sharing all work on these items. *Depends on:* M1; dark-mode color roles in `DESIGN.md` (D15, D17); PR #22's decision on location as free text, confirmed. *Prior work:* [PR #22](https://github.com/chtitoon/hutch/pull/22), branch `2-m1-design-spec`: a screen spec for the item store, written when it was M1 (`apps/ios/design/milestone1.md`), the design canvas export, and two proposed decisions, on location as free text and on the written spec winning over the canvas. Closed, not merged.
 - **M3 — Fast capture** · later. Adding an item is fast enough that I actually catalog my things. *Why:* data entry is what kills home-inventory apps (CONTEXT.md), and the success test is about it. *Depends on:* M2; [D5](DECISIONS.md#d5--photo-based-ai-capture) (Open).
 - **M4 — Encrypted sync and recovery** · later. My inventory survives a lost phone, and the server still learns nothing. *Why:* with the data on one phone, losing it loses everything, and losing the only key must never do that either (non-negotiable 4). *Depends on:* M2; the sync approach in [D3](DECISIONS.md#d3--platform-native-iphone-app--static-website-in-one-monorepo) (Proposed).
 - **M5 — Organize** · later. Find things by where they are and what they're worth. *Why:* a list only helps if I can find the ladder by where it is, and value, receipts and warranties are what I look things up for. *Depends on:* M2.
 - **T1 — First TestFlight build** · later. Hutch on my own phone. *Why:* the success test runs on my phone, with my real things. *Depends on:* Apple Developer Program membership ($99/year).
+- **A1 — App Store release** · later. Hutch public on the App Store. *Why:* "At launch" on the site means anyone can get it, not just me. *Depends on:* T1; the success test passed; B1's app icon.
 - **B1 — Final logo and design tokens** · later, alongside the rest. Final artwork and a fuller design system. *Why:* the app needs an icon before TestFlight, and the logo files are AI-traced. *Depends on:* nothing.
 - **W1 — Website v1** · done. *Why:* the App Store requires a privacy policy and a support page. [PR #21](https://github.com/chtitoon/hutch/pull/21)
 - **W2 — Website performance budgets** · done. *Why:* speed was a value (D14) but nothing checked it (D19). [PR #35](https://github.com/chtitoon/hutch/pull/35)

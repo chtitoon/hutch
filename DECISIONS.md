@@ -184,3 +184,13 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **What's lost:** triage from the GitHub app on my phone, and notifications on issues. "Closes #" no longer marks work done: the ROADMAP.md diff in each PR does, readable in the PR's file changes. Issue numbers in older PRs and decisions (#9, #36…) still resolve on GitHub, as history.
 
 **How to reverse:** create a milestone per phase from its section and an issue per open milestone, with its tagged boxes as the issue's checklist, move Open decisions back to `decision` issues if wanted, restore D10's work loop in AGENTS.md, and delete ROADMAP.md's prose (the front matter can stay if the website reads it).
+
+## D21 — Recovery: iCloud Keychain, plus a printable recovery kit
+**Status:** Proposed (Oct 2026). I chose the approach; confirm the wording of non-negotiable 1 below.
+
+**What:** the inventory key is stored as a synchronizable Keychain item, so iCloud Keychain carries it to a new iPhone signed into my Apple account and restore just works. A printable recovery kit (a recovery key, 1Password-style) restores everything without the Apple account, if that is lost too. Both are Phase 1's definition of done (M4, ROADMAP.md); the cryptographic details are M4's to design and explain (non-negotiable 3).
+
+**Why:** a kit alone means a lost kit and a lost phone lose everything, and most people never print it. iCloud Keychain is end-to-end encrypted, so Apple can't read the key, and it costs nothing to run. The kit covers the case where the Apple account is gone.
+
+**Conflict to resolve:** AGENTS.md non-negotiable 1 says keys never leave the device. Here the key leaves it, end-to-end encrypted, through iCloud Keychain. Proposed wording: "Plaintext item data, photos and names never leave the device; keys leave it only end-to-end encrypted, through iCloud Keychain." Until confirmed, M4 can't ship this.
+
