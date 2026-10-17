@@ -30,7 +30,7 @@ images:
 
 # Lighthouse, mobile preset (emulated mid-range phone, simulated slow 4G), on every page.
 lighthouse:
-  runs: 7                      # per side, alternating; medians compared, except score and CLS: worst run (see "How the numbers were set")
+  runs: 5                      # per side, alternating; medians compared, except score and CLS: worst run (see "How the numbers were set")
   limits:                      # a PR fails if any page's median is past these (see "Lighthouse limits")
     score: 99
     fcp_ms: 1500
@@ -82,7 +82,7 @@ Budgets sit 10 to 25% above what the site measured when they were introduced (se
 The comparison settings come from 60 Lighthouse runs of the unchanged site (3 batches × 5 runs × 4 pages, mobile preset, 2026-10-17):
 
 - **Medians barely move.** Across batches, each page's median FCP and LCP varied by under 1 ms (0.05%); score, TBT and page weight didn't change at all. Single runs strayed by up to 6 ms (0.3%), and an earlier trial run reported `/404` painting 580 ms early: single runs can mislead, so only medians are compared.
-- **CLS flips, so it counts its worst run.** `/support` shifts by 0.071 when the web font arrives after first paint and not at all when it arrives before. That happened in 13 of 15 runs with the stylesheet as a file, and in about half once it was inlined. A median of a coin flip is noise, so CLS, and the score that moves with it, take the worst run: a shift that happens on some loads still happens to real visitors. With a 50% shift, **7 runs** miss it less than 1% of the time (5 runs: 3%). The shift itself was fixed at the source with fallback fonts sized like the web fonts (#36); the worst-run rule stays so a new one is caught.
+- **CLS flips, so it counts its worst run.** `/support` shifts by 0.071 when the web font arrives after first paint and not at all when it arrives before. That happened in 13 of 15 runs with the stylesheet as a file, and in about half once it was inlined. A median of a coin flip is noise, so CLS, and the score that moves with it, take the worst run: a shift that happens on some loads still happens to real visitors. With a 50% shift, 5 runs miss it 3% of the time (7 runs: under 1%). The check used 7 while that shift was live; it was fixed at the source with fallback fonts sized like the web fonts (#36), so it now runs **5**, about 30% faster. The medians above came from 5-run batches, so they lose nothing. The worst-run rule stays so a new shift is caught, though a rare one may take a second PR to show.
 - **Noise margin 2%** is about 6× the worst single-run timing spread. Lighthouse simulates the phone and network, so most machine speed cancels out, but the GitHub runner isn't the Mac these were measured on and the margin leaves room for that. A PR that changes no page is itself a main-versus-main test: if its check shows changes, the margin is too tight.
 - **Thresholds** are the smallest change worth reporting even when noise is lower: 1 score point (single runs moved by exactly 1), 50 ms of paint or blocking time, 0.01 of layout shift, 2 KB of transferred weight. Content growth is fine; the page budgets cap the total.
 
