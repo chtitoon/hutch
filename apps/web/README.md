@@ -13,12 +13,9 @@ Static website: what Hutch is, the App Store link, privacy policy and support pa
 | `npm run new-page -- <slug> "<Title>"` | Start a Markdown page at `/<slug>` that already meets `PERFORMANCE.md` |
 | `node check-performance.mjs --report` | After a build, print each page's bytes by kind (for setting budgets) |
 
-## Performance
-
-`PERFORMANCE.md` is the single source of the site's performance rules: read it before adding a page, an asset or a feature. Its budgets run in `npm test`, so Cloudflare refuses to deploy a page that breaks one. Every PR touching `apps/web/` or `design/` also runs Lighthouse on main and the PR in GitHub Actions (`.github/workflows/web-performance.yml`): the check fails on a slowdown, and a comment appears when the PR makes the site faster.
-
 ## Where things live
 
+- `PERFORMANCE.md` — performance budgets and rules, checked by `npm test` and by the Lighthouse workflow on PRs (`.github/workflows/web-performance.yml`).
 - `src/pages/` — one file per page. Text pages (`privacy.md`, `support.md`) are Markdown.
 - `src/layouts/` — the shared header and footer (`Base.astro`) and the text-page layout (`Prose.astro`).
 - `src/components/AppStoreLink.astro` — the one place the App Store link lives; set its URL once Hutch is listed.
