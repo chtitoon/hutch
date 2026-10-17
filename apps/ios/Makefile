@@ -1,5 +1,5 @@
 # iOS tasks (AGENTS.md): setup, test, run, tokens. Each runs non-interactively and fails loudly.
-# Pick a simulator by name with SIMULATOR="iPhone 17"; by default a booted iPhone, else the first available.
+# The simulator window is DeviceHub from Xcode 27 on (Simulator before). Pick a simulator by name with SIMULATOR="iPhone 17"; by default a booted iPhone, else the first available.
 # Recipes start with `set -euo pipefail`: macOS ships GNU make 3.81, which ignores .SHELLFLAGS.
 SHELL := /bin/bash
 
@@ -37,7 +37,8 @@ run: project
 	xcodebuild build -quiet -project $(PROJECT) -scheme $(SCHEME) -derivedDataPath $(DERIVED) \
 		-destination "id=$$udid"; \
 	xcrun simctl boot "$$udid" 2>/dev/null || true; \
-	open -b com.apple.iphonesimulator 2>/dev/null || echo "(Couldn't open the Simulator window; the app is running in the simulator anyway.)"; \
+	open "$$(xcode-select -p)/../Applications/DeviceHub.app" 2>/dev/null || open -b com.apple.iphonesimulator 2>/dev/null \
+		|| echo "(Couldn't open DeviceHub or Simulator; the app is running in the simulator anyway.)"; \
 	xcrun simctl install "$$udid" $(APP); \
 	xcrun simctl launch "$$udid" app.myhutch.ios
 
