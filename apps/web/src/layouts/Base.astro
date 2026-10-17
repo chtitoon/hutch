@@ -1,9 +1,7 @@
 ---
-// Self-hosted fonts (D15): bundled into dist/, so no request leaves myhutch.app.
-import '@fontsource-variable/bricolage-grotesque/opsz.css';
-import '@fontsource/instrument-sans/400.css';
-import '@fontsource/instrument-sans/500.css';
-import '@fontsource/instrument-sans/600.css';
+// Self-hosted fonts (D15): bundled into dist/, so no request leaves myhutch.app. Cut down to
+// what the site uses by fonts.mjs.
+import '../styles/fonts.css';
 import '../styles/tokens.css';
 import '../styles/site.css';
 import Logo from '../components/Logo.astro';
