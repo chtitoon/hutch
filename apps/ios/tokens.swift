@@ -105,9 +105,9 @@ func imageSet(_ name: String) -> String {
 // MARK: App icon
 
 // design/light/icon.svg is the mark on a background square, painted the same way as the logo.
-// The icon redraws its shapes in token colors: sage on the background, and in dark mode the dark
-// sage on the dark background. The tinted variant is the mark alone, in white, on transparency,
-// for iOS to tint. Each is rendered to a 1024-point PNG, the only size iOS needs.
+// The icon redraws its shapes in token colors: the mark in sage-on-deep on the forest, in light and
+// dark mode alike, like the app's logo screen. The tinted variant is the mark alone, in white, on
+// transparency, for iOS to tint. Each is rendered to a 1024-point PNG, the only size iOS needs.
 guard let iconSVG = try? String(contentsOf: design.appending(path: "light/icon.svg"), encoding: .utf8)
 else { fail("Can't read design/light/icon.svg") }
 let iconPaths = iconSVG.matches(of: #/<path[^>]* d="([^"]*)"/#).map { String($0.1) }
@@ -138,6 +138,7 @@ func iconImage(background: String?, mark: String) -> Data {
     guard CGImageDestinationFinalize(output) else { fail("Can't encode the app icon") }
     return png as Data
 }
+let forestIcon = iconImage(background: hex("color", "deep"), mark: hex("color", "sage-on-deep"))
 let appIconSet = """
 {
   "images" : [
@@ -206,8 +207,8 @@ let outputs: [(path: String, content: Data)] = [
     ("\(assets)/LogoWord.imageset/Contents.json", Data(imageSet("LogoWord").utf8)),
     ("\(assets)/LogoWord.imageset/LogoWord.svg", Data(logoImage(word).utf8)),
     ("\(assets)/AppIcon.appiconset/Contents.json", Data(appIconSet.utf8)),
-    ("\(assets)/AppIcon.appiconset/AppIcon.png", iconImage(background: hex("color", "background"), mark: hex("color", "sage"))),
-    ("\(assets)/AppIcon.appiconset/AppIcon-dark.png", iconImage(background: hex("color-dark", "background"), mark: hex("color-dark", "sage"))),
+    ("\(assets)/AppIcon.appiconset/AppIcon.png", forestIcon),
+    ("\(assets)/AppIcon.appiconset/AppIcon-dark.png", forestIcon),
     ("\(assets)/AppIcon.appiconset/AppIcon-tinted.png", iconImage(background: nil, mark: "#FFFFFF")),
 ]
 

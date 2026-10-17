@@ -14,7 +14,7 @@ Status: logo chosen (D17, Oct 2026); palette proposed in D15 (Oct 2026).
 - **Mark:** a rounded, line-drawn house with a keyhole in the middle, in sage. Home first; the keyhole says it's yours to open.
 - **Wordmark:** lowercase **hutch** in a bold, geometric, contemporary sans-serif, in ink, to the right of the mark.
 - **Files:** [`light/logo.svg`](light/logo.svg) (on the warm off-white) and [`dark/logo.svg`](dark/logo.svg), [`dark/logo-transparent.svg`](dark/logo-transparent.svg) (on night forest). The website draws it inline from tokens (`apps/web/src/components/Logo.astro`): mark `color.sage`, wordmark `color.ink`, so the same shape works in both modes.
-- **App icon:** the house-and-keyhole mark alone (`light/icon.svg`), in `sage` on `background`. The iOS app generates its icon from that file (`make tokens`), with a dark variant (dark sage on night forest) and a tinted one.
+- **App icon:** the house-and-keyhole mark alone (`light/icon.svg`), in `sage-on-deep` on the `deep` forest, in light and dark mode. The iOS app generates its icon from that file (`make tokens`), plus a tinted variant.
 
 This replaced the earlier direction, a door left ajar carved into the "h" of the wordmark (#9), which was never drawn to a finished state.
 
