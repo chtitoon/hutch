@@ -34,7 +34,7 @@ lighthouse:
   limits:                      # a PR fails if any page's median is past these (see "Lighthouse limits")
     score: 99
     fcp_ms: 1500
-    lcp_ms: 2500
+    lcp_ms: 1500
     tbt_ms: 200
     cls: 0.1
 
@@ -72,7 +72,7 @@ The Actions check fails when any page is past a Lighthouse limit or when a metri
 - **JavaScript (0 KB).** Astro ships none by default (D14), and the site has never needed it. Script is the main cause of Total Blocking Time and of most tracking; zero keeps both at zero. A page that truly needs a script raises its own limit under `pages`, with the reason in the PR.
 - **Images.** Width and height let the browser reserve space, so nothing jumps as images arrive (Cumulative Layout Shift). SVG, WebP and AVIF are several times smaller than PNG or JPEG for the same quality. A per-image cap catches an unexported camera photo. The 4 KB page budget leaves room for icons only: the first real photo means raising it deliberately.
 - **Self only.** Every request to another origin costs a DNS lookup, a connection and a TLS handshake, and tells a third party someone visited. "No trackers" (AGENTS.md) is only true if nothing loads from anywhere else: no font CDNs, no embeds, no analytics.
-- **Lighthouse limits.** LCP, TBT and CLS use PageSpeed Insights' "good" thresholds for the lab metrics. Score and FCP are stricter, set from what the site measures (100 and 1.20 s on every page after the fonts were cut down) so a regression fails before it's merely "good": score 99 (the worst run must still be near perfect) and FCP 1.5 s (PageSpeed's "good" is 1.8 s). The metrics: First Contentful Paint (when something first appears), Largest Contentful Paint (when the main content appears), Total Blocking Time (how long the page is too busy to respond) and Cumulative Layout Shift (how much things jump). Budgets keep bytes down; these catch the rest, such as a render-blocking resource or a layout that shifts as fonts load.
+- **Lighthouse limits.** TBT and CLS use PageSpeed Insights' "good" thresholds for the lab metrics. Score, FCP and LCP are stricter, set from what the site measures (score 100, FCP and LCP 1.20 s on every page after the fonts were cut down) so a regression fails before it's merely "good": score 99 (the worst run must still be near perfect), FCP and LCP 1.5 s (PageSpeed's "good": 1.8 s and 2.5 s). LCP equals FCP on every page because the first paint already shows the headline; a hero image would separate them and need its own look at this limit. The metrics: First Contentful Paint (when something first appears), Largest Contentful Paint (when the main content appears), Total Blocking Time (how long the page is too busy to respond) and Cumulative Layout Shift (how much things jump). Budgets keep bytes down; these catch the rest, such as a render-blocking resource or a layout that shifts as fonts load.
 - **Comparison against main.** Limits catch a bad page; comparison catches a slow drift, such as ten small PRs that each add 50 ms. Thresholds stop a single noisy run from failing a PR or earning a comment.
 
 ## How the numbers were set
