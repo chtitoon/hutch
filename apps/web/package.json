@@ -8,10 +8,12 @@
   "scripts": {
     "setup": "npm ci",
     "tokens": "node tokens.mjs",
-    "lint:design": "node design-lint.mjs",
-    "check:css": "node check-css.mjs",
     "build": "astro build",
-    "test": "node design-lint.mjs && node tokens.mjs --check && node check-css.mjs && node og.mjs --check && astro build && html-validate \"dist/**/*.html\" && node check-links.mjs && node check-performance.mjs",
+    "design:lint": "npm run design:lint:md && npm run design:lint:css",
+    "design:lint:md": "node design-lint.mjs",
+    "design:lint:css": "node check-css.mjs",
+    "web:build": "node tokens.mjs --check && node og.mjs --check && astro build && html-validate \"dist/**/*.html\" && node check-links.mjs && node check-performance.mjs",
+    "test": "npm run design:lint && npm run web:build",
     "run": "astro dev",
     "og": "node og.mjs"
   },

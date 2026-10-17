@@ -1,0 +1,35 @@
+# Checks every pull request and push to main against the design system: the root DESIGN.md lints
+# clean (references, contrast in light and dark) and the website's styles use only its tokens.
+# A required check on main, so it runs on every PR with no path filter: a required check that
+# never starts would block unrelated PRs. On Linux it takes under a minute.
+name: Design
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: validate-design-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: apps/web
+
+jobs:
+  design:
+    name: Validate DESIGN.md
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: apps/web/.node-version
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm ci
+      - run: npm run design:lint

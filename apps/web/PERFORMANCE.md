@@ -1,6 +1,6 @@
 ---
 # Read by check-performance.mjs (in `npm test`, Cloudflare's deploy gate) and compare-performance.mjs
-# (the Lighthouse check on pull requests). Change a number here and both follow.
+# (the Validate Page Speed check on pull requests). Change a number here and both follow.
 
 # Per page, in KB as the browser downloads them before compression. Every page gets `default`;
 # `pages` can raise a limit for one page (key: its file in dist/, e.g. index.html). Measured

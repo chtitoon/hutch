@@ -1,13 +1,13 @@
 /* Every color, type style, radius and spacing value here comes from tokens.css,
    generated from the root DESIGN.md. See apps/web/DESIGN.md for the rules;
-   `npm run check:css` enforces them. Device geometry (the phone's corner radii)
+   `npm run design:lint:css` enforces them. Device geometry (the phone's corner radii)
    and small component internals are local, as listed there. */
 
 /* Fallbacks sized like the web fonts, so text keeps its place when they swap in (#36): Arial
    (iPhone, Mac, Windows) or its metric twin Liberation Sans (Linux), scaled to each font's average
    width, with its line metrics. DESIGN.md lists them right after each web font. Values from the
    font files via @capsizecss/unpack, using the formula Astro and Next.js use; recompute if a font
-   changes. They only resize local fonts, so check:css allows them. */
+   changes. They only resize local fonts, so design:lint:css allows them. */
 @font-face {
   font-family: "Instrument Sans Fallback";
   src: local("Arial"), local("ArialMT"), local("Liberation Sans");
