@@ -17,12 +17,12 @@ This repo is the project's only memory. When a conversation produces a decision,
 
 Work is planned in `ROADMAP.md` (D20): each **phase** has a "Done when" list (its definition of done), and each **milestone** (M0, W1…) is one unit of work with a "Why"; the boxes that link to a milestone are what it must deliver. Open questions are **Open** or **Proposed** entries in `DECISIONS.md`, not milestones.
 
-1. **Find the work.** In `ROADMAP.md`, take the earliest phase's first milestone marked **next** that isn't blocked and doesn't depend on a decision marked **Open** or **Proposed**. If I asked for something else, do that instead.
+1. **Find the work.** In `ROADMAP.md`, take the earliest phase's first milestone that isn't done, in progress or blocked, whose dependencies are done, and that doesn't depend on a decision marked **Open** or **Proposed**. If I asked for something else, do that instead.
 2. **Check it's unblocked.** If it depends on a decision marked **Proposed** or **Open** in `DECISIONS.md`, stop and ask. Record the answer in `DECISIONS.md`.
 3. **Confirm the slice.** Restate the boxes that link to the milestone in one or two lines and say what you'll do this session. One milestone, or one clear slice of one, per session.
 4. **Build on a branch** named `<milestone-id>-<short-name>` (e.g. `m2-item-store`), with tests.
 5. **Prove it.** Green `make test` for every app you touched, plus snapshot tests for UI work (see Reviewing UI changes).
-6. **Open a PR** that names the milestone, summarizes the change in a few lines, says how to check it, and records any new decision in `DECISIONS.md`. In the same PR, update `ROADMAP.md`: tick the boxes it meets and update the milestone's status (when all its boxes are ticked, mark it **done** with the PR link and mark the following milestone **next**); when a phase starts or finishes, update its status in the front matter too. Never tick a box the PR doesn't prove; a box that turns out wrong is reworded in the same PR, and the PR says why.
+6. **Open a PR** that names the milestone, summarizes the change in a few lines, says how to check it, and records any new decision in `DECISIONS.md`. In the same PR, update `ROADMAP.md`: tick the boxes it meets and set the milestone's status: **in progress** with the PR link while boxes remain, **done** with the PR link when all are ticked; when a phase starts or finishes, update its status in the front matter too. Never tick a box the PR doesn't prove; a box that turns out wrong is reworded in the same PR, and the PR says why.
 7. **Never merge.** I review and merge, usually from my phone.
 8. **Report briefly:** what changed, how to check it, what's next.
 

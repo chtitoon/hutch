@@ -40,7 +40,7 @@ The plan for Hutch: three phases, each with its goal, what makes it done, and th
 
 - **Milestones** are the road, in build order: each has a goal, a status, why we need it, and what it depends on. Its detail (screens, tasks) is worked out when it starts, not here.
 - **Done when** is the phase's definition of done: every box ticked and the success test passed. Each box ends with a link to the milestone that delivers it, and a milestone is done when all of its boxes are ticked.
-- **Status:** milestones are `done`, `next` (ready to start), `later` or `blocked` (waiting on something outside the repo); phases are `done`, `in-progress` or `planned`, in the front matter above.
+- **Status** is written only when it's news: `done` or `in progress`, with the PR, or `blocked`, with why. A milestone without one hasn't started. What's next isn't marked: it's the first milestone not done whose dependencies are done. Phases are `done`, `in-progress` or `planned`, in the front matter above.
 - Open questions are **Open** or **Proposed** entries in [DECISIONS.md](DECISIONS.md), linked from what depends on them.
 
 Each PR ticks the boxes it meets and updates statuses here, so the plan changes in the same diff as the code (see the work loop in [AGENTS.md](AGENTS.md)).
@@ -58,7 +58,6 @@ Each PR ticks the boxes it meets and updates statuses here, so the plan changes 
 #### M0 — Monorepo scaffold on the Mac
 A clean, repeatable foundation every later session builds on.
 
-- **Status:** next
 - **Why:** every later session builds, tests and runs on it; without it, no session can prove its work.
 - **Depends on:** Xcode and XcodeGen on the Mac.
 - **Prior work:** [PR #32](https://github.com/chtitoon/hutch/pull/32), branch `1-monorepo-scaffold`: the XcodeGen project, the `HutchCore` package with one test, the iOS and root Makefiles, Swift tokens generated from `design/` (before DESIGN.md), the logo screen and the app icon. Closed, not merged.
@@ -66,14 +65,12 @@ A clean, repeatable foundation every later session builds on.
 #### M1 — Encryption at rest
 Nothing about my items is readable on the device without my key.
 
-- **Status:** later
 - **Why:** an inventory is a map of my home (D2). Built before the store, so there's never an unencrypted one and nothing to migrate.
 - **Depends on:** [M0](#m0--monorepo-scaffold-on-the-mac)
 
 #### M2 — Local item store
 Add, edit, delete and search my items on the phone, behind Face ID.
 
-- **Status:** later
 - **Why:** the inventory is the product; capture, sync and sharing all work on these items.
 - **Depends on:** [M1](#m1--encryption-at-rest); dark-mode color roles in `DESIGN.md` (D15, D17); PR #22's decision on location as free text.
 - **Prior work:** [PR #22](https://github.com/chtitoon/hutch/pull/22), branch `2-m1-design-spec`: a screen spec for the item store, written when it was M1 (`apps/ios/design/milestone1.md`), the design canvas export, and two proposed decisions, on location as free text and on the written spec winning over the canvas. Closed, not merged.
@@ -81,42 +78,36 @@ Add, edit, delete and search my items on the phone, behind Face ID.
 #### M3 — Fast capture
 Adding an item is fast enough that I actually catalog my things.
 
-- **Status:** later
 - **Why:** data entry is what kills home-inventory apps (CONTEXT.md), and the success test is about it.
 - **Depends on:** [M2](#m2--local-item-store); [D5](DECISIONS.md#d5--photo-based-ai-capture) (Open).
 
 #### M4 — Encrypted sync and recovery
 My inventory survives a lost phone, and the server still learns nothing.
 
-- **Status:** later
 - **Why:** on one phone, losing it loses everything; and losing the only key must never do that either (non-negotiable 4).
 - **Depends on:** [M2](#m2--local-item-store); the sync approach in [D3](DECISIONS.md#d3--platform-native-iphone-app--static-website-in-one-monorepo) (Proposed).
 
 #### M5 — Organize
 Find things by where they are and what they're worth.
 
-- **Status:** later
 - **Why:** a list only helps if I can find the ladder by where it is; value, receipts and warranties are what I look things up for.
 - **Depends on:** [M2](#m2--local-item-store)
 
 #### T1 — First TestFlight build
 Hutch on my own phone.
 
-- **Status:** later
 - **Why:** the success test runs on my phone, with my real things.
 - **Depends on:** Apple Developer Program membership ($99/year).
 
 #### A1 — App Store release
 Hutch public on the App Store.
 
-- **Status:** later
 - **Why:** "At launch" on the site means anyone can get it, not just me.
 - **Depends on:** [T1](#t1--first-testflight-build); the success test passed; [B1](#b1--final-logo-and-design-tokens)'s app icon.
 
 #### B1 — Final logo and design tokens
 Final artwork and a fuller design system, alongside the rest.
 
-- **Status:** later
 - **Why:** the app needs an icon before TestFlight, and the logo files are AI-traced.
 - **Depends on:** nothing.
 
@@ -200,28 +191,24 @@ Final artwork and a fuller design system, alongside the rest.
 #### M6 — Lendable shelf
 Chosen items on a shelf my circle can see.
 
-- **Status:** later
 - **Why:** lending starts with choosing what to show; a separate key keeps everything else private.
 - **Depends on:** Phase 1 done; [D3](DECISIONS.md#d3--platform-native-iphone-app--static-website-in-one-monorepo)'s Phase 2 sharing platform.
 
 #### M7 — Circle invites
 Invite the few neighbors I trust.
 
-- **Status:** later
 - **Why:** trust comes from people I already know, not strangers nearby (CONTEXT.md).
 - **Depends on:** [M6](#m6--lendable-shelf)
 
 #### M8 — Loans
 Lending is easy to request and hard to forget.
 
-- **Status:** later
 - **Why:** if lending is a chore or things don't come back, neighbors stop lending.
 - **Depends on:** [M7](#m7--circle-invites)
 
 #### M9 — Revocation
 Removing someone actually removes their access.
 
-- **Status:** later
 - **Why:** without a new key, someone I removed could still read what I add afterward.
 - **Depends on:** [M7](#m7--circle-invites)
 
@@ -250,21 +237,18 @@ Removing someone actually removes their access.
 #### M10 — eBay connect
 Connect my eBay account.
 
-- **Status:** later
 - **Why:** listing and pricing both go through it.
 - **Depends on:** Phase 1 done.
 
 #### M11 — Sell an item
 Sell straight from my inventory.
 
-- **Status:** later
 - **Why:** selling shouldn't mean retyping an item, or handing my inventory to a server.
 - **Depends on:** [M10](#m10--ebay-connect)
 
 #### M12 — What's it worth?
 Know what my things would fetch.
 
-- **Status:** later
 - **Why:** that's what tells me something is worth selling.
 - **Depends on:** [M10](#m10--ebay-connect)
 
