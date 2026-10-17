@@ -3,7 +3,7 @@
 # resolve and every page fits the file-size budgets in apps/web/PERFORMANCE.md.
 # A required check on main, so it runs on every PR with no path filter: a required check that
 # never starts would block unrelated PRs. On Linux it takes under a minute.
-name: Validate Website
+name: Web Build
 
 on:
   pull_request:
@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: validate-website-${{ github.ref }}
+  group: web-build-${{ github.ref }}
   cancel-in-progress: true
 
 defaults:
@@ -23,6 +23,7 @@ defaults:
 
 jobs:
   website:
+    name: Website
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5

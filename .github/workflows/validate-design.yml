@@ -22,6 +22,7 @@ defaults:
 
 jobs:
   design:
+    name: Design
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
