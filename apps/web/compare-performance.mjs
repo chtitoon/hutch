@@ -1,9 +1,10 @@
 // Compares Lighthouse runs of main and a pull request, using the limits in PERFORMANCE.md's front matter.
 // `node compare-performance.mjs <main-dir> <pr-dir> [--comment <file>]` reads every lhr-*.json in each
 // directory (as written by run-lighthouse.mjs), takes each page's median per metric (score and CLS: worst run), and
-// prints a Markdown report.
+// prints a report.
 // Exits 1 if the PR breaks a limit or regresses beyond the noise margin. Writes the PR comment to
-// <file> only when something got faster and nothing got slower.
+// <file> only when something got faster and nothing got slower. The report is plain text, readable
+// in the job log; the workflow puts it in a code block for the run summary.
 // `node compare-performance.mjs --runs` prints how many runs to collect per side.
 // `node compare-performance.mjs --changed <main-dist> <pr-dist>` prints the PR's pages that differ from
 // main, one per line, so unchanged pages (identical files, identical results) aren't measured.
@@ -78,41 +79,51 @@ const pr = load(prDir);
 
 const failures = [];
 const gains = [];
-const rows = [];
+const blocks = [];
+const pretty = (page) => page.replace(/(index)?\.html$/, '') || '/';
 
+// Plain text, one short block per page, so it reads in the job log and on a phone. Only changes and
+// broken limits get their own line; everything else folds into "same:".
 for (const [page, now] of Object.entries(pr).sort()) {
-  for (const [m, limit] of Object.entries(lighthouse.limits)) {
-    const breached = metrics[m].higherIsBetter ? now[m] < limit : now[m] > limit;
-    const exact = (v) => (m.endsWith('_ms') ? `${Math.round(v)} ms` : metrics[m].format(v)); // 1802 ms, not 1.80 s
-    if (breached) failures.push(`${page}: ${metrics[m].label} is ${exact(now[m])}, past the ${exact(limit)} limit (rule: lighthouse.limits.${m})`);
-  }
   const before = main[page];
-  const cells = [];
+  const lines = [];
+  const same = [];
   for (const m of Object.keys(metrics)) {
-    let status = '';
+    const { short, format, higherIsBetter } = metrics[m];
+    const limit = lighthouse.limits[m];
+    const exact = (v) => (m.endsWith('_ms') ? `${Math.round(v)} ms` : format(v)); // 1802 ms, not 1.80 s
+    const breached = limit !== undefined && (higherIsBetter ? now[m] < limit : now[m] > limit);
+    let change = '';
     if (before) {
       // A change counts only when it's bigger than both the metric's threshold and the noise margin.
       const margin = Math.max(spec.compare.thresholds[m], spec.compare.noise_margin * Math.abs(before[m]));
-      const worse = metrics[m].higherIsBetter ? before[m] - now[m] : now[m] - before[m];
-      status = worse > margin ? ' 🔴' : -worse > margin ? ' 🟢' : '';
-      if (status === ' 🔴') failures.push(`${page}: ${metrics[m].label} went from ${metrics[m].format(before[m])} to ${metrics[m].format(now[m])}, beyond the noise margin (rule: compare.thresholds.${m})`);
-      if (status === ' 🟢') gains.push({ page, m, before: before[m], now: now[m] });
+      const worse = higherIsBetter ? before[m] - now[m] : now[m] - before[m];
+      change = worse > margin ? 'slower' : -worse > margin ? 'faster' : '';
     }
-    cells.push(before ? `${metrics[m].format(before[m])} → ${metrics[m].format(now[m])}${status}` : metrics[m].format(now[m]));
+    const value = before && change ? `${format(before[m])} → ${format(now[m])}` : format(now[m]);
+    if (breached) {
+      lines.push(`  ❌ ${short} ${exact(now[m])}, past the ${exact(limit)} limit`);
+      failures.push(`${page} ${m} limit`);
+    } else if (change === 'slower') {
+      lines.push(`  🔴 ${short} ${value}`);
+    } else if (change === 'faster') {
+      lines.push(`  🟢 ${short} ${value}`);
+    } else {
+      same.push(`${short} ${value}`);
+    }
+    if (change === 'slower') failures.push(`${page} ${m} slower`);
+    if (change === 'faster') gains.push({ page, m, before: before[m], now: now[m] });
   }
-  rows.push(`| ${page}${before ? '' : ' (new)'} | ${cells.join(' | ')} |`);
+  if (same.length) lines.push(`  ${lines.length ? 'same' : 'all'}: ${same.join(' · ')}`);
+  blocks.push(`${pretty(page)}${before ? '' : ' (new page)'}`, ...lines, '');
 }
 
+const verdict = failures.length ? '❌ Failed' : gains.length ? '🟢 Faster than main' : 'On par with main';
 console.log([
-  `### Lighthouse, mobile, median of ${lighthouse.runs} runs (score and CLS: worst run)`,
+  `${verdict}. Lighthouse mobile, main → PR, median of ${lighthouse.runs} runs (score and CLS: worst run).`,
   '',
-  `main → PR. 🟢 faster, 🔴 slower, beyond the noise margin.`,
-  '',
-  `| Page | ${Object.values(metrics).map((d) => d.short).join(' | ')} |`,
-  `|---|${Object.keys(metrics).map(() => '---').join('|')}|`,
-  ...rows,
-  '',
-  failures.length ? `**Failed:**\n${failures.map((f) => `- ${f}`).join('\n')}` : gains.length ? '**Faster than main.**' : '**On par with main.**',
+  ...blocks,
+  ...(failures.length ? ['❌ past a limit (lighthouse.limits) · 🔴 slower than main beyond the noise margin (compare.thresholds), in apps/web/PERFORMANCE.md'] : []),
 ].join('\n'));
 
 if (commentFile && gains.length && !failures.length) {
@@ -123,7 +134,7 @@ if (commentFile && gains.length && !failures.length) {
     `Lighthouse mobile, median of ${lighthouse.runs} runs, vs main.`,
     ...Object.entries(byPage).flatMap(([page, list]) => [
       '',
-      `**${page.replace(/(index)?\.html$/, '') || '/'}**`,
+      `**${pretty(page)}**`,
       ...list.map(({ m, before, now }) => `- ${metrics[m].label}: ${metrics[m].format(before)} → ${metrics[m].format(now)}`),
     ]),
   ].join('\n') + '\n');

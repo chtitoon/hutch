@@ -75,10 +75,10 @@ jobs:
         if: steps.pages.outputs.pages != ''
         run: |
           set +e
-          node pr/apps/web/compare-performance.mjs results/main results/pr --comment comment.md > report.md
+          node pr/apps/web/compare-performance.mjs results/main results/pr --comment comment.md > report.txt
           status=$?
-          cat report.md >> "$GITHUB_STEP_SUMMARY"
-          cat report.md
+          cat report.txt
+          { echo '```text'; cat report.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           exit $status
 
       # One comment, only when the PR is faster; removed again if a later push loses the gain.
