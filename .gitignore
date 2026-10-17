@@ -20,7 +20,6 @@ dist/
 .astro/
 .wrangler/
 .cloudflare/
-.lighthouseci/
 
 # Local output
 *.log

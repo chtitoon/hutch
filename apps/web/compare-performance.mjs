@@ -1,6 +1,7 @@
 // Compares Lighthouse runs of main and a pull request, using the limits in PERFORMANCE.md's front matter.
 // `node compare-performance.mjs <main-dir> <pr-dir> [--comment <file>]` reads every lhr-*.json in each
-// directory (as written by `lhci collect`), takes each page's median per metric, and prints a Markdown report.
+// directory (as written by run-lighthouse.mjs), takes each page's median per metric (score and CLS: worst run), and
+// prints a Markdown report.
 // Exits 1 if the PR breaks a limit or regresses beyond the noise margin. Writes the PR comment to
 // <file> only when something got faster and nothing got slower.
 // `node compare-performance.mjs --runs` prints how many runs to collect per side.
@@ -35,11 +36,14 @@ if (process.argv[2] === '--changed') {
 
 const seconds = (ms) => `${(ms / 1000).toFixed(2)} s`;
 const metrics = {
-  score: { label: 'Score', short: 'Score', read: (r) => r.categories.performance.score * 100, format: (v) => `${Math.round(v)}`, higherIsBetter: true },
+  // Worst run too: the score moves with CLS.
+  score: { label: 'Score', short: 'Score', read: (r) => r.categories.performance.score * 100, format: (v) => `${Math.round(v)}`, higherIsBetter: true, worst: true },
   fcp_ms: { label: 'First Contentful Paint', short: 'FCP', audit: 'first-contentful-paint', format: seconds },
   lcp_ms: { label: 'Largest Contentful Paint', short: 'LCP', audit: 'largest-contentful-paint', format: seconds },
   tbt_ms: { label: 'Total Blocking Time', short: 'TBT', audit: 'total-blocking-time', format: (v) => `${Math.round(v)} ms` },
-  cls: { label: 'Cumulative Layout Shift', short: 'CLS', audit: 'cumulative-layout-shift', format: (v) => v.toFixed(3) },
+  // Worst run, not median: a shift that happens on some loads still happens to real visitors, and a
+  // font racing first paint makes CLS flip between 0 and its full value from run to run.
+  cls: { label: 'Cumulative Layout Shift', short: 'CLS', audit: 'cumulative-layout-shift', format: (v) => v.toFixed(3), worst: true },
   total_bytes: { label: 'Page weight', short: 'Weight', audit: 'total-byte-weight', format: (v) => `${(v / 1024).toFixed(0)} KB` },
 };
 const value = (lhr, m) => (metrics[m].read ? metrics[m].read(lhr) : lhr.audits[metrics[m].audit].numericValue);
@@ -48,7 +52,7 @@ const median = (xs) => {
   return s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2;
 };
 
-// { '/index.html': { score: 99, fcp_ms: 1200, ... } }, medians across runs.
+// { '/index.html': { score: 99, fcp_ms: 1200, ... } }: medians across runs (score and CLS: the worst run).
 function load(dir) {
   const runs = {};
   for (const name of readdirSync(dir).filter((f) => /^lhr-.*\.json$/.test(f))) {
@@ -59,7 +63,11 @@ function load(dir) {
   }
   return Object.fromEntries(Object.entries(runs).map(([page, lhrs]) => [
     page,
-    Object.fromEntries(Object.keys(metrics).map((m) => [m, median(lhrs.map((l) => value(l, m)))])),
+    Object.fromEntries(Object.keys(metrics).map((m) => {
+      const values = lhrs.map((l) => value(l, m));
+      if (!metrics[m].worst) return [m, median(values)];
+      return [m, metrics[m].higherIsBetter ? Math.min(...values) : Math.max(...values)];
+    })),
   ]));
 }
 
@@ -96,7 +104,7 @@ for (const [page, now] of Object.entries(pr).sort()) {
 }
 
 console.log([
-  `### Lighthouse, mobile, median of ${lighthouse.runs} runs`,
+  `### Lighthouse, mobile, median of ${lighthouse.runs} runs (score and CLS: worst run)`,
   '',
   `main → PR. 🟢 faster, 🔴 slower, beyond the noise margin.`,
   '',

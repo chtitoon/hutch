@@ -18,7 +18,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  LHCI_VERSION: 0.15.1
+  LIGHTHOUSE_VERSION: 12.6.1
   MARKER: '<!-- hutch-performance -->'
 
 jobs:
@@ -54,41 +54,25 @@ jobs:
       - name: Find changed pages
         id: pages
         run: |
-          pages=$(node pr/apps/web/compare-performance.mjs --changed main/apps/web/dist pr/apps/web/dist)
-          pr_urls=""; main_urls=""
-          for p in $pages; do
-            pr_urls="$pr_urls --url=http://localhost$p"
-            if [ -f "main/apps/web/dist$p" ]; then main_urls="$main_urls --url=http://localhost$p"; fi
-          done
-          echo "pr_urls=$pr_urls" >> "$GITHUB_OUTPUT"
-          echo "main_urls=$main_urls" >> "$GITHUB_OUTPUT"
-          if [ -z "$pages" ]; then echo "No page differs from main, so Lighthouse was skipped." >> "$GITHUB_STEP_SUMMARY"; fi
+          pages=$(node pr/apps/web/compare-performance.mjs --changed main/apps/web/dist pr/apps/web/dist | tr '\n' ' ')
+          echo "pages=$pages" >> "$GITHUB_OUTPUT"
+          if [ -z "${pages// }" ]; then echo "No page differs from main, so Lighthouse was skipped." >> "$GITHUB_STEP_SUMMARY"; fi
           echo "Changed pages: ${pages:-none}"
 
-      # Runs alternate between main and the PR, so a slow moment on the runner hits both sides alike.
-      # `lhci collect` clears its folder each time, so each run's reports are moved out.
+      # Lighthouse isn't a dependency of the site, so Cloudflare's build doesn't install it.
       - name: Run Lighthouse
-        if: steps.pages.outputs.pr_urls != ''
+        if: steps.pages.outputs.pages != ''
+        working-directory: pr/apps/web
         env:
-          PR_URLS: ${{ steps.pages.outputs.pr_urls }}
-          MAIN_URLS: ${{ steps.pages.outputs.main_urls }}
+          PAGES: ${{ steps.pages.outputs.pages }}
         run: |
-          npm install -g "@lhci/cli@$LHCI_VERSION"
-          runs=$(cd pr/apps/web && node compare-performance.mjs --runs)
-          mkdir -p results/main results/pr
-          for i in $(seq "$runs"); do
-            for side in main pr; do
-              urls=$PR_URLS; if [ "$side" = main ]; then urls=$MAIN_URLS; fi
-              if [ -z "$urls" ]; then continue; fi
-              # shellcheck disable=SC2086 # one --url flag per word
-              (cd "$side/apps/web" && lhci collect --staticDistDir=dist --numberOfRuns=1 $urls)
-              for f in "$side"/apps/web/.lighthouseci/lhr-*.json; do mv "$f" "results/$side/$(basename "$f" .json)-$i.json"; done
-            done
-          done
+          npm install --no-save --no-audit --no-fund "lighthouse@$LIGHTHOUSE_VERSION"
+          # shellcheck disable=SC2086 # one argument per page
+          node run-lighthouse.mjs ../../../main/apps/web/dist dist ../../../results $PAGES
 
       - name: Compare
         id: compare
-        if: steps.pages.outputs.pr_urls != ''
+        if: steps.pages.outputs.pages != ''
         run: |
           set +e
           node pr/apps/web/compare-performance.mjs results/main results/pr --comment comment.md > report.md

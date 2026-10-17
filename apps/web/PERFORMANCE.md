@@ -29,7 +29,7 @@ images:
 
 # Lighthouse, mobile preset (emulated mid-range phone, simulated slow 4G), on every page.
 lighthouse:
-  runs: 7                      # per side, alternating; medians are compared (7, not 5: see "How the numbers were set")
+  runs: 7                      # per side, alternating; medians compared, except score and CLS: worst run (see "How the numbers were set")
   limits:                      # a PR fails if any page's median is past these (PageSpeed's "good" thresholds)
     score: 90
     fcp_ms: 1800
@@ -59,7 +59,7 @@ myhutch.app should load instantly on a mid-range phone over a weak connection. S
 | Where | What | Blocks |
 |-------|------|--------|
 | `npm test` → `check-performance.mjs` | Budgets, origins and image rules, read from the built files. No browser (D16 keeps the Cloudflare build browser-free). | The Cloudflare deploy |
-| GitHub Actions → `compare-performance.mjs` | Lighthouse on main and the PR, alternating runs, medians compared. Only pages whose built files differ from main are measured: identical files give identical results. | The PR's check |
+| GitHub Actions → `run-lighthouse.mjs`, `compare-performance.mjs` | Lighthouse on main and the PR, alternating runs, then compared. Only pages whose built files differ from main are measured: identical files give identical results. | The PR's check |
 
 The Actions check fails when any page is past a Lighthouse limit or when a metric regresses beyond the noise margin. When the PR makes the site measurably faster, it posts one comment with before and after numbers (updated on each push, removed if the gain disappears). When nothing changed beyond noise, it stays quiet and green.
 
@@ -81,7 +81,7 @@ Budgets sit 10 to 25% above what the site measured when they were introduced (se
 The comparison settings come from 60 Lighthouse runs of the unchanged site (3 batches × 5 runs × 4 pages, mobile preset, 2026-10-17):
 
 - **Medians barely move.** Across batches, each page's median FCP and LCP varied by under 1 ms (0.05%); score, TBT and page weight didn't change at all. Single runs strayed by up to 6 ms (0.3%), and an earlier trial run reported `/404` painting 580 ms early: single runs can mislead, so only medians are compared.
-- **CLS flips.** On `/support`, 2 runs in 15 reported no layout shift instead of 0.071, depending on whether the web font arrived before first paint. With 5 runs a side, the median would flip about 2% of the time; with **7 runs** it's under 1%.
+- **CLS flips, so it counts its worst run.** `/support` shifts by 0.071 when the web font arrives after first paint and not at all when it arrives before. That happened in 13 of 15 runs with the stylesheet as a file, and in about half once it was inlined. A median of a coin flip is noise, so CLS, and the score that moves with it, take the worst run: a shift that happens on some loads still happens to real visitors. With a 50% shift, **7 runs** miss it less than 1% of the time (5 runs: 3%). The shift itself is a bug worth fixing at the source (#36).
 - **Noise margin 2%** is about 6× the worst single-run timing spread. Lighthouse simulates the phone and network, so most machine speed cancels out, but the GitHub runner isn't the Mac these were measured on and the margin leaves room for that. A PR that changes no page is itself a main-versus-main test: if its check shows changes, the margin is too tight.
 - **Thresholds** are the smallest change worth reporting even when noise is lower: 1 score point (single runs moved by exactly 1), 50 ms of paint or blocking time, 0.01 of layout shift, 2 KB of transferred weight. Content growth is fine; the page budgets cap the total.
 
