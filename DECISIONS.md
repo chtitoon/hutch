@@ -175,7 +175,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 ## D20 — The plan lives in ROADMAP.md
 **Status:** Decided (Oct 2026). Supersedes D10.
 
-**What:** `ROADMAP.md` at the repo root holds the plan, in two layers like `DESIGN.md`: YAML front matter with each phase's id, title, status and a `public` block (the website's roadmap card), and prose with each phase's goal and success test, its milestones in build order (goal, why, and what each requires from outside the list), and an exhaustive "Done when" list (the phase's definition of done, each box linking to the milestone that delivers it). It replaces the GitHub milestones and issues. The open `decision` issues moved into this file (D3, D5, D6). The work loop in AGENTS.md picks the next milestone from it, and each PR ticks the boxes it proves and updates statuses. A milestone's detail (screens, tasks) is worked out when it starts, not in the roadmap.
+**What:** `ROADMAP.md` at the repo root holds the plan, in two layers like `DESIGN.md`: YAML front matter with each phase's id, title, status and a `public` block (the website's roadmap card), and prose with each phase's goal and success test, then its milestones in build order, each with its goal, why, what it requires from outside the list, and the boxes that make it done. A phase is done when all its milestones are and its success test passed. Rules every milestone follows stay in AGENTS.md, not repeated in the roadmap. It replaces the GitHub milestones and issues. The open `decision` issues moved into this file (D3, D5, D6). The work loop in AGENTS.md picks the next milestone from it, and each PR ticks the boxes it proves and updates statuses. A milestone's detail (screens, tasks) is worked out when it starts, not in the roadmap.
 
 **Why:**
 - **Intent outlives closed tasks.** A closed issue drops out of view and takes its reasoning with it; the roadmap keeps what's done beside what's left, and why each milestone exists.
@@ -183,7 +183,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 
 **What's lost:** triage from the GitHub app on my phone, and notifications on issues. "Closes #" no longer marks work done: the ROADMAP.md diff in each PR does, readable in the PR's file changes. Issue numbers in older PRs and decisions (#9, #36…) still resolve on GitHub, as history.
 
-**How to reverse:** create a milestone per phase from its section and an issue per open milestone, with its tagged boxes as the issue's checklist, move Open decisions back to `decision` issues if wanted, restore D10's work loop in AGENTS.md, and delete ROADMAP.md's prose (the front matter can stay if the website reads it).
+**How to reverse:** create a milestone per phase from its section and an issue per open milestone, with its boxes as the issue's checklist, move Open decisions back to `decision` issues if wanted, restore D10's work loop in AGENTS.md, and delete ROADMAP.md's prose (the front matter can stay if the website reads it).
 
 ## D21 — Recovery: iCloud Keychain, plus a printable recovery kit
 **Status:** Decided (Oct 2026). Rewords non-negotiable 1 in AGENTS.md.
