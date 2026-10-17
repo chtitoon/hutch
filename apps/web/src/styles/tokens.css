@@ -19,43 +19,43 @@
   --color-on-sage-tint: #2C5A48;
   --color-marker: #D4A24C;
   --color-device: #1B2420;
-  --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
-  --font-text: "Instrument Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque Fallback", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-text: "Instrument Sans", "Instrument Sans Fallback", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
-  --type-headline-display: 700 48px/0.96 "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --type-headline-display: 700 48px/0.96 "Bricolage Grotesque Variable", "Bricolage Grotesque Fallback", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
   --type-headline-display-tracking: -0.035em;
-  --type-headline-lg: 700 36px/1.04 "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --type-headline-lg: 700 36px/1.04 "Bricolage Grotesque Variable", "Bricolage Grotesque Fallback", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
   --type-headline-lg-tracking: -0.03em;
-  --type-headline-md: 700 26px/1.2 "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --type-headline-md: 700 26px/1.2 "Bricolage Grotesque Variable", "Bricolage Grotesque Fallback", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
   --type-headline-md-tracking: -0.02em;
-  --type-headline-sm: 700 18px/1.2 "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --type-headline-sm: 700 18px/1.2 "Bricolage Grotesque Variable", "Bricolage Grotesque Fallback", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
   --type-headline-sm-tracking: -0.02em;
-  --type-title-md: 600 20px/1.3 "Instrument Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --type-title-md: 600 20px/1.3 "Instrument Sans", "Instrument Sans Fallback", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --type-title-md-tracking: normal;
-  --type-body-lg: 400 18px/1.55 "Instrument Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --type-body-lg: 400 18px/1.55 "Instrument Sans", "Instrument Sans Fallback", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --type-body-lg-tracking: normal;
-  --type-body-md: 400 16px/1.55 "Instrument Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --type-body-md: 400 16px/1.55 "Instrument Sans", "Instrument Sans Fallback", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --type-body-md-tracking: normal;
-  --type-body-sm: 400 14px/1.5 "Instrument Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --type-body-sm: 400 14px/1.5 "Instrument Sans", "Instrument Sans Fallback", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --type-body-sm-tracking: normal;
-  --type-caption: 400 13px/1.4 "Instrument Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --type-caption: 400 13px/1.4 "Instrument Sans", "Instrument Sans Fallback", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --type-caption-tracking: normal;
-  --type-label-lg: 600 16px/1.5 "Instrument Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --type-label-lg: 600 16px/1.5 "Instrument Sans", "Instrument Sans Fallback", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --type-label-lg-tracking: normal;
-  --type-label-md: 600 14px/1.4 "Instrument Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --type-label-md: 600 14px/1.4 "Instrument Sans", "Instrument Sans Fallback", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --type-label-md-tracking: normal;
-  --type-label-sm: 600 13px/1.4 "Instrument Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --type-label-sm: 600 13px/1.4 "Instrument Sans", "Instrument Sans Fallback", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --type-label-sm-tracking: normal;
-  --type-label-caps: 600 14px/1.4 "Instrument Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --type-label-caps: 600 14px/1.4 "Instrument Sans", "Instrument Sans Fallback", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --type-label-caps-tracking: 0.08em;
-  --type-preview-headline: 700 92px/0.96 "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --type-preview-headline: 700 92px/0.96 "Bricolage Grotesque Variable", "Bricolage Grotesque Fallback", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
   --type-preview-headline-tracking: -0.035em;
-  --type-preview-lede: 500 27px/1.35 "Instrument Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --type-preview-lede: 500 27px/1.35 "Instrument Sans", "Instrument Sans Fallback", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --type-preview-lede-tracking: normal;
-  --type-preview-label: 600 22px/1.2 "Instrument Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --type-preview-label: 600 22px/1.2 "Instrument Sans", "Instrument Sans Fallback", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --type-preview-label-tracking: normal;
   --radius-sm: 12px;
   --radius-md: 24px;
@@ -83,11 +83,11 @@
 
 @media (min-width: 1024px) {
   :root {
-    --type-headline-display: 700 96px/0.96 "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+    --type-headline-display: 700 96px/0.96 "Bricolage Grotesque Variable", "Bricolage Grotesque Fallback", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
     --type-headline-display-tracking: -0.035em;
-    --type-headline-lg: 700 60px/1.04 "Bricolage Grotesque Variable", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+    --type-headline-lg: 700 60px/1.04 "Bricolage Grotesque Variable", "Bricolage Grotesque Fallback", "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
     --type-headline-lg-tracking: -0.03em;
-    --type-body-lg: 400 20px/1.55 "Instrument Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --type-body-lg: 400 20px/1.55 "Instrument Sans", "Instrument Sans Fallback", ui-sans-serif, system-ui, -apple-system, sans-serif;
     --type-body-lg-tracking: normal;
   }
 }

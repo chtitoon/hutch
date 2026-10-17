@@ -1,0 +1,102 @@
+# Lighthouse on main and the PR, compared with the limits in apps/web/PERFORMANCE.md (D19).
+# Linux runner, pull requests touching the website only. Budgets on file sizes run in `npm test` instead,
+# which is Cloudflare's deploy gate; this check needs a browser, so it lives here.
+name: Web Performance
+
+on:
+  pull_request:
+    paths:
+      - 'apps/web/**'
+      - 'DESIGN.md'
+      - 'design/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: web-performance-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  LIGHTHOUSE_VERSION: 12.6.1
+  MARKER: '<!-- hutch-performance -->'
+
+jobs:
+  lighthouse:
+    name: Lighthouse
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out the PR
+        uses: actions/checkout@v5
+        with:
+          path: pr
+      - name: Check out main
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: main
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: pr/apps/web/.node-version
+          cache: npm
+          cache-dependency-path: |
+            pr/apps/web/package-lock.json
+            main/apps/web/package-lock.json
+
+      - name: Build both
+        run: |
+          for side in main pr; do
+            (cd "$side/apps/web" && npm ci && npm run build)
+          done
+
+      # Identical files give identical results, so only pages that differ from main are measured.
+      - name: Find changed pages
+        id: pages
+        run: |
+          pages=$(node pr/apps/web/compare-performance.mjs --changed main/apps/web/dist pr/apps/web/dist | tr '\n' ' ')
+          echo "pages=$pages" >> "$GITHUB_OUTPUT"
+          if [ -z "${pages// }" ]; then echo "No page differs from main, so Lighthouse was skipped." >> "$GITHUB_STEP_SUMMARY"; fi
+          echo "Changed pages: ${pages:-none}"
+
+      # Lighthouse isn't a dependency of the site, so Cloudflare's build doesn't install it.
+      - name: Run Lighthouse
+        if: steps.pages.outputs.pages != ''
+        working-directory: pr/apps/web
+        env:
+          PAGES: ${{ steps.pages.outputs.pages }}
+        run: |
+          npm install --no-save --no-audit --no-fund "lighthouse@$LIGHTHOUSE_VERSION"
+          # shellcheck disable=SC2086 # one argument per page
+          node run-lighthouse.mjs ../../../main/apps/web/dist dist ../../../results $PAGES
+
+      - name: Compare
+        id: compare
+        if: steps.pages.outputs.pages != ''
+        run: |
+          set +e
+          node pr/apps/web/compare-performance.mjs results/main results/pr --comment comment.md > report.txt
+          status=$?
+          cat report.txt
+          { echo '```text'; cat report.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          exit $status
+
+      # One comment, only when the PR is faster; removed again if a later push loses the gain.
+      - name: Celebrate or tidy up
+        if: ${{ !cancelled() }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          existing=$(gh api "repos/$REPO/issues/$PR/comments" --paginate --jq ".[] | select(.body | startswith(\"$MARKER\")) | .id" | head -1)
+          if [ -f comment.md ]; then
+            if [ -n "$existing" ]; then
+              gh api -X PATCH "repos/$REPO/issues/comments/$existing" -F body=@comment.md > /dev/null
+            else
+              gh api "repos/$REPO/issues/$PR/comments" -F body=@comment.md > /dev/null
+            fi
+          elif [ -n "$existing" ]; then
+            gh api -X DELETE "repos/$REPO/issues/comments/$existing"
+          fi

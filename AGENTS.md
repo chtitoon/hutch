@@ -11,6 +11,7 @@ This repo and its GitHub issues are the project's only memory. When a conversati
 | Every session | The open issues in the current GitHub milestone, and `DECISIONS.md` (what's settled, what's open) |
 | Before proposing product changes | The [milestone](https://github.com/chtitoon/hutch/milestones) descriptions (each phase's goal and success test), `CONTEXT.md` (research) and D13 in `DECISIONS.md` (what's deliberately out of scope) |
 | Any UI, visual or web work | `DESIGN.md` (the design system), then the platform's guide: `apps/ios/DESIGN.md` or `apps/web/DESIGN.md` |
+| Work inside an app | That app's own `AGENTS.md`, if it has one (`apps/web/AGENTS.md`) |
 
 ## The work loop
 
@@ -52,7 +53,7 @@ Each app uses its ecosystem's own task runner, with the same four task names, so
 | Task | iOS: `make <task>` in `apps/ios` | Web: `npm run <task>` in `apps/web` |
 |------|-----------------------------------|-------------------------------------|
 | `setup` | From a fresh clone: check Xcode and XcodeGen, generate the project | Install dependencies |
-| `test` | Build and run all tests on an iPhone simulator; print which one; fail on any error | Check the build, HTML and links |
+| `test` | Build and run all tests on an iPhone simulator; print which one; fail on any error | Check the build, HTML, links and performance budgets |
 | `run` | Build, boot a simulator, install and launch the app | Serve the site locally |
 | `tokens` | Regenerate Swift colors and constants from `DESIGN.md` | Regenerate CSS variables from `DESIGN.md` |
 

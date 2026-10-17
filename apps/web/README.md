@@ -7,15 +7,17 @@ Static website: what Hutch is, the App Store link, privacy policy and support pa
 | Command | What it does |
 |---------|--------------|
 | `npm run setup` | Install pinned dependencies |
-| `npm test` | Lint DESIGN.md, check tokens and styles, check the link preview is current, build, validate the HTML, check internal links |
+| `npm test` | Lint DESIGN.md, check tokens and styles, check the link preview is current, build, validate the HTML, check internal links, check every page against the budgets in `PERFORMANCE.md` |
 | `npm run run` | Serve the site locally with live reload |
 | `npm run tokens` | Regenerate `src/styles/tokens.css` and `public/favicon.svg` from the root `DESIGN.md` |
 | `npm run lint:design` | Lint the root `DESIGN.md`: references, contrast (light and dark), unused tokens |
 | `npm run check:css` | Fail on styles that bypass the tokens: raw colors, undefined variables, type outside the scale, external fonts, off-scale spacing |
 | `npm run og` | Re-render the link-preview image (`public/og.png`) |
+| `node check-performance.mjs --report` | After a build, print each page's bytes by kind (for setting budgets) |
 
 ## Where things live
 
+- `PERFORMANCE.md` — performance budgets and rules, checked by `npm test` and by the Lighthouse workflow on PRs (`.github/workflows/web-performance.yml`).
 - `src/pages/` — one file per page. Text pages (`privacy.md`, `support.md`) are Markdown.
 - `src/layouts/` — the shared header and footer (`Base.astro`) and the text-page layout (`Prose.astro`).
 - `src/components/AppStoreLink.astro` — the one place the App Store link lives; set its URL once Hutch is listed.
