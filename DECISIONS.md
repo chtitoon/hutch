@@ -92,7 +92,7 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 ## D13 — Out of scope, for now
 **Status:** Decided (Oct 2026).
 
-- **Payments between neighbors:** Venmo or Zelle is fine, and the research found neighbors prefer lending for free (docs/context.md).
+- **Payments between neighbors:** Venmo or Zelle is fine, and the research found neighbors prefer lending for free (CONTEXT.md).
 - **A public marketplace:** the opposite of private by default.
 - **An Android app:** iPhone first (D3). Android neighbors are handled in the Phase 2 sharing decision.
 - **Neighborhood discovery:** trust comes from people who already know each other, not from finding strangers nearby.
