@@ -9,7 +9,7 @@ When you choose, you open a small door:
 - 🤝 **Lend** things out, like the ladder to a neighbor or the folding table for a party
 - 🏷️ **Sell** what you no longer need, when it's time
 
-It exists because [every app I looked at](docs/context.md) made you trade privacy for sharing.
+It exists because [every app I looked at](CONTEXT.md) made you trade privacy for sharing.
 
 ## The idea
 
@@ -20,7 +20,7 @@ Like the furniture it's named after: closed doors below, a few things on display
 Hutch is being built one phase at a time.
 
 - 🗺️ [Milestones](https://github.com/chtitoon/hutch/milestones): the road, and where things stand
-- ⚖️ [Decisions](docs/decisions.md): what's settled, and why
+- ⚖️ [Decisions](DECISIONS.md): what's settled, and why
 
 ---
 
