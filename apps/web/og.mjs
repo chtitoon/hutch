@@ -13,7 +13,9 @@ const inputs = [
   './node_modules/@fontsource-variable/bricolage-grotesque/package.json',
   './node_modules/@fontsource/instrument-sans/package.json',
 ];
-const stamp = createHash('sha256').update(inputs.map((p) => readFileSync(file(p))).join('\0')).digest('hex') + '\n';
+// CSS comments are left out, so a reworded header in the generated tokens.css doesn't call for a re-render.
+const read = (p) => (p.endsWith('.css') ? readFileSync(file(p), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '') : readFileSync(file(p)));
+const stamp = createHash('sha256').update(inputs.map(read).join('\0')).digest('hex') + '\n';
 
 if (process.argv.includes('--check')) {
   let current = '';
