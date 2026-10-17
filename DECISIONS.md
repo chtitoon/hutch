@@ -175,7 +175,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 ## D20 — The plan lives in ROADMAP.md
 **Status:** Decided (Oct 2026). Supersedes D10.
 
-**What:** `ROADMAP.md` at the repo root holds the plan, in two layers like `DESIGN.md`: YAML front matter with each phase's id, title, status and a `public` block (the website's roadmap card), and prose with each phase's goal and success test, then its milestones in build order, each with its goal, why, what it requires from outside the list, and its definition of done (a checklist). A phase is done when all its milestones are and its success test passed. Rules every milestone follows stay in AGENTS.md, not repeated in the roadmap. It replaces the GitHub milestones and issues. The open `decision` issues moved into this file (D3, D5, D6). The work loop in AGENTS.md picks the next milestone from it, and each PR ticks the boxes it proves and updates statuses. A milestone's detail (screens, tasks) is worked out when it starts, not in the roadmap.
+**What:** `ROADMAP.md` at the repo root holds the plan, in two layers like `DESIGN.md`: YAML front matter with each phase's id, title, status and a `public` block (the website's roadmap card), and prose with each phase's goal and success test, then its milestones in build order, each with its goal, why, what it requires from outside the list, and its Definition of Done (a checklist). A phase is done when all its milestones are and its success test passed. Rules every milestone follows stay in AGENTS.md, not repeated in the roadmap. It replaces the GitHub milestones and issues. The open `decision` issues moved into this file (D3, D5, D6). The work loop in AGENTS.md picks the next milestone from it, and each PR ticks the boxes it proves and updates statuses. A milestone's detail (screens, tasks) is worked out when it starts, not in the roadmap.
 
 **Why:**
 - **Intent outlives closed tasks.** A closed issue drops out of view and takes its reasoning with it; the roadmap keeps what's done beside what's left, and why each milestone exists.
@@ -188,7 +188,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 ## D21 — Recovery: iCloud Keychain, plus a printable recovery kit
 **Status:** Decided (Oct 2026). Rewords non-negotiable 1 in AGENTS.md.
 
-**What:** the inventory key is stored as a synchronizable Keychain item, so iCloud Keychain carries it to a new iPhone signed into my Apple account and restore just works. A printable recovery kit (a recovery key, 1Password-style) restores everything without the Apple account, if that is lost too. Both are Phase 1's definition of done (M4, ROADMAP.md); the cryptographic details are M4's to design and explain (non-negotiable 3).
+**What:** the inventory key is stored as a synchronizable Keychain item, so iCloud Keychain carries it to a new iPhone signed into my Apple account and restore just works. A printable recovery kit (a recovery key, 1Password-style) restores everything without the Apple account, if that is lost too. Both are in M4's Definition of Done (ROADMAP.md); the cryptographic details are M4's to design and explain (non-negotiable 3).
 
 **Why:** a kit alone means a lost kit and a lost phone lose everything, and most people never print it. iCloud Keychain is end-to-end encrypted, so Apple can't read the key, and it costs nothing to run. The kit covers the case where the Apple account is gone.
 
