@@ -7,7 +7,9 @@ Static website: what Hutch is, the App Store link, privacy policy and support pa
 | Command | What it does |
 |---------|--------------|
 | `npm run setup` | Install pinned dependencies |
-| `npm test` | Lint DESIGN.md, check tokens and styles, check the link preview is current, build, validate the HTML, check internal links, check every page against the budgets in `PERFORMANCE.md` |
+| `npm test` | Both checks below, as Cloudflare runs them; GitHub runs each as its own workflow |
+| `npm run validate:design` | Lint the root DESIGN.md and check the styles use only its tokens (`lint:design`, `check:css`) |
+| `npm run validate:website` | Check generated files and the link preview are current, build, validate the HTML, check internal links, check every page against the budgets in `PERFORMANCE.md` |
 | `npm run run` | Serve the site locally with live reload |
 | `npm run tokens` | Regenerate `src/styles/tokens.css` and `public/favicon.svg` from the root `DESIGN.md` |
 | `npm run lint:design` | Lint the root `DESIGN.md`: references, contrast (light and dark), unused tokens |
@@ -25,4 +27,4 @@ Static website: what Hutch is, the App Store link, privacy policy and support pa
 
 ## Deploying
 
-Cloudflare Pages project `hutch`, connected to this GitHub repo. Merging to `main` deploys myhutch.app; every PR touching `apps/web/` or `design/` gets a preview URL, posted on the PR. Pages runs `npm ci && npm test` in `apps/web`, so a failing test blocks the deploy. Nothing to deploy by hand.
+Cloudflare Pages project `hutch`, connected to this GitHub repo. Merging to `main` deploys myhutch.app; every PR touching `apps/web/` or `design/` gets a preview URL, posted on the PR. Pages runs `npm ci && npm test` in `apps/web`, so a failing test blocks the deploy. On GitHub, the **Validate Design** and **Validate Website** workflows run the same checks as two required checks on every PR, so a failure shows in the PR's checks and blocks the merge. Nothing to deploy by hand.

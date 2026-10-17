@@ -68,6 +68,7 @@ Work happens on my Mac, in `~/Projects/hutch`, with Xcode installed.
 - Never call work done without a green `make test` in `apps/ios`, and say which simulator it ran on.
 - Keep logic in the Swift package so it's covered by unit tests.
 - CI on a GitHub macOS runner is an optional safety net, not the main loop: macOS minutes are expensive. If added, scope it to `apps/ios/**` and pull requests only.
+- Two Linux workflows run on every PR, each a required check on `main`: **Validate Design** (`.github/workflows/validate-design.yml`, `npm run validate:design`) and **Validate Website** (`validate-website.yml`, `npm run validate:website`). A cheap iOS lint (SwiftLint, no build) can join them in M0 as **Validate iOS**.
 
 **If the session is not on the Mac** (a cloud session with no link to the laptop), it cannot build Swift. Say so, limit the work to docs or the website, or ask me to open the session from my Mac.
 

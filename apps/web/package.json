@@ -11,7 +11,9 @@
     "lint:design": "node design-lint.mjs",
     "check:css": "node check-css.mjs",
     "build": "astro build",
-    "test": "node design-lint.mjs && node tokens.mjs --check && node check-css.mjs && node og.mjs --check && astro build && html-validate \"dist/**/*.html\" && node check-links.mjs && node check-performance.mjs",
+    "validate:design": "node design-lint.mjs && node check-css.mjs",
+    "validate:website": "node tokens.mjs --check && node og.mjs --check && astro build && html-validate \"dist/**/*.html\" && node check-links.mjs && node check-performance.mjs",
+    "test": "npm run validate:design && npm run validate:website",
     "run": "astro dev",
     "og": "node og.mjs"
   },
