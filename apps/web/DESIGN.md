@@ -1,59 +1,72 @@
-# How myhutch.app uses the design tokens
+# Design on myhutch.app
 
-Values live in [`design/tokens.json`](../../design/tokens.json) and nowhere else. `npm run tokens` turns them into `src/styles/tokens.css` (`--color-ink`, `--space-6`, …); `site.css` and the components use only those variables. This page names tokens, never values, so it can't drift.
+The values, color roles, type levels and rules live in the root [DESIGN.md](../../DESIGN.md); read it first. This page covers only how the website applies them. It names tokens, never values, so it can't drift.
 
-## Rules
+## From DESIGN.md to CSS
 
-- **No hard-coded colors.** Every color is a `--color-*` variable. A shadow uses `color-mix()` on a token (the phone's shadow is ink at 18%). If a design needs a color that isn't a token, add the token to `tokens.json` first (and to D15's list), or map it to the nearest existing role.
-- **Spacing from the scale.** Layout gaps and padding use `--space-*` (the name is the multiple of 4px). Small component internals (badge padding, list-row padding) and device geometry (the phone's corner radii) are local to the component.
-- **Corners:** `radius-sm` for inputs and thumbnails, `radius-md` for cards, `radius-lg` for large panels, `radius-pill` for pills and badges.
-- **Fonts:** `font-display` for headings, the wordmark and numerals (weights `bold`, `medium`); `font-text` for everything else (`regular`, `medium`, `semibold`). Both are self-hosted from `@fontsource` packages imported in `Base.astro`. Never link a font CDN.
-- **Light and dark follow the system.** The `color-dark` group in `tokens.json` gives dark values for the color roles; `npm run tokens` emits them under `prefers-color-scheme: dark`, and pages declare `color-scheme: light dark`. Roles it leaves out (`deep`, `on-deep*`, `deep-rule`, `accent`) are the same in both modes. To change a dark color, edit its token; never invert colors ad hoc or add per-component dark rules.
+`npm run tokens` turns DESIGN.md's front matter into `src/styles/tokens.css`. `site.css` and the components use only those variables:
 
-## Contrast
+| In DESIGN.md | In CSS |
+|--------------|--------|
+| `colors.ink`, `colors.ink-dark` | `--color-ink`, overridden under `prefers-color-scheme: dark` |
+| `typography.headline-lg`, `headline-lg-wide` | `font: var(--type-headline-lg); letter-spacing: var(--type-headline-lg-tracking);`, with the wide size from `breakpoint-wide` up |
+| the headline and body families, and their weights | `--font-display`, `--font-text`, `--font-weight-regular` … `bold` (for emphasis inside text, such as `strong`) |
+| `rounded.md` | `--radius-md` |
+| `spacing.6`, `spacing.page-width` | `--space-6`, `--layout-page-width` |
 
-| Text | On | Use |
-|------|----|-----|
-| `ink` | `background`, `surface`, `surface-sunken` | Headings, primary text |
-| `ink-muted` | `background`, `surface`, `surface-sunken` | Body copy, card text, planned badges |
-| `ink-subtle` | `background`, `surface` | Captions, metadata, footer |
-| `sage` | `background`, `surface` | Eyebrows and small labels only (semibold) |
-| `on-sage-tint` | `sage-tint` | Positive badges ("At launch") |
-| `background` | `ink` | The status pill |
-| `on-deep`, `on-deep-muted` | `deep` | The privacy band |
+Always set `font` and `letter-spacing` together: `font` doesn't reset letter spacing, so a level's tracking would otherwise be inherited from the parent. Pages declare `color-scheme: light dark` and follow the system setting.
 
-- **`accent` (brass) is never text on a light surface.** It's for the pill's dot, numerals on `deep` and small fills.
-- Focus ring: `sage` on light surfaces, `accent` inside the `deep` band.
+## Enforced by `npm test`
+
+- **`npm run lint:design`** lints the root DESIGN.md: broken references, contrast for every pair under `components` (4.5:1 for text, 3:1 for `-graphic` marks), unused tokens, and a `-dark` twin for every pair whose colors change in dark mode.
+- **`npm run check:css`** checks the site's CSS, `<style>` blocks, `style=""` attributes and SVG color attributes in `src/` and `og/card.html`. It fails on a raw color (hex, `rgb()`, `hsl()`, a named color; `color-mix()` only over `var(--color-*)` and `transparent`), on a `var(--…)` that `tokens.css` doesn't define, on type set without a `--type-*` level or a font family other than `--font-*`, on an external font or stylesheet, and on raw px in `margin`, `padding` or `gap` except the cases below. Each failure names the file, line, rule and the token to use instead.
+
+## Spacing exceptions
+
+Layout gaps and padding come from `--space-*`. These cases are local to a component and stay in px; `check:css` reads this table, so a new exception means a new row with its reason.
+
+| File | Selector | Property | Why |
+|------|----------|----------|-----|
+| `src/styles/site.css` | `.pill` | `padding` | The pill's side inset is sized to its 52px height, not to the page rhythm. |
+| `src/styles/site.css` | `.badge` | `padding` | Small component internals: a 13px label in a tight capsule. |
+| `src/styles/site.css` | `.phone-screen` | `gap` | Device geometry: the mockup draws the iPhone screen at phone scale. |
+| `src/styles/site.css` | `.phone-list` | `gap` | Device geometry: iOS list spacing at phone scale. |
+| `src/styles/site.css` | `.phone-list li` | `gap` | Device geometry: iOS list-row metrics at phone scale. |
+| `src/styles/site.css` | `.phone-list li` | `padding` | Device geometry: iOS list-row metrics at phone scale. |
+
+## Fonts
+
+Both families are self-hosted from pinned `@fontsource` packages imported in `Base.astro` and bundled into `dist/`, so no request leaves myhutch.app (D15). Never link a font CDN or a remote stylesheet. Fontsource registers the display font as "Bricolage Grotesque Variable", which is why that name leads the display family in DESIGN.md.
 
 ## Sections (landing page)
 
 | Section | Background | Notes |
 |---------|-----------|-------|
-| Header | `background` | The logo (mark in `sage`, wordmark in `ink`); nav links in `ink`, hover `sage` |
-| Hero | `background` | `sage` eyebrow, display headline, `ink-muted` lede, status pill, phone mockup |
-| Privacy band (`#privacy`) | `deep` | Title `on-deep`, body `on-deep-muted`, `deep-rule` divider, `accent` numerals |
-| Where we’re heading | `background` | Launch card: `surface`, solid, `border` shadow. Planned cards: no fill, dashed `border-dashed` |
-| Closing card | `surface-sunken`, `radius-lg` | Headline + status pill |
-| Footer | `background`, `border` top rule | `ink-subtle` text, `ink` links |
+| Header | `background` | The logo (mark in `sage`, wordmark in `ink`); nav links `body-sm` in `ink`, hover `sage` |
+| Hero | `background` | `label-caps` eyebrow in `sage`, `headline-display` headline, `body-lg` lede in `ink-muted`, status pill, phone mockup |
+| Privacy band (`#privacy`) | `deep` | `headline-lg` title in `on-deep`, `body-lg` intro in `on-deep-muted`, `deep-rule` divider, `headline-sm` numerals in `accent`, `title-md` point titles |
+| Where we’re heading | `background` | Launch card: `surface`, solid, `border` shadow. Planned cards: no fill, dashed `border-dashed`. `headline-md` titles, `body-md` text |
+| Closing card | `surface-sunken`, `radius-lg` | `headline-lg` headline + status pill |
+| Footer | `background`, `border` top rule | The wordmark in `headline-sm`, `body-sm` text in `ink-subtle`, `ink` links |
 
-Text pages (privacy, support, 404) use the same header and footer, a narrow column, display-font headings and `ink-muted` body text with `ink` for bold.
+Text pages (privacy, support, 404) use the same header and footer, a `layout-prose-width` column, `headline-lg` and `headline-md` headings, and `body-md` text in `ink-muted` with `ink` for bold.
 
 ## Components
 
 | Component | What it is |
 |-----------|-----------|
-| `AppStoreLink.astro` | The status pill (`ink` fill, `background` text, `accent` dot). Becomes the App Store link once Hutch is listed. |
+| `AppStoreLink.astro` | The status pill (`ink` fill, `background` text, `label-lg`, `marker` dot). Becomes the App Store link once Hutch is listed. |
 | `PhoneMockup.astro` | The inventory screen illustration. The frame and its shadow are `device` (dark in both modes). The screen is `surface`, the search field `background`, and item swatches cycle through `surface-sunken`, `sage-tint`, `border` and `background`. |
 | `StageIcon.astro` | 22px line icon beside each roadmap badge: `private` (house), `lend` (two people), `sell` (tag), matching the SF Symbols the app will use. `ink-muted` on the launch card, `ink-subtle` on planned cards. Draws in `currentColor`. |
 | `Logo.astro` | The logo as inline SVG, traced from `design/light/logo.svg`: house-with-keyhole mark in `sage`, "hutch" in `ink`, so it follows light and dark mode. |
 
 ## Link preview
 
-When someone shares a myhutch.app link, apps show `public/og.png` (1200×630), set through the Open Graph tags in `Base.astro`. The card is a real page, [`og/card.html`](og/card.html), using the same tokens and self-hosted fonts as the site, so it can't drift from the brand.
+When someone shares a myhutch.app link, apps show `public/og.png` (1200×630), set through the Open Graph tags in `Base.astro`. The card is a real page, [`og/card.html`](og/card.html), using the same tokens and self-hosted fonts as the site, so it can't drift from the brand (D16).
 
-- **Forest** (`deep`) background; the logo with its mark in `sage-on-deep` and wordmark in `on-deep`; headline in `on-deep`, the line below in `on-deep-muted`.
-- **The light:** a tall `accent` sliver, hairline at the floor and wider at the top, with a soft glow and a spill of light across the floor. Light through a door left ajar, shown as light rather than drawn as a door: home, private, and warm inside.
-- `npm run og` re-renders the PNG in headless Chromium. `npm test` fails if the card, the tokens or the fonts changed since the last render (`og/card.sha256`), so a token change can't leave a stale image.
+- **Forest** (`deep`) background; the logo with its mark in `sage-on-deep` and wordmark in `on-deep`; headline (`preview-headline`) in `on-deep`, the line below (`preview-lede`) in `on-deep-muted`.
+- **The light:** a tall `accent` sliver, hairline at the floor and wider at the top, with a soft glow and a spill of light across the floor. Light through a door left ajar, shown as light rather than drawn as a door: home, private, and warm inside. Its geometry is fixed pixels on a fixed-size image.
+- `npm run og` re-renders the PNG in headless Chromium. `npm test` fails if the card, the tokens or the fonts changed since the last render (`og/card.sha256`), so a token change can't leave a stale image. Comments in `tokens.css` don't count.
 
 ## Favicon
 
