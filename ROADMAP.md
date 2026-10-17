@@ -49,7 +49,7 @@ Each PR ticks its item's boxes and updates its status here, so the plan changes 
 
 **Status:** in progress.
 
-**Goal:** I catalog my own things in an app that knows nothing I haven't encrypted.
+**Goal:** I keep a list of my things on my iPhone, and all of it is encrypted, so only I can read it.
 
 **Order:** scaffold, encryption at rest, local store (encrypted from its first version), fast capture, encrypted sync with recovery, organize, then the website (the App Store needs its privacy policy) and a first TestFlight build; the final logo can happen alongside.
 
