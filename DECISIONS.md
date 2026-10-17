@@ -142,3 +142,17 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 **Why:** a real logo instead of a placeholder, in colors that come from the tokens. Dark mode follows the system, as the iPhone app will.
 
 **Consequences:** this is the brand's logo. It replaces the "door carved into the h" direction (#9), which was never finished, and the app icon is drawn from the house mark. The link-preview card (D16) shows the logo too, with the mark in a new `sage-on-deep` role. Supersedes D15's "light only" note for the website. The iOS app can generate its dark colors from the same `color-dark` group.
+
+## D18 — Website performance: one file, budgets at the deploy gate, Lighthouse on pull requests
+**Status:** Proposed (Oct 2026).
+
+**What:**
+- `apps/web/PERFORMANCE.md` is the single source of the site's performance rules. Its YAML front matter holds the numbers: per-page byte budgets (total, HTML, CSS, fonts, images, JavaScript), allowed origins (self only), image rules (width and height, SVG/WebP/AVIF, a size cap), Lighthouse limits and the PR comparison thresholds. The prose below says why each rule exists and gives a checklist for new pages.
+- `npm test` runs `check-performance.mjs`, which adds up what each built page makes the browser download and fails on any broken rule. Cloudflare Pages runs `npm test` before deploying, so a page over budget never ships.
+- A GitHub Actions workflow (`.github/workflows/web-performance.yml`, Linux, pull requests touching `apps/web/**` or `design/**`) builds main and the PR, runs Lighthouse on every page with the mobile preset, alternating sides, and compares medians. It fails if a page is past PageSpeed's "good" limits (FCP 1.8 s, LCP 2.5 s, TBT 200 ms, CLS 0.1, score 90) or regresses beyond the noise margin; it comments only when the PR is faster.
+- `npm run new-page` starts a Markdown page that already meets the rules.
+- The site's stylesheet is now inlined in each page. As a separate file it blocked the first paint: mobile FCP measured 1.80 s, at the limit; inlined, 1.65 s.
+
+**Why:** speed was a value (D14: static, no JavaScript) but nothing checked it, and a single photo or third-party embed could quietly undo it. One file keeps the rule and its reason together, so agents and I read the same thing and change numbers in one place. Byte budgets need no browser, so they fit the deploy gate without breaking D16's browser-free Cloudflare build. Timing metrics need a browser and are noisy, so they run in Actions, where comparing against main on the same machine cancels most of the noise; Linux minutes are cheap, unlike the macOS minutes D3 avoids.
+
+**Consequences:** growing a budget is a visible one-line change to `PERFORMANCE.md` in the PR. The first real photo will need the images budget raised. Lighthouse CI is installed in the workflow only (pinned), so it adds nothing to the Cloudflare build. The Actions check isn't required for merging unless set in branch protection.

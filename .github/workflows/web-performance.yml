@@ -1,0 +1,93 @@
+# Lighthouse on main and the PR, compared with the limits in apps/web/PERFORMANCE.md (D18).
+# Linux runner, pull requests touching the website only. Budgets on file sizes run in `npm test` instead,
+# which is Cloudflare's deploy gate; this check needs a browser, so it lives here.
+name: Web performance
+
+on:
+  pull_request:
+    paths:
+      - 'apps/web/**'
+      - 'design/**'
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: web-performance-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+env:
+  LHCI_VERSION: 0.15.1
+  MARKER: '<!-- hutch-performance -->'
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Check out the PR
+        uses: actions/checkout@v5
+        with:
+          path: pr
+      - name: Check out main
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: main
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: pr/apps/web/.node-version
+          cache: npm
+          cache-dependency-path: |
+            pr/apps/web/package-lock.json
+            main/apps/web/package-lock.json
+
+      - name: Build both
+        run: |
+          for side in main pr; do
+            (cd "$side/apps/web" && npm ci && npm run build)
+          done
+          npm install -g "@lhci/cli@$LHCI_VERSION"
+
+      # Runs alternate between main and the PR, so a slow moment on the runner hits both sides alike.
+      # `lhci collect` clears its folder each time, so each run's reports are moved out.
+      - name: Run Lighthouse
+        run: |
+          runs=$(cd pr/apps/web && node compare-performance.mjs --runs)
+          for i in $(seq "$runs"); do
+            for side in main pr; do
+              (cd "$side/apps/web" && lhci collect --staticDistDir=dist --numberOfRuns=1)
+              mkdir -p "results/$side"
+              for f in "$side"/apps/web/.lighthouseci/lhr-*.json; do mv "$f" "results/$side/$(basename "$f" .json)-$i.json"; done
+            done
+          done
+
+      - name: Compare
+        id: compare
+        run: |
+          set +e
+          node pr/apps/web/compare-performance.mjs results/main results/pr --comment comment.md > report.md
+          status=$?
+          cat report.md >> "$GITHUB_STEP_SUMMARY"
+          cat report.md
+          exit $status
+
+      # One comment, only when the PR is faster; removed again if a later push loses the gain.
+      - name: Celebrate or tidy up
+        if: always() && steps.compare.outcome != 'skipped'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          existing=$(gh api "repos/$REPO/issues/$PR/comments" --paginate --jq ".[] | select(.body | startswith(\"$MARKER\")) | .id" | head -1)
+          if [ -f comment.md ]; then
+            if [ -n "$existing" ]; then
+              gh api -X PATCH "repos/$REPO/issues/comments/$existing" -F body=@comment.md > /dev/null
+            else
+              gh api "repos/$REPO/issues/$PR/comments" -F body=@comment.md > /dev/null
+            fi
+          elif [ -n "$existing" ]; then
+            gh api -X DELETE "repos/$REPO/issues/comments/$existing"
+          fi
