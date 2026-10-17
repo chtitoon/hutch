@@ -40,7 +40,8 @@ for (const f of findings) {
 const tokens = parse(source.match(/^---\n([\s\S]*?)\n---\n/)[1]);
 const colorOf = (v) => (typeof v === 'string' ? v.match(/^\{colors\.(.+)\}$/)?.[1] : undefined);
 for (const [name, props] of Object.entries(tokens.components ?? {})) {
-  if (name.endsWith('-dark')) continue;
+  // A reference to a missing color is already a broken-ref failure.
+  if (name.endsWith('-dark') || Object.values(props).some((v) => colorOf(v) && !(colorOf(v) in tokens.colors))) continue;
   const expected = Object.fromEntries(Object.entries(props).map(([k, v]) => {
     const color = colorOf(v);
     return [k, color && `${color}-dark` in tokens.colors ? `{colors.${color}-dark}` : v];
