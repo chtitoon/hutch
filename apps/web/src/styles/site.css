@@ -141,14 +141,17 @@ a:hover { color: var(--color-sage); }
 
 .text-link { font: var(--type-label-lg); letter-spacing: var(--type-label-lg-tracking); }
 
+/* Sections are spaced on one rhythm that scales with the screen: 64px (space-16) on an iPhone,
+   up to space-28/30 on a wide screen, so a phone isn't scrolling through empty bands. */
+
 /* Hero */
 
 .hero {
   padding-top: var(--space-12);
-  padding-bottom: var(--space-28);
+  padding-bottom: clamp(var(--space-16), 8vw, var(--space-28));
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-16);
+  gap: clamp(var(--space-12), 5vw, var(--space-16));
   align-items: center;
 }
 
@@ -269,11 +272,11 @@ a:hover { color: var(--color-sage); }
 .band :focus-visible { outline-color: var(--color-accent); }
 
 .band-inner {
-  padding-top: var(--space-28);
-  padding-bottom: var(--space-28);
+  padding-top: clamp(var(--space-16), 8vw, var(--space-28));
+  padding-bottom: clamp(var(--space-16), 8vw, var(--space-28));
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
+  gap: clamp(var(--space-10), 5vw, var(--space-16));
 }
 
 .band-head {
@@ -309,11 +312,11 @@ a:hover { color: var(--color-sage); }
 /* Where we’re heading */
 
 .grows {
-  padding-top: var(--space-30);
-  padding-bottom: var(--space-30);
+  padding-top: clamp(var(--space-16), 8.5vw, var(--space-30));
+  padding-bottom: clamp(var(--space-12), 5vw, var(--space-16));
   display: flex;
   flex-direction: column;
-  gap: var(--space-14);
+  gap: clamp(var(--space-10), 4vw, var(--space-14));
 }
 
 .section-head { display: flex; flex-direction: column; gap: var(--space-4); max-width: 640px; }
@@ -353,7 +356,7 @@ a:hover { color: var(--color-sage); }
 
 /* Closing card */
 
-.closing-wrap { padding-bottom: var(--space-30); }
+.closing-wrap { padding-bottom: clamp(var(--space-16), 8.5vw, var(--space-30)); }
 
 .closing {
   background: var(--color-surface-sunken);
@@ -392,7 +395,7 @@ a:hover { color: var(--color-sage); }
 .page {
   max-width: calc(var(--layout-prose-width) + 2 * var(--space-6));
   padding-top: var(--space-12);
-  padding-bottom: var(--space-28);
+  padding-bottom: clamp(var(--space-16), 8vw, var(--space-28));
 }
 
 .page h1 {
