@@ -5,7 +5,8 @@
 // - undefined-var: every var(--…) must be defined in src/styles/tokens.css
 // - type: font-family only var(--font-*), font only var(--type-*), no raw font-size,
 //   line-height, letter-spacing or font-weight
-// - external-font: no @import, @font-face or remote url(); fonts come from @fontsource packages
+// - external-font: no @import, @font-face (except local()-only fallbacks) or remote url(); fonts
+//   come from @fontsource packages
 // - raw-spacing: margin, padding and gap use var(--space-*), except the allowlist in DESIGN.md
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
@@ -97,7 +98,8 @@ const checkDeclaration = (file, line, selector, prop, value) => {
 // A small CSS walker: comments out, then rules and declarations, nested blocks (@media) included.
 const checkCss = (file, css, offset = 0, fullText = css) => {
   const text = css.replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' '));
-  for (const m of text.matchAll(/@import\b|@font-face\b|url\(\s*["']?(https?:)?\/\//g)) {
+  // An @font-face whose src is only local() resizes an installed font and loads nothing; any other is a font file.
+  for (const m of text.matchAll(/@import\b|@font-face\b(?![^{]*\{[^}]*\bsrc:(\s*local\([^)]*\)\s*,?)+\s*[;}])|url\(\s*["']?(https?:)?\/\//g)) {
     failures.push(`${file}:${lineAt(fullText, offset + m.index)}  external-font  ${m[0]} — fonts and styles are self-hosted: import an @fontsource package in Base.astro`);
   }
   const stack = [];

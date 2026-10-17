@@ -38,6 +38,8 @@ Layout gaps and padding come from `--space-*`. These cases are local to a compon
 
 Both families are self-hosted from pinned `@fontsource` packages imported in `Base.astro` and bundled into `dist/`, so no request leaves myhutch.app (D15). Never link a font CDN or a remote stylesheet. Fontsource registers the display font as "Bricolage Grotesque Variable", which is why that name leads the display family in DESIGN.md.
 
+Each web font is followed by a "Fallback" face, declared in `site.css`: Arial (Liberation Sans on Linux) sized like the web font, so nothing moves when the web fonts arrive (#36). Its `src` is only `local()`, the one kind of `@font-face` that `check:css` allows. Changing a font means recomputing its fallback (see the comment in `site.css`).
+
 ## Sections (landing page)
 
 | Section | Background | Notes |
