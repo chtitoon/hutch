@@ -1,6 +1,6 @@
 # Decisions
 
-Each entry: what, status, and why. "Decided" means I chose it; "Proposed" means it's a recommendation awaiting my confirmation.
+Each entry: what, status, and why. Merging the PR that records a decision confirms it, so a PR writes its decisions as **Decided**. **Proposed** means merged but still waiting on something the entry names (a library to pick, a check before adoption); **Open** means not decided yet.
 
 ## D1 — Name and domain: Hutch, myhutch.app
 **Status:** Decided (domain registered on Cloudflare, Oct 2026).
@@ -71,7 +71,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **Why:** `project.yml` (XcodeGen) is the source of truth. Generated `.xcodeproj` files cause merge conflicts and are hard for agents to edit safely. Trade-off: after cloning, run `make setup` in `apps/ios` before opening the project in Xcode.
 
 ## D10 — Work tracked in GitHub issues and milestones
-**Status:** Decided (Oct 2026). Superseded by D20 once it's confirmed.
+**Status:** Superseded by D20 (Oct 2026).
 
 **Why:** issues show up in the GitHub app on my phone, PRs close them automatically, and the history is kept. Milestones are the three phases; issues are the units of work, each with a "Done when." The milestone descriptions hold each phase's goal, order and success test; durable reasoning stays in these docs. There is no separate plan file, because a second copy of the plan would drift.
 
@@ -124,7 +124,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **Consequences:** the iOS app (generated colors in M0) and the app icon inherit these tokens. The icon description in brand.md is updated to forest but not yet redrawn. Brass fails contrast as text on light surfaces; it's limited to fills and markers. There are no dark-mode tokens yet, so the website renders light only (`color-scheme: light`) rather than inventing colors; the iOS app needs dark roles before its first screens (M2).
 
 ## D16 — Link preview: the door's light, rendered from the site's own tokens
-**Status:** Proposed (Oct 2026).
+**Status:** Decided (Oct 2026).
 
 **What:** sharing myhutch.app shows a 1200×630 card (`apps/web/public/og.png`): forest background, "Your things, privately kept.", and a narrow gap of brass light of even width, from the top edge to the floor, spilling onto the floor in a wedge that starts at the gap's full width. (It first tapered to a hairline at the floor, after the old carved-"h" logo; that made the floor light fan from a point, which read as a spotlight, not a door, and the carved-"h" logo was dropped anyway.) The card is an HTML page (`apps/web/og/card.html`) on the site's tokens and fonts, rendered by `npm run og` in headless Chromium via a pinned `playwright-core` dev dependency. The PNG is committed; `npm test` fails if the card, tokens or fonts changed since it was rendered.
 
@@ -144,7 +144,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **Consequences:** this is the brand's logo. It replaces the "door carved into the h" direction (#9), which was never finished, and the app icon is drawn from the house mark. The link-preview card (D16) shows the logo too, with the mark in a new `sage-on-deep` role. Supersedes D15's "light only" note for the website. The iOS app can generate its dark colors from the same `color-dark` group.
 
 ## D18 — DESIGN.md is the design system's source of truth, enforced on both sides
-**Status:** Proposed (Oct 2026).
+**Status:** Decided (Oct 2026).
 
 **What:**
 - One `DESIGN.md` at the repo root, in Google's [DESIGN.md format](https://github.com/google-labs-code/design.md) (alpha, linter pinned at 0.4.0): the tokens in its YAML front matter, the brand, rules and reasoning in its prose. It **supersedes `design/tokens.json`** (D15, D17) along with `design/README.md` and `design/brand.md`, which it absorbs. `design/` keeps only asset files: `light/`, `dark/` and `explorations/`. Each app has a short platform guide: `apps/web/DESIGN.md`, `apps/ios/DESIGN.md`.
@@ -159,7 +159,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **Risks and exit plan:** the format is alpha and Google's. If it changes or stalls, `npx @google/design.md export --format dtcg DESIGN.md` writes a W3C design tokens file, the format `tokens.json` used, and the generators move to it. The -dark and -wide suffixes export as ordinary tokens, so nothing is lost. Until then, never keep a second token file by hand; generate one if a tool needs it.
 
 ## D19 — Website performance: one file, budgets at the deploy gate, Lighthouse on pull requests
-**Status:** Proposed (Oct 2026).
+**Status:** Decided (Oct 2026).
 
 **What:**
 - `apps/web/PERFORMANCE.md` is the single source of the site's performance rules. Its YAML front matter holds the numbers: per-page byte budgets (total, HTML, CSS, fonts, images, JavaScript), allowed origins (self only), image rules (width and height, SVG/WebP/AVIF, a size cap), Lighthouse limits and the PR comparison thresholds. The prose below says why each rule exists and gives a checklist for new pages.
@@ -173,7 +173,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **Consequences:** growing a budget is a visible one-line change to `PERFORMANCE.md` in the PR. The first real photo will need the images budget raised. Lighthouse is installed in the workflow only (pinned), so it adds nothing to the Cloudflare build. It runs through its Node API with one Chrome (`run-lighthouse.mjs`) rather than `lhci collect`, which launched Chrome and a server for every run: same results, about half the time, and unchanged pages aren't measured at all. The Actions check isn't required for merging unless set in branch protection.
 
 ## D20 — The plan lives in ROADMAP.md
-**Status:** Proposed (Oct 2026). Supersedes D10.
+**Status:** Decided (Oct 2026). Supersedes D10.
 
 **What:** `ROADMAP.md` at the repo root holds the plan, in two layers like `DESIGN.md`: YAML front matter with each phase's id, title, status and a `public` block (the website's roadmap card), and prose with each phase's goal, order and success test, an exhaustive "Done when" list (the phase's definition of done, each box tagged with the milestone that delivers it), and one line per milestone (ID, status, goal, why, depends on). It replaces the GitHub milestones and issues. The open `decision` issues moved into this file (D3, D5, D6). The work loop in AGENTS.md picks the next milestone from it, and each PR ticks the boxes it proves and updates statuses. A milestone's detail (screens, tasks) is worked out when it starts, not in the roadmap.
 
@@ -186,11 +186,11 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **How to reverse:** create a milestone per phase from its section and an issue per open milestone, with its tagged boxes as the issue's checklist, move Open decisions back to `decision` issues if wanted, restore D10's work loop in AGENTS.md, and delete ROADMAP.md's prose (the front matter can stay if the website reads it).
 
 ## D21 — Recovery: iCloud Keychain, plus a printable recovery kit
-**Status:** Proposed (Oct 2026). I chose the approach; confirm the wording of non-negotiable 1 below.
+**Status:** Decided (Oct 2026). Rewords non-negotiable 1 in AGENTS.md.
 
 **What:** the inventory key is stored as a synchronizable Keychain item, so iCloud Keychain carries it to a new iPhone signed into my Apple account and restore just works. A printable recovery kit (a recovery key, 1Password-style) restores everything without the Apple account, if that is lost too. Both are Phase 1's definition of done (M4, ROADMAP.md); the cryptographic details are M4's to design and explain (non-negotiable 3).
 
 **Why:** a kit alone means a lost kit and a lost phone lose everything, and most people never print it. iCloud Keychain is end-to-end encrypted, so Apple can't read the key, and it costs nothing to run. The kit covers the case where the Apple account is gone.
 
-**Conflict to resolve:** AGENTS.md non-negotiable 1 says keys never leave the device. Here the key leaves it, end-to-end encrypted, through iCloud Keychain. Proposed wording: "Plaintext item data, photos and names never leave the device; keys leave it only end-to-end encrypted, through iCloud Keychain." Until confirmed, M4 can't ship this.
+**Non-negotiable 1, reworded:** it said keys never leave the device; here the key leaves it, end-to-end encrypted, through iCloud Keychain. It now reads: "Plaintext item data, photos and names never leave the device; keys leave it only end-to-end encrypted, through iCloud Keychain (D21)."
 

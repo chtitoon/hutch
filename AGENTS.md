@@ -32,7 +32,7 @@ I often check in from my phone while work runs on my Mac. Keep replies short and
 
 ## Non-negotiables
 
-1. **Zero-knowledge.** Plaintext item data, photos, names and keys never leave the device. The server stores and returns opaque ciphertext only. Every sync feature needs a test that asserts the server payload is not readable.
+1. **Zero-knowledge.** Plaintext item data, photos and names never leave the device; keys leave it only end-to-end encrypted, through iCloud Keychain (D21). The server stores and returns opaque ciphertext only. Every sync feature needs a test that asserts the server payload is not readable.
 2. **Private by default.** New items are `private`. Nothing becomes lendable or for-sale without an explicit user action.
 3. **No hand-rolled crypto.** Use CryptoKit on iOS (WebCrypto if the web ever handles data); no custom ciphers or homemade key schedules. Explain any crypto choice in the PR.
 4. **Recovery before sync.** Never ship a way to lose the only key without a recovery path.
