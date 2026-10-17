@@ -1,21 +1,18 @@
-# Lighthouse on main and the PR, compared with the limits in apps/web/PERFORMANCE.md (D19).
-# Linux runner, pull requests touching the website only. Budgets on file sizes run in `npm test` instead,
-# which is Cloudflare's deploy gate; this check needs a browser, so it lives here.
-name: Web Performance
+# The website, on every pull request and push to main. Both are checks on the PR; Validate Build is
+# required on main, so this workflow has no path filter: a required check that never starts would
+# block unrelated PRs.
+name: Web
 
 on:
   pull_request:
-    paths:
-      - 'apps/web/**'
-      - 'DESIGN.md'
-      - 'design/**'
+  push:
+    branches: [main]
 
 permissions:
   contents: read
-  pull-requests: write
 
 concurrency:
-  group: validate-performance-${{ github.event.pull_request.number }}
+  group: validate-web-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -23,21 +20,63 @@ env:
   MARKER: '<!-- hutch-performance -->'
 
 jobs:
-  lighthouse:
+  # The website's tests: generated files are current (tokens, favicon, link preview), the site
+  # builds, its HTML is valid, its internal links resolve and every page fits the file-size budgets
+  # in apps/web/PERFORMANCE.md. On Linux it takes under a minute.
+  build:
+    name: Validate Build
+    runs-on: ubuntu-24.04
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: apps/web/.node-version
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm ci
+      - run: npm run web:build
+
+  # Lighthouse on main and the PR, compared with the limits in apps/web/PERFORMANCE.md (D19), for
+  # pull requests touching the website. File-size budgets run in Validate Build and in `npm test`,
+  # Cloudflare's deploy gate; this check needs a browser, so it lives here.
+  page-speed:
     name: Validate Page Speed
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-24.04
     timeout-minutes: 20
+    permissions:
+      contents: read
+      pull-requests: write
     steps:
+      # Pull requests that don't touch the website skip the rest in seconds.
+      - name: Check the PR touches the website
+        id: scope
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          if gh api "repos/$REPO/pulls/$PR/files" --paginate --jq '.[].filename' | grep -qE '^(apps/web/|DESIGN\.md$|design/)'; then
+            echo "web=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "The PR doesn't touch the website, so Lighthouse was skipped." >> "$GITHUB_STEP_SUMMARY"
+          fi
       - name: Check out the PR
+        if: steps.scope.outputs.web == 'true'
         uses: actions/checkout@v5
         with:
           path: pr
       - name: Check out main
+        if: steps.scope.outputs.web == 'true'
         uses: actions/checkout@v5
         with:
           ref: ${{ github.event.pull_request.base.sha }}
           path: main
       - uses: actions/setup-node@v5
+        if: steps.scope.outputs.web == 'true'
         with:
           node-version-file: pr/apps/web/.node-version
           cache: npm
@@ -46,6 +85,7 @@ jobs:
             main/apps/web/package-lock.json
 
       - name: Build both
+        if: steps.scope.outputs.web == 'true'
         run: |
           for side in main pr; do
             (cd "$side/apps/web" && npm ci && npm run build)
@@ -54,6 +94,7 @@ jobs:
       # Identical files give identical results, so only pages that differ from main are measured.
       - name: Find changed pages
         id: pages
+        if: steps.scope.outputs.web == 'true'
         run: |
           pages=$(node pr/apps/web/compare-performance.mjs --changed main/apps/web/dist pr/apps/web/dist | tr '\n' ' ')
           echo "pages=$pages" >> "$GITHUB_OUTPUT"

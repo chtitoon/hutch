@@ -19,7 +19,7 @@ Static website: what Hutch is, the App Store link, privacy policy and support pa
 
 ## Where things live
 
-- `PERFORMANCE.md` — performance budgets and rules, checked by `npm test` and by the Web Performance workflow on PRs (`.github/workflows/validate-performance.yml`).
+- `PERFORMANCE.md` — performance budgets and rules, checked by `npm test` and by the Validate Page Speed check on PRs (`.github/workflows/validate-web.yml`).
 - `src/pages/` — one file per page. Text pages (`privacy.md`, `support.md`) are Markdown.
 - `src/layouts/` — the shared header and footer (`Base.astro`) and the text-page layout (`Prose.astro`).
 - `src/components/AppStoreLink.astro` — the one place the App Store link lives; set its URL once Hutch is listed.
@@ -27,4 +27,4 @@ Static website: what Hutch is, the App Store link, privacy policy and support pa
 
 ## Deploying
 
-Cloudflare Pages project `hutch`, connected to this GitHub repo. Merging to `main` deploys myhutch.app; every PR touching `apps/web/` or `design/` gets a preview URL, posted on the PR. Pages runs `npm ci && npm test` in `apps/web`, so a failing test blocks the deploy. On GitHub, the **Design Lint** and **Web Build** workflows run the same checks as two required checks on every PR, so a failure shows in the PR's checks and blocks the merge. Nothing to deploy by hand.
+Cloudflare Pages project `hutch`, connected to this GitHub repo. Merging to `main` deploys myhutch.app; every PR touching `apps/web/` or `design/` gets a preview URL, posted on the PR. Pages runs `npm ci && npm test` in `apps/web`, so a failing test blocks the deploy. On GitHub, the required checks **Design / Validate DESIGN.md** and **Web / Validate Build** run the same checks on every PR, so a failure shows in the PR's checks and blocks the merge. Nothing to deploy by hand.

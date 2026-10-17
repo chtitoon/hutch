@@ -1,4 +1,4 @@
-// Runs Lighthouse on main's and the PR's builds for the Web Performance check (see PERFORMANCE.md).
+// Runs Lighthouse on main's and the PR's builds for the Validate Page Speed check (see PERFORMANCE.md).
 // `node run-lighthouse.mjs <main-dist> <pr-dist> <out-dir> <page>...` serves each build locally and runs
 // every page `lighthouse.runs` times, alternating main and PR so a slow moment on the machine hits both
 // alike. Writes one lhr-*.json per run to <out-dir>/main and <out-dir>/pr. Pages missing from main are

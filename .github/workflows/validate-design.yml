@@ -2,7 +2,7 @@
 # clean (references, contrast in light and dark) and the website's styles use only its tokens.
 # A required check on main, so it runs on every PR with no path filter: a required check that
 # never starts would block unrelated PRs. On Linux it takes under a minute.
-name: Design Lint
+name: Design
 
 on:
   pull_request:
