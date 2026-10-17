@@ -10,8 +10,8 @@ This repo and its GitHub issues are the project's only memory. When a conversati
 |------|------|
 | Every session | The open issues in the current GitHub milestone, and `DECISIONS.md` (what's settled, what's open) |
 | Before proposing product changes | The [milestone](https://github.com/chtitoon/hutch/milestones) descriptions (each phase's goal and success test), `CONTEXT.md` (research) and D13 in `DECISIONS.md` (what's deliberately out of scope) |
-| Any UI, visual or web work | `design/README.md`, then `design/brand.md`; for the website, also `apps/web/DESIGN.md` |
-| Any web work, before adding a page, asset or feature | `apps/web/PERFORMANCE.md` (budgets, rules and the checklist; `npm run new-page` starts a compliant page) |
+| Any UI, visual or web work | `design/README.md`, then `design/brand.md` |
+| Work inside an app | That app's own `AGENTS.md`, if it has one (`apps/web/AGENTS.md`) |
 
 ## The work loop
 
