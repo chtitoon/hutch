@@ -131,3 +131,14 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 **Why:** the site had no Open Graph tags, so shared links showed a bare URL. Light through a door ajar carries the brand's feeling (home, private, open when you choose) without drawing a door, which D15 found heavy-handed. Rendering in a real browser keeps the variable display font exactly as on the site; the usual Node image generators can't read its woff2 files. Rendering only on demand keeps the Cloudflare build browser-free.
 
 **Consequences:** changing a token or the card means running `npm run og` once, on a machine with a Playwright browser (`npx playwright-core install chromium`). When the final logo lands (#9), the card's interim house glyph is swapped for it.
+
+## D17 — The house-and-keyhole logo, and dark mode on the website
+**Status:** Decided (Oct 2026).
+
+**What:**
+- The website header uses the new logo (`design/light/logo.svg`, `design/dark/logo.svg`): a rounded line-drawn house with a keyhole, beside a bold "hutch" wordmark. It is inlined as `Logo.astro`, traced from the light file, with the mark in `sage` and the wordmark in `ink` so one shape serves both modes. It replaces the interim house glyph.
+- `tokens.json` gains a `color-dark` group: dark values for the light-surface roles, starting from the dark logo's night-forest background. The forest band, brass and on-deep roles keep one value. A new `device` role keeps the phone frame dark in both modes. The site follows the system setting (`color-scheme: light dark`).
+
+**Why:** a real logo instead of a placeholder, in colors that come from the tokens. Dark mode follows the system, as the iPhone app will.
+
+**Consequences:** this is the brand's logo. It replaces the "door carved into the h" direction (#9), which was never finished, and the app icon is drawn from the house mark. The link-preview card (D16) shows the logo too, with the mark in a new `sage-on-deep` role. Supersedes D15's "light only" note for the website. The iOS app can generate its dark colors from the same `color-dark` group.
