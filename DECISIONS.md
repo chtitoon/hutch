@@ -111,7 +111,7 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 **Contact:** support@myhutch.app, forwarded to my Gmail by Cloudflare Email Routing, so my personal address stays off the site.
 
 ## D15 — Palette: forest, warm grey and brass; self-hosted web fonts
-**Status:** Proposed (Oct 2026). Confirm before the iOS app or the app icon adopt it.
+**Status:** Proposed (Oct 2026). Confirm before the iOS app or the app icon adopt it. The tokens now live in the root `DESIGN.md` (D18), not `design/tokens.json`.
 
 **What:**
 - `design/tokens.json` now comes from the landing-page design: near-black green ink on warm off-white, a deep forest band color, sage for small labels and focus, and brass as the single warm accent. The token file also gains roles (muted and subtle ink, surfaces, borders, on-deep colors), two fonts (Bricolage Grotesque for display, Instrument Sans for text), weights, radii and a 4px spacing scale.
@@ -133,7 +133,7 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 **Consequences:** changing a token or the card means running `npm run og` once, on a machine with a Playwright browser (`npx playwright-core install chromium`). When the final logo lands (#9), the card's interim house glyph is swapped for it.
 
 ## D17 — The house-and-keyhole logo, and dark mode on the website
-**Status:** Decided (Oct 2026).
+**Status:** Decided (Oct 2026). The `color-dark` group became `-dark` colors in the root `DESIGN.md` (D18).
 
 **What:**
 - The website header uses the new logo (`design/light/logo.svg`, `design/dark/logo.svg`): a rounded line-drawn house with a keyhole, beside a bold "hutch" wordmark. It is inlined as `Logo.astro`, traced from the light file, with the mark in `sage` and the wordmark in `ink` so one shape serves both modes. It replaces the interim house glyph.
@@ -142,3 +142,18 @@ Drives whether to rename (see D1), invest in multi-platform polish, or pursue th
 **Why:** a real logo instead of a placeholder, in colors that come from the tokens. Dark mode follows the system, as the iPhone app will.
 
 **Consequences:** this is the brand's logo. It replaces the "door carved into the h" direction (#9), which was never finished, and the app icon is drawn from the house mark. The link-preview card (D16) shows the logo too, with the mark in a new `sage-on-deep` role. Supersedes D15's "light only" note for the website. The iOS app can generate its dark colors from the same `color-dark` group.
+
+## D18 — DESIGN.md is the design system's source of truth, enforced on both sides
+**Status:** Proposed (Oct 2026).
+
+**What:**
+- One `DESIGN.md` at the repo root, in Google's [DESIGN.md format](https://github.com/google-labs-code/design.md) (alpha, linter pinned at 0.4.0): the tokens in its YAML front matter, the brand, rules and reasoning in its prose. It **supersedes `design/tokens.json`** (D15, D17) along with `design/README.md` and `design/brand.md`, which it absorbs. `design/` keeps only asset files: `light/`, `dark/` and `explorations/`. Each app has a short platform guide: `apps/web/DESIGN.md`, `apps/ios/DESIGN.md`.
+- **Dark mode as a `-dark` suffix** in the one colors map (`ink`, `ink-dark`). The spec has no modes; unknown color names are valid, so the file stays spec-conformant, the linter checks every value, and each generator maps the suffix to its platform (a `prefers-color-scheme` block on the web, an asset-catalog appearance on iOS). The same pattern, `-wide`, gives a type level its size on wide screens: sizes are fixed, never fluid, because the spec has no `clamp()`.
+- **A full type scale** (sixteen levels plus three for the link preview) replaces two families and four weights. Merging the site's ad hoc sizes into it changed some sizes on purpose (section titles share one size, prose is 16px).
+- **Contrast is declared, then checked.** Every text-on-background pair is a `components` entry, with a `-dark` twin when its colors change in dark mode. Pairs ending in `-graphic` are marks and need 3:1.
+- **Enforced on both sides, in `npm test`, so Cloudflare blocks a deploy that breaks it:** `lint:design` runs the linter and fails on any warning (the CLI only warns on low contrast), plus the `-dark` twin and `-graphic` rules; `check:css` fails on raw colors, undefined variables, type outside the scale, external fonts and off-scale spacing in the website's code, with a reasoned allowlist in `apps/web/DESIGN.md`. iOS gets the equivalent in M0: Swift generated from DESIGN.md and a SwiftLint rule banning raw colors and sizes.
+- Fixing what the linter found: `sage` darkened from `#3E7A62` to `#3D7961` (4.47:1 → 4.53:1 on the background), and a new `marker` role for the status pill's dot, deeper brass in dark mode (1.97:1 → 3.27:1).
+
+**Why:** one file that agents and people both read, values next to the reasons, in a format the tools around agents are starting to understand. A token file alone said what but not why; the reasoning lived in two other files that could drift from it.
+
+**Risks and exit plan:** the format is alpha and Google's. If it changes or stalls, `npx @google/design.md export --format dtcg DESIGN.md` writes a W3C design tokens file, the format `tokens.json` used, and the generators move to it. The -dark and -wide suffixes export as ordinary tokens, so nothing is lost. Until then, never keep a second token file by hand; generate one if a tool needs it.

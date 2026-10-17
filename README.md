@@ -13,7 +13,7 @@ It exists because [every app I looked at](CONTEXT.md) made you trade privacy for
 
 ## The idea
 
-Like the furniture it's named after: closed doors below, a few things on display. That idea runs through [the logo and the design](design/README.md), too.
+Like the furniture it's named after: closed doors below, a few things on display. That idea runs through [the logo and the design](DESIGN.md), too.
 
 ## Where it stands
 

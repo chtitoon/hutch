@@ -9,14 +9,13 @@
 <link rel="stylesheet" href="../node_modules/@fontsource/instrument-sans/600.css">
 <link rel="stylesheet" href="../src/styles/tokens.css">
 <style>
-  :root { --display: "Bricolage Grotesque Variable", var(--font-display); }
   * { box-sizing: border-box; margin: 0; }
   html, body { width: 1200px; height: 630px; overflow: hidden; }
   body {
     position: relative;
     background: var(--color-deep);
     color: var(--color-on-deep);
-    font-family: var(--font-text);
+    font: var(--type-body-md);
   }
 
   /* Light from a door left ajar: a tapered sliver, hairline at the floor, wider at the top. */
@@ -49,26 +48,22 @@
   .logo-mark { fill: var(--color-sage-on-deep); }
   .logo-word { fill: var(--color-on-deep); }
   h1 {
-    margin-top: 96px;
-    font-family: var(--display);
-    font-weight: var(--font-weight-bold);
-    font-size: 92px;
-    line-height: 0.96;
-    letter-spacing: -0.035em;
+    margin-top: var(--space-24);
+    font: var(--type-preview-headline);
+    letter-spacing: var(--type-preview-headline-tracking);
   }
   .lede {
     margin-top: var(--space-7);
     max-width: 30ch;
     color: var(--color-on-deep-muted);
-    font-size: 27px;
-    font-weight: var(--font-weight-medium);
-    line-height: 1.35;
+    font: var(--type-preview-lede);
+    letter-spacing: var(--type-preview-lede-tracking);
   }
   .foot {
     position: absolute; left: 80px; top: 560px;
     display: flex; align-items: center; gap: var(--space-3);
     color: var(--color-on-deep-muted);
-    font-size: 22px; font-weight: var(--font-weight-semibold);
+    font: var(--type-preview-label); letter-spacing: var(--type-preview-label-tracking);
   }
   .foot::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--color-accent); }
 </style>
