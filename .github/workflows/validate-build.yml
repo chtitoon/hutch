@@ -14,7 +14,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: web-build-${{ github.ref }}
+  group: validate-build-${{ github.ref }}
   cancel-in-progress: true
 
 defaults:
@@ -23,7 +23,7 @@ defaults:
 
 jobs:
   website:
-    name: Site builds; HTML, links, size OK
+    name: Validate website build
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5

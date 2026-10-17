@@ -15,7 +15,7 @@ permissions:
   pull-requests: write
 
 concurrency:
-  group: web-performance-${{ github.event.pull_request.number }}
+  group: validate-performance-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 env:
@@ -24,7 +24,7 @@ env:
 
 jobs:
   lighthouse:
-    name: Page speed OK, no slower than main
+    name: Validate page speed
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:

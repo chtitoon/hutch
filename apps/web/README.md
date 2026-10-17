@@ -19,7 +19,7 @@ Static website: what Hutch is, the App Store link, privacy policy and support pa
 
 ## Where things live
 
-- `PERFORMANCE.md` — performance budgets and rules, checked by `npm test` and by the Lighthouse workflow on PRs (`.github/workflows/web-performance.yml`).
+- `PERFORMANCE.md` — performance budgets and rules, checked by `npm test` and by the Web Performance workflow on PRs (`.github/workflows/validate-performance.yml`).
 - `src/pages/` — one file per page. Text pages (`privacy.md`, `support.md`) are Markdown.
 - `src/layouts/` — the shared header and footer (`Base.astro`) and the text-page layout (`Prose.astro`).
 - `src/components/AppStoreLink.astro` — the one place the App Store link lives; set its URL once Hutch is listed.

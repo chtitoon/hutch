@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: design-lint-${{ github.ref }}
+  group: validate-design-${{ github.ref }}
   cancel-in-progress: true
 
 defaults:
@@ -22,7 +22,7 @@ defaults:
 
 jobs:
   design:
-    name: DESIGN.md valid, CSS uses tokens
+    name: Validate DESIGN.md
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
