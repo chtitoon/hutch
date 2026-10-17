@@ -38,7 +38,7 @@ The plan for Hutch: three phases, each with its goal, what makes it done, and th
 
 **How to read it.**
 
-- **Milestones** are the road: each has a goal, a status, why we need it, and what it depends on. Its detail (screens, tasks) is worked out when it starts, not here.
+- **Milestones** are the road, in build order: each has a goal, a status, why we need it, and what it depends on. Its detail (screens, tasks) is worked out when it starts, not here.
 - **Done when** is the phase's definition of done: every box ticked and the success test passed. Each box ends with a link to the milestone that delivers it, and a milestone is done when all of its boxes are ticked.
 - **Status:** milestones are `done`, `next` (ready to start), `later` or `blocked` (waiting on something outside the repo); phases are `done`, `in-progress` or `planned`, in the front matter above.
 - Open questions are **Open** or **Proposed** entries in [DECISIONS.md](DECISIONS.md), linked from what depends on them.
@@ -50,8 +50,6 @@ Each PR ticks the boxes it meets and updates statuses here, so the plan changes 
 **Status:** in progress.
 
 **Goal:** I keep a list of my things on my iPhone, and all of it is encrypted, so only I can read it.
-
-**Order:** scaffold, encryption at rest, local store, fast capture, encrypted sync with recovery, organize, then the website (the App Store needs its privacy policy), a first TestFlight build and, once the success test passes, the App Store release; the final logo can happen alongside.
 
 **Success test:** 50 real items cataloged within two weeks of fast capture shipping, without forcing it. If not, improve capture before anything else. Don't start Phase 2 until this passes.
 
@@ -192,8 +190,6 @@ Final artwork and a fuller design system, alongside the rest.
 **Status:** planned. Starts only once Phase 1 is done.
 
 **Goal:** the neighbors I trust can see and borrow the few things I put on the shelf.
-
-**Order:** lendable shelf, invites, loans, revocation.
 
 **Social plan** (matters more than the code): seed with 10-15 of my own items; ask 4-6 trusted neighbors for 2-3 things they'd lend, not a full inventory; support 'anyone have a ladder?' requests (CONTEXT.md).
 
