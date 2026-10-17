@@ -64,7 +64,7 @@ colors:
 typography:
   # Display family: Bricolage Grotesque, weights 500 and 700, optical sizing on. The web
   # self-hosts the variable font under its own name, listed first; other platforms skip it.
-  # Each "Fallback" is a web-only face, Arial sized like the font, so the swap doesn't shift text.
+  # Each "Fallback" is a web-only face, Arial sized like the font, so a page drawn without the web font keeps its layout.
   # Text family: Instrument Sans, weights 400, 500 and 600.
   headline-display:
     fontFamily: &display Bricolage Grotesque Variable, Bricolage Grotesque Fallback, Bricolage Grotesque, ui-sans-serif, system-ui, sans-serif
