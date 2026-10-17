@@ -18,12 +18,12 @@ Always set `font` and `letter-spacing` together: `font` doesn't reset letter spa
 
 ## Enforced by `npm test`
 
-- **`npm run lint:design`** lints the root DESIGN.md: broken references, contrast for every pair under `components` (4.5:1 for text, 3:1 for `-graphic` marks), unused tokens, and a `-dark` twin for every pair whose colors change in dark mode.
-- **`npm run check:css`** checks the site's CSS, `<style>` blocks, `style=""` attributes and SVG color attributes in `src/` and `og/card.html`. It fails on a raw color (hex, `rgb()`, `hsl()`, a named color; `color-mix()` only over `var(--color-*)` and `transparent`), on a `var(--…)` that `tokens.css` doesn't define, on type set without a `--type-*` level or a font family other than `--font-*`, on an external font or stylesheet, and on raw px in `margin`, `padding` or `gap` except the cases below. Each failure names the file, line, rule and the token to use instead.
+- **`npm run design:lint:md`** lints the root DESIGN.md: broken references, contrast for every pair under `components` (4.5:1 for text, 3:1 for `-graphic` marks), unused tokens, and a `-dark` twin for every pair whose colors change in dark mode.
+- **`npm run design:lint:css`** checks the site's CSS, `<style>` blocks, `style=""` attributes and SVG color attributes in `src/` and `og/card.html`. It fails on a raw color (hex, `rgb()`, `hsl()`, a named color; `color-mix()` only over `var(--color-*)` and `transparent`), on a `var(--…)` that `tokens.css` doesn't define, on type set without a `--type-*` level or a font family other than `--font-*`, on an external font or stylesheet, and on raw px in `margin`, `padding` or `gap` except the cases below. Each failure names the file, line, rule and the token to use instead.
 
 ## Spacing exceptions
 
-Layout gaps and padding come from `--space-*`. These cases are local to a component and stay in px; `check:css` reads this table, so a new exception means a new row with its reason.
+Layout gaps and padding come from `--space-*`. These cases are local to a component and stay in px; `design:lint:css` reads this table, so a new exception means a new row with its reason.
 
 | File | Selector | Property | Why |
 |------|----------|----------|-----|
@@ -38,7 +38,7 @@ Layout gaps and padding come from `--space-*`. These cases are local to a compon
 
 Both families are self-hosted from pinned `@fontsource` packages imported in `Base.astro` and bundled into `dist/`, so no request leaves myhutch.app (D15). Never link a font CDN or a remote stylesheet. Fontsource registers the display font as "Bricolage Grotesque Variable", which is why that name leads the display family in DESIGN.md.
 
-Each web font is followed by a "Fallback" face, declared in `site.css`: Arial (Liberation Sans on Linux) sized like the web font, so nothing moves when the web fonts arrive (#36). Its `src` is only `local()`, the one kind of `@font-face` that `check:css` allows. Changing a font means recomputing its fallback (see the comment in `site.css`).
+Each web font is followed by a "Fallback" face, declared in `site.css`: Arial (Liberation Sans on Linux) sized like the web font, so nothing moves when the web fonts arrive (#36). Its `src` is only `local()`, the one kind of `@font-face` that `design:lint:css` allows. Changing a font means recomputing its fallback (see the comment in `site.css`).
 
 ## Sections (landing page)
 
