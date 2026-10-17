@@ -76,7 +76,7 @@ Each PR ticks its item's boxes and updates its status here, so the plan changes 
 
 **Prior work:** [PR #32](https://github.com/chtitoon/hutch/pull/32), branch `1-monorepo-scaffold`: the XcodeGen project, the `HutchCore` package with one test, the iOS and root Makefiles, Swift tokens generated from `design/` (before DESIGN.md), the logo screen and the app icon. Closed, not merged.
 
-### M2 — Encryption at rest
+### M1 — Encryption at rest
 **Status:** later
 
 **Why:** zero-knowledge starts on the device (non-negotiable 1, D2): an inventory is a map of my home, and it shouldn't be readable without my key. It comes before the item store so that there is never an unencrypted store, not even briefly, and nothing to migrate later.
@@ -92,7 +92,7 @@ Built ahead of the store, so this item delivers the encryption layer the store w
 
 **Depends on:** M0
 
-### M1 — Local item store
+### M2 — Local item store
 **Status:** later
 
 **Why:** the inventory is the product; encryption, capture, sync and sharing all work on these items.
@@ -102,15 +102,15 @@ Built ahead of the store, so this item delivers the encryption layer the store w
 **Done when:**
 - [ ] Item model: name, photos, category, location, condition, estimated value, purchase date, receipt, notes, and `visibility` (`private` by default, `lendable`, `for_sale`). The field exists from day one even though only `private` works in Phase 1.
 - [ ] Add / edit / delete / search, stored on device with SwiftData; works offline
-- [ ] Item data and photos are written only through M2's encryption; tests assert nothing reaches disk in plaintext
+- [ ] Item data and photos are written only through M1's encryption; tests assert nothing reaches disk in plaintext
 - [ ] Screens, states, navigation and copy match `apps/ios/design/milestone1.md` (PR #22's decision on the written spec)
 - [ ] Model logic unit-tested in the Swift package
 - [ ] Snapshot-testing library chosen with me and recorded in D11
 - [ ] Snapshot tests for the list and edit screens: light, dark and large Dynamic Type; the reference images appear in the PR
 
-**Depends on:** M2; dark-mode color roles in `DESIGN.md` (D15; added in D17); PR #22's decision on location as free text, confirmed. Spec: `apps/ios/design/milestone1.md` (PR #22).
+**Depends on:** M1; dark-mode color roles in `DESIGN.md` (D15; added in D17); PR #22's decision on location as free text, confirmed. Spec: `apps/ios/design/milestone1.md` (PR #22).
 
-**Prior work:** [PR #22](https://github.com/chtitoon/hutch/pull/22), branch `2-m1-design-spec`: the M1 screen spec (`apps/ios/design/milestone1.md`), the design canvas export (`apps/ios/design/canvas/`), and two proposed decisions, on location as free text and on the written spec winning over the canvas. Closed, not merged, so the spec this item points to isn't on `main`.
+**Prior work:** [PR #22](https://github.com/chtitoon/hutch/pull/22), branch `2-m1-design-spec`: the screen spec for the item store, written when it was M1 (`apps/ios/design/milestone1.md`), the design canvas export (`apps/ios/design/canvas/`), and two proposed decisions, on location as free text and on the written spec winning over the canvas. Closed, not merged, so the spec this item points to isn't on `main`.
 
 ### M3 — Fast capture
 **Status:** later
@@ -124,7 +124,7 @@ Built ahead of the store, so this item delivers the encryption layer the store w
 - [ ] Barcode scan fills in what it can
 - [ ] AI-capture decision settled ([D5](DECISIONS.md#d5--photo-based-ai-capture))
 
-**Depends on:** M1; [D5](DECISIONS.md#d5--photo-based-ai-capture), photo-based AI capture (Open)
+**Depends on:** M2; [D5](DECISIONS.md#d5--photo-based-ai-capture), photo-based AI capture (Open)
 
 ### M4 — Encrypted sync and recovery
 **Status:** later
@@ -152,7 +152,7 @@ Built ahead of the store, so this item delivers the encryption layer the store w
 - [ ] Locations (garage, basement…), categories, estimated value
 - [ ] Receipts and warranty dates attached to items
 
-**Depends on:** M1
+**Depends on:** M2
 
 ### W1 — Website v1 · done
 Why: the App Store requires a privacy policy and a support page, and myhutch.app says what Hutch is. [PR #21](https://github.com/chtitoon/hutch/pull/21)

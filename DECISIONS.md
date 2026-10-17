@@ -76,7 +76,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **Why:** issues show up in the GitHub app on my phone, PRs close them automatically, and the history is kept. Milestones are the three phases; issues are the units of work, each with a "Done when." The milestone descriptions hold each phase's goal, order and success test; durable reasoning stays in these docs. There is no separate plan file, because a second copy of the plan would drift.
 
 ## D11 — UI review through snapshot tests
-**Status:** Proposed (Oct 2026). The approach is decided; confirm the library with me in M1.
+**Status:** Proposed (Oct 2026). The approach is decided; confirm the library with me in M2, the first milestone with screens.
 
 **What:** each screen renders to reference images (light, dark, large Dynamic Type) stored with its tests. GitHub shows changed images side by side in a PR's file changes, so I can review UI from my phone with no extra tooling, and an unintended change fails the tests.
 
@@ -121,7 +121,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 
 **Why:** the design reads calmer and more "home" than the bright green, which fits the "feels like home, never like a vault" value better.
 
-**Consequences:** the iOS app (generated colors in M0) and the app icon inherit these tokens. The icon description in brand.md is updated to forest but not yet redrawn. Brass fails contrast as text on light surfaces; it's limited to fills and markers. There are no dark-mode tokens yet, so the website renders light only (`color-scheme: light`) rather than inventing colors; the iOS app needs dark roles before M1.
+**Consequences:** the iOS app (generated colors in M0) and the app icon inherit these tokens. The icon description in brand.md is updated to forest but not yet redrawn. Brass fails contrast as text on light surfaces; it's limited to fills and markers. There are no dark-mode tokens yet, so the website renders light only (`color-scheme: light`) rather than inventing colors; the iOS app needs dark roles before its first screens (M2).
 
 ## D16 — Link preview: the door's light, rendered from the site's own tokens
 **Status:** Proposed (Oct 2026).

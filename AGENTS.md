@@ -20,7 +20,7 @@ Work is planned in `ROADMAP.md` (D20): each **phase** is a section, each **item*
 1. **Find the work.** In `ROADMAP.md`, take the earliest phase's first item marked **next** that isn't blocked and doesn't depend on a decision marked **Open** or **Proposed**. If I asked for something else, do that instead.
 2. **Check it's unblocked.** If it depends on a decision marked **Proposed** or **Open** in `DECISIONS.md`, stop and ask. Record the answer in `DECISIONS.md`.
 3. **Confirm the slice.** Restate the item's "Done when" in one or two lines and say what you'll do this session. One item, or one clear slice of one, per session.
-4. **Build on a branch** named `<item-id>-<short-name>` (e.g. `m1-item-store`), with tests.
+4. **Build on a branch** named `<item-id>-<short-name>` (e.g. `m2-item-store`), with tests.
 5. **Prove it.** Green `make test` for every app you touched, plus snapshot tests for UI work (see Reviewing UI changes).
 6. **Open a PR** that names the item, summarizes the change in a few lines, says how to check it, and records any new decision in `DECISIONS.md`. In the same PR, update `ROADMAP.md`: tick the item's "Done when" boxes it meets and update its status (when it's done, collapse it to one line with the PR link and mark the following item **next**); when a phase starts or finishes, update its status in the front matter too.
 7. **Never merge.** I review and merge, usually from my phone.
@@ -75,7 +75,7 @@ Work happens on my Mac, in `~/Projects/hutch`, with Xcode installed.
 ## Reviewing UI changes
 
 I review UI from my phone, through the PR (D11).
-- **From M1 on, every screen has snapshot tests:** it's rendered to reference images, in light and dark mode and at a large Dynamic Type size, stored next to its tests. A change to a screen shows up as before-and-after images in the PR's file changes, and an accidental change fails `make test`.
+- **From M2 on (the first screens), every screen has snapshot tests:** it's rendered to reference images, in light and dark mode and at a large Dynamic Type size, stored next to its tests. A change to a screen shows up as before-and-after images in the PR's file changes, and an accidental change fails `make test`.
 - Only update reference images on purpose, and say why in the PR.
 - Until snapshot tests exist (M0), describe any visual change in a line or two in the PR.
 - Never commit throwaway screenshots.
