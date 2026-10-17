@@ -1,4 +1,4 @@
-# The website, on every pull request and push to main. Both are checks on the PR; Validate Build is
+# The website, on every pull request and push to main. Both are checks on the PR; Validate Web Build is
 # required on main, so this workflow has no path filter: a required check that never starts would
 # block unrelated PRs.
 name: Web
@@ -24,7 +24,7 @@ jobs:
   # builds, its HTML is valid, its internal links resolve and every page fits the file-size budgets
   # in apps/web/PERFORMANCE.md. On Linux it takes under a minute.
   build:
-    name: Validate Build
+    name: Validate Web Build
     runs-on: ubuntu-24.04
     defaults:
       run:
@@ -40,7 +40,7 @@ jobs:
       - run: npm run web:build
 
   # Lighthouse on main and the PR, compared with the limits in apps/web/PERFORMANCE.md (D19), for
-  # pull requests touching the website. File-size budgets run in Validate Build and in `npm test`,
+  # pull requests touching the website. File-size budgets run in Validate Web Build and in `npm test`,
   # Cloudflare's deploy gate; this check needs a browser, so it lives here.
   page-speed:
     name: Validate Page Speed

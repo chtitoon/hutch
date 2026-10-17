@@ -27,4 +27,4 @@ Static website: what Hutch is, the App Store link, privacy policy and support pa
 
 ## Deploying
 
-Cloudflare Pages project `hutch`, connected to this GitHub repo. Merging to `main` deploys myhutch.app; every PR touching `apps/web/` or `design/` gets a preview URL, posted on the PR. Pages runs `npm ci && npm test` in `apps/web`, so a failing test blocks the deploy. On GitHub, the required checks **Design / Validate DESIGN.md** and **Web / Validate Build** run the same checks on every PR, so a failure shows in the PR's checks and blocks the merge. Nothing to deploy by hand.
+Cloudflare Pages project `hutch`, connected to this GitHub repo. Merging to `main` deploys myhutch.app; every PR touching `apps/web/` or `design/` gets a preview URL, posted on the PR. Pages runs `npm ci && npm test` in `apps/web`, so a failing test blocks the deploy. On GitHub, the required checks **Design / Validate DESIGN.md** and **Web / Validate Web Build** run the same checks on every PR, so a failure shows in the PR's checks and blocks the merge. Nothing to deploy by hand.
