@@ -1,7 +1,7 @@
 # Lighthouse on main and the PR, compared with the limits in apps/web/PERFORMANCE.md (D18).
 # Linux runner, pull requests touching the website only. Budgets on file sizes run in `npm test` instead,
 # which is Cloudflare's deploy gate; this check needs a browser, so it lives here.
-name: Web performance
+name: Web Performance
 
 on:
   pull_request:
@@ -23,6 +23,7 @@ env:
 
 jobs:
   lighthouse:
+    name: Lighthouse
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
