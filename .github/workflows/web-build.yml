@@ -23,7 +23,7 @@ defaults:
 
 jobs:
   website:
-    name: Build, HTML, links, size
+    name: Site builds; HTML, links, size OK
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5

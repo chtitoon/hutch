@@ -22,7 +22,7 @@ defaults:
 
 jobs:
   design:
-    name: DESIGN.md and styles
+    name: DESIGN.md valid, CSS uses tokens
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v5
