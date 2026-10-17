@@ -38,13 +38,16 @@ function pageCodePoints(html) {
   return new Set([...text].map((c) => c.codePointAt(0)));
 }
 
+const parseRange = (unicodeRange) => unicodeRange.split(',').map((r) => {
+  const [lo, hi = lo] = r.trim().replace(/^U\+/i, '').split('-');
+  return [parseInt(lo, 16), parseInt(hi, 16)];
+});
+const covers = (ranges, cp) => ranges.some(([lo, hi]) => cp >= lo && cp <= hi);
+
 function inRange(codePoints, unicodeRange) {
   if (!unicodeRange) return true;
-  const ranges = unicodeRange.split(',').map((r) => {
-    const [lo, hi = lo] = r.trim().replace(/^U\+/i, '').split('-');
-    return [parseInt(lo, 16), parseInt(hi, 16)];
-  });
-  for (const cp of codePoints) if (ranges.some(([lo, hi]) => cp >= lo && cp <= hi)) return true;
+  const ranges = parseRange(unicodeRange);
+  for (const cp of codePoints) if (covers(ranges, cp)) return true;
   return false;
 }
 
@@ -52,11 +55,15 @@ function inRange(codePoints, unicodeRange) {
 // when the page has characters in its unicode-range. Weights aren't resolved, so every weight
 // that matches counts: an upper bound.
 // `path` is where the CSS lives: its stylesheet, or the page for an inline <style>.
-function stylesheet(css, path, codePoints, add) {
+// Each web font's unicode-range goes into `fontRanges`, to find characters no web font has.
+function stylesheet(css, path, codePoints, add, fontRanges) {
   const fontFaces = [...css.matchAll(/@font-face\s*{([^}]*)}/g)];
   for (const [, body] of fontFaces) {
     const first = body.match(/src\s*:[^;]*?url\(\s*["']?([^"')]+)/)?.[1];
-    if (first && inRange(codePoints, body.match(/unicode-range\s*:\s*([^;]+)/)?.[1])) add('fonts', first, path);
+    if (!first) continue;
+    const range = body.match(/unicode-range\s*:\s*([^;]+)/)?.[1];
+    fontRanges.push(...(range ? parseRange(range) : [[0, 0x10ffff]]));
+    if (inRange(codePoints, range)) add('fonts', first, path);
   }
   const rest = css.replace(/@font-face\s*{[^}]*}/g, '');
   for (const [, url] of rest.matchAll(/@import\s+(?:url\()?\s*["']?([^"')\s;]+)/g)) add('css', url, path);
@@ -70,6 +77,7 @@ function measure(page) {
   const seen = new Set();
   const images = [];
   const problems = [];
+  const fontRanges = [];
 
   function add(kind, url, from) {
     const r = resolve(url, from);
@@ -79,7 +87,7 @@ function measure(page) {
     let bytes;
     try { bytes = size(join(dist, r.path)); } catch { return; } // missing files are check-links' job
     totals[kind] += bytes;
-    if (kind === 'css') stylesheet(readFileSync(join(dist, r.path), 'utf8'), r.path, codePoints, add);
+    if (kind === 'css') stylesheet(readFileSync(join(dist, r.path), 'utf8'), r.path, codePoints, add, fontRanges);
     if (kind === 'images') images.push({ path: r.path, bytes });
   }
 
@@ -88,7 +96,7 @@ function measure(page) {
     const bytes = Buffer.byteLength(css);
     totals.html -= bytes;
     totals.css += bytes;
-    stylesheet(css, page, codePoints, add);
+    stylesheet(css, page, codePoints, add, fontRanges);
   }
   for (const [tag] of html.matchAll(/<link\b[^>]*>/gi)) {
     const rel = (attr(tag, 'rel') ?? '').toLowerCase().split(/\s+/);
@@ -129,6 +137,14 @@ function measure(page) {
     }
     const cap = spec.images.max_kb * 1024;
     if (bytes > cap) problems.push(`${path} is ${kb(bytes)}, over the ${kb(cap)} cap by ${kb(bytes - cap)} (rule: images.max_kb)`);
+  }
+
+  // fonts.mjs keeps only the characters the site uses; one it dropped would show in the fallback font.
+  if (fontRanges.length) {
+    const missing = [...codePoints].filter((cp) => cp > 0x20 && !covers(fontRanges, cp));
+    for (const cp of missing) {
+      problems.push(`"${String.fromCodePoint(cp)}" (U+${cp.toString(16).toUpperCase().padStart(4, '0')}) isn't in the web fonts; add it to CHARACTERS in fonts.mjs and run \`npm run fonts\` (see "Fonts" in PERFORMANCE.md)`);
+    }
   }
 
   totals.total = totals.html + totals.css + totals.fonts + totals.images + totals.js;
