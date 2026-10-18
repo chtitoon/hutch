@@ -16,8 +16,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  LIGHTHOUSE_VERSION: 12.6.1
-  MARKER: '<!-- hutch-performance -->'
+  LIGHTHOUSE_VERSION: 12.6.1 # the version performance-md pins (its peer dependency)
+  MARKER: '<!-- performance-md:web -->' # `name` in apps/web/PERFORMANCE.md
 
 jobs:
   # The website's tests: generated files are current (tokens, favicon, link preview), the site
@@ -91,36 +91,26 @@ jobs:
             (cd "$side/apps/web" && npm ci && npm run build)
           done
 
-      # Identical files give identical results, so only pages that differ from main are measured.
-      - name: Find changed pages
-        id: pages
-        if: steps.scope.outputs.web == 'true'
-        run: |
-          pages=$(node pr/apps/web/compare-performance.mjs --changed main/apps/web/dist pr/apps/web/dist | tr '\n' ' ')
-          echo "pages=$pages" >> "$GITHUB_OUTPUT"
-          if [ -z "${pages// }" ]; then echo "No page differs from main, so Lighthouse was skipped." >> "$GITHUB_STEP_SUMMARY"; fi
-          echo "Changed pages: ${pages:-none}"
-
-      # Lighthouse isn't a dependency of the site, so Cloudflare's build doesn't install it.
+      # performance-md measures only the pages that differ from main: identical files give identical
+      # results. Lighthouse isn't a dependency of the site, so Cloudflare's build doesn't install it.
       - name: Run Lighthouse
-        if: steps.pages.outputs.pages != ''
+        if: steps.scope.outputs.web == 'true'
         working-directory: pr/apps/web
-        env:
-          PAGES: ${{ steps.pages.outputs.pages }}
         run: |
           npm install --no-save --no-audit --no-fund "lighthouse@$LIGHTHOUSE_VERSION"
-          # shellcheck disable=SC2086 # one argument per page
-          node run-lighthouse.mjs ../../../main/apps/web/dist dist ../../../results $PAGES
+          npx performance-md measure ../../../results --base ../../../main/apps/web/dist --head dist
 
+      # With no page changed, results are empty and compare passes: nothing can have regressed.
       - name: Compare
         id: compare
-        if: steps.pages.outputs.pages != ''
+        if: steps.scope.outputs.web == 'true'
+        working-directory: pr/apps/web
         run: |
           set +e
-          node pr/apps/web/compare-performance.mjs results/main results/pr --comment comment.md > report.txt
+          npx performance-md compare ../../../results --comment ../../../comment.md > ../../../report.txt
           status=$?
-          cat report.txt
-          { echo '```text'; cat report.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          cat ../../../report.txt
+          { echo '```text'; cat ../../../report.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
           exit $status
 
       # One comment, only when the PR is faster; removed again if a later push loses the gain.
