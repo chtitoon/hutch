@@ -16,7 +16,7 @@ Static website: what Hutch is, the App Store link, privacy policy and support pa
 | `npm run design:lint:css` | Fail on styles that bypass the tokens: raw colors, undefined variables, type outside the scale, external fonts, off-scale spacing |
 | `npm run og` | Re-render the link-preview image (`public/og.png`) |
 | `npm run fonts` | Regenerate the cut-down web fonts (`src/fonts/`, `src/styles/fonts.css`) from the `@fontsource` packages |
-| `npx performance-md check --report` | After a build, print each page's bytes by kind (for setting budgets) |
+| `npx performance check --report` | After a build, print each page's bytes by kind (for setting budgets) |
 
 ## Where things live
 

@@ -7,7 +7,7 @@
       "Bash(npm install)",
       "Bash(npm ci)",
       "Bash(npm test)",
-      "Bash(npx performance-md *)",
+      "Bash(npx performance *)",
       "Bash(node fonts.mjs)",
       "Bash(node fonts.mjs *)",
       "Bash(xcodegen *)",

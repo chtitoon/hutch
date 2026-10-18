@@ -91,14 +91,14 @@ jobs:
             (cd "$side/apps/web" && npm ci && npm run build)
           done
 
-      # performance-md measures only the pages that differ from main: identical files give identical
+      # performance measures only the pages that differ from main: identical files give identical
       # results. Lighthouse isn't a dependency of the site, so Cloudflare's build doesn't install it.
       - name: Run Lighthouse
         if: steps.scope.outputs.web == 'true'
         working-directory: pr/apps/web
         run: |
           npm install --no-save --no-audit --no-fund "lighthouse@$LIGHTHOUSE_VERSION"
-          npx performance-md measure ../../../results --base ../../../main/apps/web/dist --head dist
+          npx performance measure ../../../results --base ../../../main/apps/web/dist --head dist
 
       # With no page changed, results are empty and compare passes: nothing can have regressed.
       - name: Compare
@@ -107,7 +107,7 @@ jobs:
         working-directory: pr/apps/web
         run: |
           set +e
-          npx performance-md compare ../../../results --comment ../../../comment.md > ../../../report.txt
+          npx performance compare ../../../results --comment ../../../comment.md > ../../../report.txt
           status=$?
           cat ../../../report.txt
           { echo '```text'; cat ../../../report.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

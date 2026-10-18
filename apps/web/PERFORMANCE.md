@@ -1,6 +1,6 @@
 ---
 # The performance.md format (github.com/chtitoon/performance.md, spec.md there). Read by its CLI:
-# `performance-md check` in `npm test` (Cloudflare's deploy gate) and `measure` + `compare` in the
+# `performance check` in `npm test` (Cloudflare's deploy gate) and `measure` + `compare` in the
 # Validate Page Speed check on pull requests. Change a number here and both follow.
 version: "1.0"
 name: web                        # the PR comment's marker: <!-- performance-md:web -->
@@ -54,8 +54,8 @@ myhutch.app should load instantly on a mid-range phone over a weak connection. S
 
 | Where | What | Blocks |
 |-------|------|--------|
-| `npm test` → `performance-md check` | `artifact`: budgets, origins and image rules, read from the built files. No browser (D16 keeps the Cloudflare build browser-free). | The Cloudflare deploy |
-| GitHub Actions → `performance-md measure`, then `compare` | `measure`: Lighthouse on main and the PR, alternating runs, then compared. Only pages whose built files differ from main are measured: identical files give identical results. | The PR's check |
+| `npm test` → `performance check` | `artifact`: budgets, origins and image rules, read from the built files. No browser (D16 keeps the Cloudflare build browser-free). | The Cloudflare deploy |
+| GitHub Actions → `performance measure`, then `compare` | `measure`: Lighthouse on main and the PR, alternating runs, then compared. Only pages whose built files differ from main are measured: identical files give identical results. | The PR's check |
 
 The checks come from [performance.md](https://github.com/chtitoon/performance.md), a CLI that reads this file; it's a dev dependency pinned to a commit, and its `spec.md` defines every key above. It pins Lighthouse too, so upgrading it is a deliberate PR: comparisons stay fair (both sides run the same version), but the limits may need a look.
 
@@ -74,7 +74,7 @@ The Actions check fails when any page is past a Lighthouse limit or when a metri
 
 ## How the numbers were set
 
-Budgets sit 10 to 25% above what the site measured when they were introduced (see the comment in the front matter), so today's site passes and any meaningful growth needs a deliberate change here. To see current sizes, build and run `npx performance-md check --report`.
+Budgets sit 10 to 25% above what the site measured when they were introduced (see the comment in the front matter), so today's site passes and any meaningful growth needs a deliberate change here. To see current sizes, build and run `npx performance check --report`.
 
 The comparison settings come from 60 Lighthouse runs of the unchanged site (3 batches × 5 runs × 4 pages, mobile preset, 2026-10-17):
 
