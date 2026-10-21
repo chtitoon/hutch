@@ -38,6 +38,14 @@ jobs:
           cache-dependency-path: apps/web/package-lock.json
       - run: npm ci
       - run: npm run web:build
+      # Validate Page Speed compares each PR with main's build; saving it here spares every PR a
+      # rebuild of main (about 5 s).
+      - name: Save the build for pull requests
+        if: github.event_name == 'push'
+        uses: actions/cache/save@v4
+        with:
+          path: apps/web/dist
+          key: web-dist-${{ github.sha }}
 
   # Lighthouse on main and the PR, compared with the limits in apps/web/PERFORMANCE.md (D19), for
   # pull requests touching the website. File-size budgets run in Validate Web Build and in `npm test`,
@@ -84,12 +92,29 @@ jobs:
             pr/apps/web/package-lock.json
             main/apps/web/package-lock.json
 
-      - name: Build both
+      # Main's build, as Validate Web Build saved it on the push to main. Missing (a cache evicted, or
+      # main's build not finished yet), main is built here instead.
+      - name: Restore main's build
+        id: main-build
         if: steps.scope.outputs.web == 'true'
+        uses: actions/cache/restore@v4
+        with:
+          path: apps/web/dist
+          key: web-dist-${{ github.event.pull_request.base.sha }}
+
+      - name: Build
+        if: steps.scope.outputs.web == 'true'
+        env:
+          MAIN_SAVED: ${{ steps.main-build.outputs.cache-hit }}
         run: |
-          for side in main pr; do
-            (cd "$side/apps/web" && npm ci && npm run build)
-          done
+          (cd pr/apps/web && npm ci && npm run build)
+          if [ "$MAIN_SAVED" = true ]; then
+            echo "Main's build came from the push to main."
+            rm -rf main/apps/web/dist && mv apps/web/dist main/apps/web/dist
+          else
+            echo "No saved build for main: building it."
+            (cd main/apps/web && npm ci && npm run build)
+          fi
 
       # performance measures only the pages that differ from main: identical files give identical
       # results. Lighthouse isn't a dependency of the site, so Cloudflare's build doesn't install it.
