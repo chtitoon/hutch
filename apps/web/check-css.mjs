@@ -6,7 +6,7 @@
 // - type: font-family only var(--font-*), font only var(--type-*), no raw font-size,
 //   line-height, letter-spacing or font-weight
 // - external-font: no @import, @font-face (except local()-only fallbacks) or remote url(); fonts
-//   come from @fontsource packages, cut down by fonts.mjs into src/styles/fonts.css (generated, not scanned)
+//   come from @fontsource packages through src/styles/fonts.css (not scanned), cut down by fonts.mjs after the build
 // - raw-spacing: margin, padding and gap use var(--space-*), except the allowlist in DESIGN.md
 import { readFileSync, readdirSync } from 'node:fs';
 import { join, relative } from 'node:path';
@@ -101,7 +101,7 @@ const checkCss = (file, css, offset = 0, fullText = css) => {
   const text = css.replace(/\/\*[\s\S]*?\*\//g, (c) => c.replace(/[^\n]/g, ' '));
   // An @font-face whose src is only local() resizes an installed font and loads nothing; any other is a font file.
   for (const m of text.matchAll(/@import\b|@font-face\b(?![^{]*\{[^}]*\bsrc:(\s*local\([^)]*\)\s*,?)+\s*[;}])|url\(\s*["']?(https?:)?\/\//g)) {
-    failures.push(`${file}:${lineAt(fullText, offset + m.index)}  external-font  ${m[0]} — fonts and styles are self-hosted: a font goes through fonts.mjs`);
+    failures.push(`${file}:${lineAt(fullText, offset + m.index)}  external-font  ${m[0]} — fonts and styles are self-hosted: a font comes from an @fontsource package, in src/styles/fonts.css`);
   }
   const stack = [];
   let start = 0;
@@ -134,7 +134,7 @@ const checkMarkup = (file, html) => {
     if (/^#|^(rgb|hsl)a?\(/.test(v) || named.has(v.toLowerCase())) failures.push(`${file}:${lineAt(html, m.index)}  raw-color  ${m[1]}="${v}" — draw in currentColor or a class whose color is a var(--color-*) role; ${colorHint(v)}`);
   }
   for (const m of html.matchAll(/<link\b[^>]*href="(https?:)?\/\/[^"]*"[^>]*>/g)) {
-    if (/rel="(stylesheet|preconnect|preload)"/.test(m[0])) failures.push(`${file}:${lineAt(html, m.index)}  external-font  ${m[0]} — fonts and styles are self-hosted: a font goes through fonts.mjs`);
+    if (/rel="(stylesheet|preconnect|preload)"/.test(m[0])) failures.push(`${file}:${lineAt(html, m.index)}  external-font  ${m[0]} — fonts and styles are self-hosted: a font comes from an @fontsource package, in src/styles/fonts.css`);
   }
 };
 

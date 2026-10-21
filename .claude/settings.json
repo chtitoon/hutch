@@ -8,8 +8,6 @@
       "Bash(npm ci)",
       "Bash(npm test)",
       "Bash(npx performance *)",
-      "Bash(node fonts.mjs)",
-      "Bash(node fonts.mjs *)",
       "Bash(xcodegen *)",
       "Bash(xcodebuild *)",
       "Bash(xcrun simctl *)",

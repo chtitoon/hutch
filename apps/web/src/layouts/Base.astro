@@ -1,12 +1,12 @@
 ---
-// Self-hosted fonts (D15): bundled into dist/, so no request leaves myhutch.app. Cut down to
-// what the site uses by fonts.mjs.
+// Self-hosted fonts (D15): bundled into dist/, so no request leaves myhutch.app. After the build,
+// fonts.mjs cuts each one down to the characters it draws on the site.
 import '../styles/fonts.css';
 import '../styles/tokens.css';
 import '../styles/site.css';
-import bricolage700 from '../fonts/bricolage-grotesque-700.woff2?url';
-import instrument400 from '../fonts/instrument-sans-400.woff2?url';
-import instrument600 from '../fonts/instrument-sans-600.woff2?url';
+import bricolage700 from '@fontsource-variable/bricolage-grotesque/files/bricolage-grotesque-latin-opsz-normal.woff2?url';
+import instrument400 from '@fontsource/instrument-sans/files/instrument-sans-latin-400-normal.woff2?url';
+import instrument600 from '@fontsource/instrument-sans/files/instrument-sans-latin-600-normal.woff2?url';
 import Logo from '../components/Logo.astro';
 
 interface Props {
