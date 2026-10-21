@@ -6,9 +6,10 @@ version: "1.0"
 name: web                        # the PR comment's marker: <!-- performance-md:web -->
 
 # Per page, as the browser downloads them before compression. `overrides` can raise a limit for one
-# page (key: its path, e.g. /privacy). Measured 2026-10-21, after fonts.mjs dropped unused font
-# features: the largest page (/) was 11.7 KB HTML, 14.7 KB CSS, 44.2 KB fonts, 2.4 KB images, 0 JS,
-# 73.0 KB total (before: 49.6 KB fonts and 78.5 KB total; before the first cut, 125.4 KB and 156.0 KB).
+# page (key: its path, e.g. /privacy). Measured 2026-10-21, after fonts.mjs cut each font to the
+# characters it draws: the largest page (/) was 11.8 KB HTML, 14.3 KB CSS, 17.4 KB fonts, 2.4 KB
+# images, 0 JS, 46.0 KB total (before: 49.6 KB fonts and 78.5 KB total; before the first cut,
+# 125.4 KB and 156.0 KB).
 artifact:
   type: static-site
   dist: dist
@@ -17,10 +18,10 @@ artifact:
   hashed_assets: "_astro/**"     # Astro names these by content, so a change shows in the HTML
   fonts: unicode-range           # a @font-face counts only if the page has characters in its range
   budgets:
-    total: 84 KB
+    total: 52 KB
     html: 13 KB
     css: 17 KB
-    fonts: 50 KB
+    fonts: 20 KB
     images: 4 KB
     js: 0 B
     image_max: 100 KB            # any single image
@@ -63,9 +64,9 @@ The Actions check fails when any page is past a Lighthouse limit or when a metri
 
 ## Why each rule exists
 
-- **Total per page (84 KB).** Bytes are the cost most visitors feel: on a slow 4G link, every 100 KB adds roughly half a second. The landing page is the first impression of a privacy app; it should feel as light as the promise.
+- **Total per page (52 KB).** Bytes are the cost most visitors feel: on a slow 4G link, every 100 KB adds roughly half a second. The landing page is the first impression of a privacy app; it should feel as light as the promise.
 - **HTML and CSS.** Both block the first paint, so their size sets the floor of First Contentful Paint. The stylesheet is inlined into each page (`inlineStylesheets: 'always'` in `astro.config.mjs`): as a separate file it cost a full round trip before anything appeared, and inlining took mobile FCP from 1.80 s to 1.65 s, back under the limit. The check counts inline CSS against the CSS budget, so the cost is the same either way; if the CSS grows much past ~20 KB, a cached file may win again.
-- **Fonts (50 KB).** Fonts are still the heaviest thing the site loads. The two families are self-hosted (D15), and `fonts.mjs` (`npm run fonts`) cuts them down to what the site uses: about 100 characters (ASCII and common punctuation), Bricolage Grotesque only at its one weight, 700 (its optical-size axis stays), Instrument Sans at 400 and 600, and only the OpenType features browsers apply by default (kerning and standard ligatures; not tabular or fraction digits or other languages' letterforms, which need CSS the site doesn't set). That took them from 125 KB to 44 KB, and mobile FCP from 1.50 s to 1.20 s. What's left is mostly kerning, about half of each file: roughly 45% of character pairs are kerned, and in Bricolage each value also varies with optical size. Dropping it, or pinning the optical size, would change how the text looks, so both stay. A feature turned on in CSS (`font-variant-numeric: tabular-nums`, for example) has no effect until it's added to `FEATURES` in `fonts.mjs`. A character outside that set would show in the fallback font, so `npm test` fails on it (`node fonts.mjs --pages`, after the build): add it to `CHARACTERS` in `fonts.mjs` and run `npm run fonts`. A third family or another weight has to fit here, or replace something. **Loading:** each page preloads the three files and they are `font-display: optional`. A font that arrives within about 100 ms is used from the first paint; one that doesn't is skipped for that page view (the text stays in its sized Arial fallback) and is cached for the next page. With `swap`, a slow font redrew every line of text once it landed, which read as the page moving (W4). Preloading costs no extra bytes, since every page uses all three.
+- **Fonts (20 KB).** Fonts are still the heaviest thing the site loads. The two families are self-hosted (D15), and after every build `fonts.mjs` (an Astro integration) cuts each file down to the characters it draws on the built pages: about 40 for Bricolage Grotesque (headlines only), 50 to 65 for each Instrument Sans weight. It follows the CSS cascade without a browser, and fails the build on CSS it can't follow (generated text, a font set on `:hover`). Each file also keeps only its one weight (Bricolage is pinned to 700; its optical-size axis stays) and the OpenType features browsers apply by default (kerning and standard ligatures; not tabular or fraction digits or other languages' letterforms). Together that took them from 125 KB to 17 KB, and mobile FCP from 1.50 s to 1.20 s. Kerning is why the character count matters so much: it covers pairs of characters, so it grows with the square of the set, and in the first cut it was half of every file. New text needs nothing: the next build adds its characters. A character a font doesn't have at all (`→` in Instrument Sans) shows in the fallback font, and the build warns about it. A feature turned on in CSS (`font-variant-numeric: tabular-nums`, for example) has no effect until it's added to `FEATURES` in `fonts.mjs`. A third family or another weight has to fit here, or replace something. **Loading:** each page preloads the three files and they are `font-display: optional`. A font that arrives within about 100 ms is used from the first paint; one that doesn't is skipped for that page view (the text stays in its sized Arial fallback) and is cached for the next page. With `swap`, a slow font redrew every line of text once it landed, which read as the page moving (W4). Preloading costs no extra bytes, since every page uses all three.
 - **JavaScript (0 KB).** Astro ships none by default (D14), and the site has never needed it. Script is the main cause of Total Blocking Time and of most tracking; zero keeps both at zero. A page that truly needs a script raises its own limit under `artifact.overrides`, with the reason in the PR.
 - **Images.** Width and height let the browser reserve space, so nothing jumps as images arrive (Cumulative Layout Shift). SVG, WebP and AVIF are several times smaller than PNG or JPEG for the same quality. A per-image cap catches an unexported camera photo. The 4 KB page budget leaves room for icons only: the first real photo means raising it deliberately.
 - **Self only.** Every request to another origin costs a DNS lookup, a connection and a TLS handshake, and tells a third party someone visited. "No trackers" (AGENTS.md) is only true if nothing loads from anywhere else: no font CDNs, no embeds, no analytics.
