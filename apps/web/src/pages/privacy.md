@@ -47,5 +47,3 @@ If this policy changes, we’ll update this page and the date at the top. Materi
 ## Contact
 
 Questions about privacy: [support@myhutch.app](mailto:support@myhutch.app).
-
-W5 probe.

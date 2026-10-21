@@ -175,12 +175,12 @@ Hutch public on the App Store.
 - [x] With fonts delayed 1.5 s, headings keep their positions after first paint (they moved on main); with fonts delayed 30 ms, the headline renders in Bricolage Grotesque
 
 #### W5 — Page Speed check in about a minute
-**Status:** in progress, PRLINK. **Why:** a PR changing every page waited about 4 minutes for Validate Page Speed, and a PR should be ready to merge within about a minute of the last push.
+**Status:** done, [PR #48](https://github.com/chtitoon/hutch/pull/48). **Why:** a PR changing every page waited about 4 minutes for Validate Page Speed, and a PR should be ready to merge within about a minute of the last push.
 
 - [x] Each Lighthouse run gathers only what a metric uses ([performance.md #10](https://github.com/chtitoon/performance.md/pull/10)): 3.7 s a run instead of 5.2 s, same results
 - [x] 3 runs per side, with the reason in PERFORMANCE.md
 - [x] Pull requests reuse main's build, saved by the push to main
-- [ ] Measured on the runner: a PR changing one page finishes the check in under a minute
+- [x] Measured on the runner: a PR changing one page finishes the check in under a minute (56 s; every page: 135 s, from 246 s)
 
 ## Phase 2 — Lend to a trusted circle
 
