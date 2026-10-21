@@ -10,6 +10,7 @@ This repo is the project's only memory. When a conversation produces a decision,
 |------|------|
 | Every session | `ROADMAP.md` (the plan, and what's next) and `DECISIONS.md` (what's settled, what's open) |
 | Before proposing product changes | Each phase's goal and success test in `ROADMAP.md`, `CONTEXT.md` (research) and D13 in `DECISIONS.md` (what's deliberately out of scope) |
+| Before writing or changing tests, or a `test` task | `TESTING.md` (the rules that keep tests deterministic, the test-first loop), then the app's: `apps/ios/TESTING.md` |
 | Any UI, visual or web work | `DESIGN.md` (the design system), then the platform's guide: `apps/ios/DESIGN.md` or `apps/web/DESIGN.md` |
 | Work inside an app | That app's own `AGENTS.md`, if it has one (`apps/web/AGENTS.md`) |
 
@@ -44,6 +45,7 @@ I often check in from my phone while work runs on my Mac. Keep replies short and
 - `apps/web` — static site for myhutch.app (landing, App Store link, privacy policy, support), built with Astro in static mode (D14). Text pages in Markdown; no client-side JavaScript unless a page truly needs it; no tracking.
 - `DESIGN.md` — the design system both apps follow, in Google's DESIGN.md format (D18): tokens in the front matter (the single source of truth), brand, logo and rules in the prose. Never hard-code a color or size in an app that should come from tokens; the website's `npm test` fails if you do.
 - `design/` — asset files only: the logo in `light/` and `dark/`, and `explorations/` (rejected rounds).
+- `TESTING.md` — the testing rules for every app (D22); each app's own file applies them with its numbers (`apps/ios/TESTING.md`, read by `make test`).
 - `ROADMAP.md` (the plan), `DECISIONS.md` (what's settled, what's open) and `CONTEXT.md` (research) at the root.
 
 ## Commands: one way to do each thing
@@ -74,7 +76,7 @@ Work happens on my Mac, in `~/Projects/hutch`, with Xcode installed.
 
 ## Reviewing UI changes
 
-I review UI from my phone, through the PR (D11).
+I review UI from my phone, through the PR (D11). How snapshots are made and kept deterministic is in `apps/ios/TESTING.md`.
 - **From M2 on (the first screens), every screen has snapshot tests:** it's rendered to reference images, in light and dark mode and at a large Dynamic Type size, stored next to its tests. A change to a screen shows up as before-and-after images in the PR's file changes, and an accidental change fails `make test`.
 - Only update reference images on purpose, and say why in the PR.
 - Until snapshot tests exist (M0), describe any visual change in a line or two in the PR.
@@ -84,7 +86,7 @@ I review UI from my phone, through the PR (D11).
 
 - Design for iPhone screens first; support every current iPhone size, Dynamic Type and dark mode from the start.
 - Standard SwiftUI components and system behavior over custom chrome; one-handed reach for primary actions (add item, scan).
-- iPad and the website are secondary.
+- iPhone only: iPads run the iPhone app (D23). The website is secondary.
 
 ## Conventions
 
