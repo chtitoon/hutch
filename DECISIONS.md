@@ -196,3 +196,12 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 
 **Non-negotiable 1, reworded:** it said keys never leave the device; here the key leaves it, end-to-end encrypted, through iCloud Keychain. It now reads: "Plaintext item data, photos and names never leave the device; keys leave it only end-to-end encrypted, through iCloud Keychain (D21)."
 
+
+## D22 — Testing: deterministic by construction, one file for the rules
+**Status:** Proposed (Oct 2026). Confirm before M0, whose `make test` enforces it.
+
+**What:** `TESTING.md` at the root holds how Hutch is tested: numbers in its front matter (pinned simulator, no retries, repeat count, time budgets, snapshot variants), read by `make test` in `apps/ios` from M0, and the reasons in the prose. Five layers: Core (`HutchCore` with `swift test` on the Mac, most tests), Device (simulator), Snapshot (every screen state), Journeys (XCUITest) capped at 15 s together, about three, and an on-device checklist for what can't be automated deterministically (Face ID, camera, real iCloud). Every source of flakiness (time, randomness, concurrency, shared state, network, animations, environment, rendering, order) has a rule that removes it and, where possible, a lint rule or trap that enforces it. No retries, no skips; suites in changed test files run 10 times before merge (journeys 3). `make test` takes at most 60 s on an incremental build, so a PR is ready to merge within a minute. The failing tests are committed first, with the interface stubbed so they compile, and read as the spec. Privacy is tested with plaintext canaries and golden files of every stored format. Agents work test-first: the failing test is committed before the code, and each ticked box names its test.
+
+**Why:** agents write most of the code and I review from a phone, so tests are the main evidence a change works. A test that sometimes fails teaches everyone to ignore failures, which defeats it. Flakiness has a short list of causes, so it's cheaper to remove them by design than to chase flakes later. Core on the Mac keeps the test-first loop to seconds.
+
+**Costs:** injecting a clock, ID generator, file root and Keychain everywhere; `HutchCore` can't import UIKit or SwiftUI; budgets need measuring in M0; upgrading the simulator runtime means re-recording every reference image in its own PR.
