@@ -10,8 +10,10 @@ ios:
     locale: en_US
     time_zone: UTC
   retries: 0                     # no test is ever re-run to get a pass
-  repeat: 10                     # on a branch, changed Core, device and snapshot suites run this many times in a row
-  repeat_journeys: 3             # changed journeys, which cost seconds per run
+  repeat:                        # on a branch, extra runs of the suites in test files changed from main
+    core: 100                    # milliseconds a run: 100 runs of a suite cost under a second
+    device: 1                    # device and snapshot suites: one extra run, about 2 s per changed screen
+    journeys: 0                  # seconds a run; kept deterministic by their rules instead
   budgets:                       # a PR is ready to merge within a minute of the last change
     make_test: 60 s              # `make test` end to end: incremental build, simulator already booted
     build: 20 s                  # incremental build of the app and its test targets
@@ -69,7 +71,19 @@ So nearly every behavior, including what a screen does when you tap, is a Core t
 
 **No retries, no skips.** `make test` never passes `-retry-tests-on-failure`, and SwiftLint fails on `.disabled` and `XCTSkip`. A test that only runs sometimes, or only passes the second time, hides exactly the bugs this file is about. Platform differences are handled at compile time (`#if os(iOS)`), not by skipping.
 
-**Repeat before merge.** On a branch, `make test` finds the test files changed from `main` and runs those suites `repeat` times in a row, in parallel (journeys `repeat_journeys` times). Repeats count against the minute: Core and snapshot runs cost milliseconds each, so ten of them are cheap. A new test that fails once in ten never reaches `main`. This is why each test file holds one suite, named after the file.
+**Repeat before merge.** On a branch, `make test` finds the test files changed from `main` and runs those suites again, in parallel: `repeat` in the front matter says how many extra runs per layer. This is why each test file holds one suite, named after the file. Repeats are a safety net for what slips past the rules above, not the defense, and they're sized by what a run costs, inside the minute: typically under 3 s, and nothing when no test file changed.
+
+What a number of runs catches, for a test that fails a share of the time:
+
+| A test that fails… | 2 runs | 100 runs |
+|---|---|---|
+| 1 run in 5 | 36% | ~100% |
+| 1 in 20 | 10% | 99% |
+| 1 in 100 | 2% | 63% |
+
+- **Core: 100 runs.** Most tests and most logic live there, and a run costs milliseconds, so this is where repeats find the most for the least.
+- **Device and snapshot: 1 extra run.** They render or read a fixed state, so a second run mostly proves nothing leaks between runs. A rare flake here is caught by the policy below, not by repeats.
+- **Journeys: none.** Each run costs seconds; their rules (no sleeps, waits only on accessibility identifiers, fakes injected at launch) keep them deterministic.
 
 ## Snapshot tests
 
