@@ -5,7 +5,8 @@
 version: 1
 simulator:                       # every simulator test and every reference image runs on this one
   device: TBD in M0              # a current 6.1" iPhone that the installed runtime supports
-  runtime: TBD in M0             # an exact iOS version (e.g. 27.0); upgrading it is its own PR
+  runtime: TBD in M0             # the newest iOS, exact (e.g. 27.0); upgrading it is its own PR
+  minimum_runtime: TBD in M0     # project.yml's deployment target, exact (e.g. 26.4), for `make test RUNTIME=min`
   locale: en_US
   time_zone: UTC
 retries: 0                       # no test is ever re-run to get a pass
@@ -21,13 +22,21 @@ budgets:                         # a PR is ready to merge within a minute of the
   device_suite: 20 s             # device and snapshot tests on the simulator
   journeys: 15 s                 # every UI test (XCUITest) together; this, not a count, caps them
 snapshots:
-  variants: [light, dark, accessibility-xl, smallest-width]   # per screen state; see "Snapshot tests"
+  variants: [light, dark, accessibility-xl, smallest-width]   # per screen state; smallest-width is 375 pt
   perceptual_precision: 0.98     # absorbs anti-aliasing only; any real change is far beyond it
 ---
 
 # Testing the iPhone app
 
 How the app applies the rules in the root [TESTING.md](../../TESTING.md); read that first. The numbers above are the app's; the prose says why each is what it is and how `make test` enforces the rules. Most of it lands with M0 and M2 (the first screens); until then it's the plan.
+
+## What's supported, and what's tested
+
+What the app supports is set in `project.yml` (D9), never here: the deployment target (`IPHONEOS_DEPLOYMENT_TARGET`, iOS 26, D8) and the device family (`TARGETED_DEVICE_FAMILY: 1`, iPhone only, D23). The App Store installs the app on every iPhone that runs that iOS version, so there's no list of models to keep. Tests run against those settings:
+
+- **iOS version.** Every test and every reference image runs on the newest iOS (`runtime`), what most people use. The compiler covers the minimum: with the deployment target at iOS 26, an API newer than that fails the build unless it's behind `#available`. What it can't catch is behavior that changed between versions, so `make test RUNTIME=min` runs Core and device tests (no snapshots, whose images belong to the newest runtime) on `minimum_runtime`. That's a second simulator run, too slow for every PR: it's required before each TestFlight build (T1 onward) and when D8 is revisited each autumn. `make test` fails if either runtime is older than the deployment target.
+- **Screen sizes.** The `smallest-width` snapshot variant is 375 pt wide, the narrowest iPhone iOS 26 supports (iPhone SE, 12 mini, 13 mini), where truncation happens first. The other variants use the pinned device. The largest iPhones (440 pt) rarely break a layout that fits both, so they get no variant.
+- **iPad.** Not supported (D23): iPads run the iPhone app in an iPhone-sized window, which the iPhone tests already cover.
 
 ## The layers
 
@@ -100,6 +109,7 @@ The loop is in the root TESTING.md; in Swift:
 | Where | What | When it lands |
 |-------|------|---------------|
 | `make test` in `apps/ios` | Builds; runs Core on the Mac, then Core, device and snapshot tests, then journeys, on the pinned simulator; repeats changed suites; fails on any budget above or a retry or skip; prints the simulator, runtime and timings | M0 (Core), M2 (snapshots), the first journey with the first flow |
+| `make test RUNTIME=min` | Core and device tests on `minimum_runtime` | Before each TestFlight build, from T1 |
 | SwiftLint (`validate-ios.yml`, *Validate Code*) | Bans `Date()`, `UUID()`, `Task.sleep`, `Thread.sleep`, `sleep`, `.disabled` and `XCTSkip` where the table says; Linux, no build | M0 |
 | PR description | Each ticked box names its test; **Tests changed** lists any weakened, deleted or re-recorded test | Every PR |
 | My phone, through TestFlight | The milestone's on-device checklist | From T1 |

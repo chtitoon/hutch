@@ -86,7 +86,7 @@ I review UI from my phone, through the PR (D11). How snapshots are made and kept
 
 - Design for iPhone screens first; support every current iPhone size, Dynamic Type and dark mode from the start.
 - Standard SwiftUI components and system behavior over custom chrome; one-handed reach for primary actions (add item, scan).
-- iPad and the website are secondary.
+- iPhone only: iPads run the iPhone app (D23). The website is secondary.
 
 ## Conventions
 

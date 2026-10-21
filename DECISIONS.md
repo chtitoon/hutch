@@ -205,3 +205,12 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **Why:** agents write most of the code and I review from a phone, so tests are the main evidence a change works. A test that sometimes fails teaches everyone to ignore failures, which defeats it. Flakiness has a short list of causes, so it's cheaper to remove them by design than to chase flakes later. Core on the Mac keeps the test-first loop to seconds.
 
 **Costs:** injecting a clock, ID generator, file root and Keychain everywhere; `HutchCore` can't import UIKit or SwiftUI; budgets need measuring in M0; upgrading the simulator runtime means re-recording every reference image in its own PR.
+
+## D23 — iPhone only, no iPad layout
+**Status:** Decided (Oct 2026).
+
+**What:** the app's device family is iPhone (`TARGETED_DEVICE_FAMILY: 1` in `project.yml`). iPads run it in an iPhone-sized window, as iPadOS does for any iPhone-only app. Supported devices aren't listed anywhere: the deployment target (D8) and this setting decide them, and `apps/ios/TESTING.md` tests against both.
+
+**Why:** the inventory is used from the phone in hand, in the garage or the basement; an iPad layout would double the snapshot variants and the design work for a device AGENTS.md already put second. This makes that concrete.
+
+**How to reverse:** set the device family to `1,2`, design iPad layouts (DESIGN.md and `apps/ios/DESIGN.md`), and add an iPad snapshot variant in `apps/ios/TESTING.md`. Everything stays in SwiftUI, so nothing else blocks it.

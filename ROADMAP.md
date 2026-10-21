@@ -61,7 +61,7 @@ A clean, repeatable foundation every later session builds on.
 **Prior work:** [PR #32](https://github.com/chtitoon/hutch/pull/32), branch `1-monorepo-scaffold`: the XcodeGen project, the `HutchCore` package with one test, the iOS and root Makefiles, Swift tokens generated from `design/` (before DESIGN.md), the logo screen and the app icon. Closed, not merged.
 
 **Definition of Done:**
-- [ ] `apps/ios/project.yml` generates the app: bundle ID `app.myhutch.ios`, minimum iOS 26 ([D7](DECISIONS.md#d7--bundle-id-appmyhutchios), [D8](DECISIONS.md#d8--minimum-ios-version-ios-26))
+- [ ] `apps/ios/project.yml` generates the app: bundle ID `app.myhutch.ios`, minimum iOS 26, iPhone only ([D7](DECISIONS.md#d7--bundle-id-appmyhutchios), [D8](DECISIONS.md#d8--minimum-ios-version-ios-26), [D23](DECISIONS.md#d23--iphone-only-no-ipad-layout))
 - [ ] A local Swift package for core logic, with one passing Swift Testing test
 - [ ] `setup`, `test`, `run` and `tokens` work in `apps/ios`, and the root `Makefile` delegates; `make test` prints its simulator
 - [ ] The app launches to an empty "Hutch" screen in colors generated from [DESIGN.md](DESIGN.md)
@@ -144,6 +144,7 @@ Hutch on my own phone.
 
 **Definition of Done:**
 - [ ] A signed build on TestFlight, installed on my phone
+- [ ] Core and device tests pass on the minimum iOS (`make test RUNTIME=min`, [apps/ios/TESTING.md](apps/ios/TESTING.md))
 - [ ] The App Store Connect API key is a GitHub secret, never in the repo
 - [ ] The privacy policy on myhutch.app matches what the app does
 
