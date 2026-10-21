@@ -1,17 +1,42 @@
 // Cuts the site's web fonts down to what its pages use (see PERFORMANCE.md, "Fonts") and writes them
 // to src/fonts/, with their @font-face rules in src/styles/fonts.css. The sources are the pinned
 // @fontsource packages (D15), so a font upgrade is still a package bump.
-// - Characters: only CHARACTERS below. check-performance.mjs fails if a page uses one that isn't
-//   here, so add it to the list and run `npm run fonts`.
+// - Characters: only CHARACTERS below. `--pages` (in `npm test`, after the build) fails if a page
+//   uses one that isn't here, so add it to the list and run `npm run fonts`.
 // - Bricolage Grotesque: only weight 700, the only one the site sets it in. Its optical size axis
 //   stays, so headlines keep the shapes drawn for their size.
 // - Instrument Sans: 400 and 600. The link-preview card's 500 comes straight from the package.
 // `node fonts.mjs` writes the files; `--check` fails if any is stale.
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import subsetFont from 'subset-font';
 
 const ascii = Array.from({ length: 0x7f - 0x20 }, (_, i) => String.fromCharCode(0x20 + i)).join('');
 export const CHARACTERS = `${ascii}\u00a0‘’“”‹›–—…·•→←×©°€`;
+
+// A character the fonts don't have would show in the fallback font. Checks the text of every built
+// page: tags, scripts and styles removed, character references decoded.
+if (process.argv.includes('--pages')) {
+  const dist = new URL('./dist/', import.meta.url);
+  const kept = new Set(CHARACTERS);
+  const missing = [];
+  for (const page of readdirSync(dist, { recursive: true }).filter((f) => f.endsWith('.html')).sort()) {
+    const text = readFileSync(new URL(page, dist), 'utf8')
+      .replace(/<(script|style)[\s\S]*?<\/\1>/gi, '')
+      .replace(/<[^>]+>/g, ' ')
+      .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+      .replace(/&#(\d+);/g, (_, d) => String.fromCodePoint(Number(d)));
+    for (const c of new Set(text)) {
+      if (c.codePointAt(0) > 0x20 && !kept.has(c)) {
+        missing.push(`${page}: "${c}" (U+${c.codePointAt(0).toString(16).toUpperCase().padStart(4, '0')})`);
+      }
+    }
+  }
+  if (missing.length) {
+    console.error(`Characters the web fonts don't have; add them to CHARACTERS in fonts.mjs and run \`npm run fonts\`:\n${missing.join('\n')}`);
+    process.exit(1);
+  }
+  process.exit(0);
+}
 
 const pkg = (path) => new URL(`./node_modules/@fontsource${path}`, import.meta.url);
 const fonts = [

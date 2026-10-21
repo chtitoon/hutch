@@ -12,7 +12,7 @@
     "design:lint": "npm run design:lint:md && npm run design:lint:css",
     "design:lint:md": "node design-lint.mjs",
     "design:lint:css": "node check-css.mjs",
-    "web:build": "node tokens.mjs --check && node fonts.mjs --check && node og.mjs --check && astro build && html-validate \"dist/**/*.html\" && node check-links.mjs && node check-performance.mjs",
+    "web:build": "performance lint && node tokens.mjs --check && node fonts.mjs --check && node og.mjs --check && astro build && html-validate \"dist/**/*.html\" && node check-links.mjs && performance check && node fonts.mjs --pages",
     "test": "npm run design:lint && npm run web:build",
     "run": "astro dev",
     "og": "node og.mjs",
@@ -24,6 +24,7 @@
     "@google/design.md": "0.4.0",
     "astro": "7.3.5",
     "html-validate": "11.16.0",
+    "performance-md": "github:chtitoon/performance.md#4dfac9e161d9249e4c5e5d52df7ab14023fcb2fd",
     "playwright-core": "1.56.1",
     "subset-font": "2.9.0",
     "yaml": "2.9.1"
