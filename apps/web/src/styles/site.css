@@ -27,7 +27,13 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { -webkit-text-size-adjust: 100%; }
+/* Reserve the scrollbar's space on every page, so the layout doesn't jump sideways between a
+   long page that scrolls (home) and a short one that doesn't (support) where scrollbars are
+   always shown. Overlay scrollbars take no space, so this changes nothing there. */
+html {
+  -webkit-text-size-adjust: 100%;
+  scrollbar-gutter: stable;
+}
 
 body {
   margin: 0;
