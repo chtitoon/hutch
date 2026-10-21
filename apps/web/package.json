@@ -24,7 +24,7 @@
     "@google/design.md": "0.4.0",
     "astro": "7.3.5",
     "html-validate": "11.16.0",
-    "performance-md": "github:chtitoon/performance.md#4dfac9e161d9249e4c5e5d52df7ab14023fcb2fd",
+    "performance-md": "github:chtitoon/performance.md#d72c8760bde313e1f1a2fa4ff640f4974135cbf6",
     "playwright-core": "1.56.1",
     "subset-font": "2.9.0",
     "yaml": "2.9.1"
