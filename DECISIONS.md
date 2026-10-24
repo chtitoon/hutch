@@ -36,7 +36,7 @@ Each entry: what, status, and why. Merging the PR that records a decision confir
 - Apple Developer Program, $99/year, needed for TestFlight and the App Store.
 - Work that compiles Swift only happens when the Mac is on and linked to the session. With the Mac off, sessions are limited to docs and the website.
 
-**Sync (proposed, confirm at [H4](ROADMAP.md#h4)):** CloudKit private database using encrypted fields, so Apple stores ciphertext and runs the servers. No backend to operate. Must be settled before H4, which depends on it (ROADMAP.md). Moved from issue #17.
+**Sync (proposed, confirm at [H3](ROADMAP.md#h3)):** CloudKit private database using encrypted fields, so Apple stores ciphertext and runs the servers. No backend to operate. Must be settled before H3, which depends on it (ROADMAP.md). Moved from issue #17.
 
 **Open risk for Phase 2:** CloudKit sharing only works between Apple users. If a neighbor is on Android, Phase 2 needs either our own small backend (storing only ciphertext) or a web view of the shared shelf. Decide before building lending, once [H2](ROADMAP.md#h2) shows what it should be (ROADMAP.md). A vault every member writes to (D22) makes this harder: every member needs the key. Moved from issue #19.
 
@@ -46,9 +46,9 @@ Each entry: what, status, and why. Merging the PR that records a decision confir
 **Why:** most home-inventory apps die from abandoned data entry, not missing features. Phase 2 sharing (invites, identity, key rotation on revocation) is far more complex than Phase 1, and only worth building once I've proven I keep the inventory up to date.
 
 ## D5 — Photo-based AI capture
-**Status:** Open.
+**Status:** Proposed (Oct 2026): on-device models only, so photos never leave the phone and non-negotiable 1 holds. Confirm with [X4](ROADMAP.md#x4)'s verdict: if on-device suggestions are too poor, the other options come back.
 
-**Tension:** sending photos to a cloud model to auto-fill items breaks zero-knowledge. Options: manual entry + barcode only; on-device model; or explicit opt-in per photo with a clear warning. Decide before [H3](ROADMAP.md#h3)'s capture work, which depends on it (ROADMAP.md). Moved from issue #18.
+**Tension:** sending photos to a cloud model to auto-fill items breaks zero-knowledge. Options: manual entry + barcode only; on-device model; or explicit opt-in per photo with a clear warning. Decide before [H1](ROADMAP.md#h1)'s capture work, which depends on it (ROADMAP.md). Moved from issue #18.
 
 ## D6 — Personal tool vs. product
 **Status:** Open, leaning personal tool (Oct 2026). Hutch is mostly for me, and a way to learn (D22); if it lands with people around me, even better. Settle before an App Store release.
@@ -76,7 +76,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **Why:** issues show up in the GitHub app on my phone, PRs close them automatically, and the history is kept. Milestones are the three phases; issues are the units of work, each with a "Done when." The milestone descriptions hold each phase's goal, order and success test; durable reasoning stays in these docs. There is no separate plan file, because a second copy of the plan would drift.
 
 ## D11 — UI review through snapshot tests
-**Status:** Proposed (Oct 2026). The approach is decided; confirm the library with me in [H3](ROADMAP.md#h3), the first bet with screens.
+**Status:** Proposed (Oct 2026). The approach is decided; confirm the library with me in [H1](ROADMAP.md#h1), the first bet with screens.
 
 **What:** each screen renders to reference images (light, dark, large Dynamic Type) stored with its tests. GitHub shows changed images side by side in a PR's file changes, so I can review UI from my phone with no extra tooling, and an unintended change fails the tests.
 
@@ -151,7 +151,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 - **Dark mode as a `-dark` suffix** in the one colors map (`ink`, `ink-dark`). The spec has no modes; unknown color names are valid, so the file stays spec-conformant, the linter checks every value, and each generator maps the suffix to its platform (a `prefers-color-scheme` block on the web, an asset-catalog appearance on iOS). The same pattern, `-wide`, gives a type level its size on wide screens: sizes are fixed, never fluid, because the spec has no `clamp()`.
 - **A full type scale** (sixteen levels plus three for the link preview) replaces two families and four weights. Merging the site's ad hoc sizes into it changed some sizes on purpose (section titles share one size, prose is 16px).
 - **Contrast is declared, then checked.** Every text-on-background pair is a `components` entry, with a `-dark` twin when its colors change in dark mode. Pairs ending in `-graphic` are marks and need 3:1.
-- **Enforced on both sides, in `npm test`, which both GitHub (on every PR, as the required checks **Design / Validate DESIGN.md** and **Web / Validate Web Build**) and Cloudflare's build run, so a break can't be merged or deployed:** `design:lint:md` runs the linter and fails on any warning (the CLI only warns on low contrast), plus the `-dark` twin and `-graphic` rules; `design:lint:css` fails on raw colors, undefined variables, type outside the scale, external fonts and off-scale spacing in the website's code, with a reasoned allowlist in `apps/web/DESIGN.md`. iOS gets the equivalent with its first code ([H3](ROADMAP.md#h3)): Swift generated from DESIGN.md and a SwiftLint rule banning raw colors and sizes.
+- **Enforced on both sides, in `npm test`, which both GitHub (on every PR, as the required checks **Design / Validate DESIGN.md** and **Web / Validate Web Build**) and Cloudflare's build run, so a break can't be merged or deployed:** `design:lint:md` runs the linter and fails on any warning (the CLI only warns on low contrast), plus the `-dark` twin and `-graphic` rules; `design:lint:css` fails on raw colors, undefined variables, type outside the scale, external fonts and off-scale spacing in the website's code, with a reasoned allowlist in `apps/web/DESIGN.md`. iOS gets the equivalent with its first code ([H1](ROADMAP.md#h1)): Swift generated from DESIGN.md and a SwiftLint rule banning raw colors and sizes.
 - Fixing what the linter found: `sage` darkened from `#3E7A62` to `#3D7961` (4.47:1 → 4.53:1 on the background), and a new `marker` role for the status pill's dot, deeper brass in dark mode (1.97:1 → 3.27:1).
 
 **Why:** one file that agents and people both read, values next to the reasons, in a format the tools around agents are starting to understand. A token file alone said what but not why; the reasoning lived in two other files that could drift from it.
@@ -193,7 +193,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 ## D21 — Recovery: iCloud Keychain, plus a printable recovery kit
 **Status:** Decided (Oct 2026). Rewords non-negotiable 1 in AGENTS.md.
 
-**What:** the inventory key is stored as a synchronizable Keychain item, so iCloud Keychain carries it to a new iPhone signed into my Apple account and restore just works. A printable recovery kit (a recovery key, 1Password-style) restores everything without the Apple account, if that is lost too. Both are part of [H4](ROADMAP.md#h4) (ROADMAP.md); the cryptographic details are H4's to design and explain (non-negotiable 3).
+**What:** the inventory key is stored as a synchronizable Keychain item, so iCloud Keychain carries it to a new iPhone signed into my Apple account and restore just works. A printable recovery kit (a recovery key, 1Password-style) restores everything without the Apple account, if that is lost too. Both are part of [H3](ROADMAP.md#h3) (ROADMAP.md); the cryptographic details are H3's to design and explain (non-negotiable 3).
 
 **Why:** a kit alone means a lost kit and a lost phone lose everything, and most people never print it. iCloud Keychain is end-to-end encrypted, so Apple can't read the key, and it costs nothing to run. The kit covers the case where the Apple account is gone.
 
@@ -214,6 +214,15 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 
 **Why:** a week after D20, all five merged PRs were website work and three named no milestone: the first milestone needed the Mac, so sessions without it did what they could, and the plan stopped describing the work. Milestones fixed the scope and left the time open, with the first real feedback after five of them. Bets fix the time, test the riskiest guess first, often without code, and say in advance what a result changes, so the plan moves with evidence instead of with what I once thought mattered. Hutch is also how I learn (performance.md and DESIGN.md were that, [X1](LEARNED.md#x1) and [X2](LEARNED.md#x2)), so learning gets its own lane rather than happening off the plan.
 
-**Old ids:** M0–M4 became [H3](ROADMAP.md#h3) and [H4](ROADMAP.md#h4); M5–M12, B1, T1 and A1 are under Later or in H3; W1–W5 are done and listed in LEARNED.md. Older entries above still name milestones where they're history.
+**Old ids:** M0–M4 became [H1](ROADMAP.md#h1) and [H3](ROADMAP.md#h3); M5–M12, B1, T1 and A1 are under Later or in H1, now the first Hutch app; W1–W5 are done and listed in LEARNED.md. Older entries above still name milestones where they're history.
 
 **How to reverse:** restore ROADMAP.md and AGENTS.md's work loop from before this change; LEARNED.md can stay as a log.
+
+## D23 — Resale prices without telling anyone what I own
+**Status:** Open (Oct 2026). Decide before any price lookup is built; until then a resale price is my own estimate.
+
+**Tension:** [H1](ROADMAP.md#h1) shows what I'd resell each item for. Looking that up (eBay sold listings, a price API) means telling someone else what the item is, and non-negotiable 1 says names and item data never leave the device. Options:
+1. **My own estimate only.** Nothing leaves the phone. What H1 builds.
+2. **A lookup I trigger per item,** sending only a short search term I see and can edit first ("DeWalt 20V drill"), never the photo or anything else. Needs non-negotiable 1 reworded, as D21 did for keys.
+3. **Prices only when selling** ([O3](ROADMAP.md#o3)): listing an item publishes it to eBay anyway, so the lookup comes with a choice already made.
+4. **An on-device model's guess,** from what it knows, if [X4](ROADMAP.md#x4) shows it's close enough. Nothing leaves the phone, but the guess may be dated or rough.

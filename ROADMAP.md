@@ -58,11 +58,20 @@ Signals come from my notes, what neighbors tell me and counts on my phone only I
 
 At most two bets and one experiment.
 
-#### <a id="h1"></a>H1 — I'll actually keep an inventory
-**Serves:** [O1](#o1). **Status:** ready, needs only me. **Appetite:** 1 week.
-- **Test:** photo, name and location of my things in Apple Notes. No app.
-- **Signal:** 20 items in 7 days, with a note each time I stop, and each time I look something up.
-- **If yes:** [H3](#h3) next. **If no:** the problem is motivation, not speed; [O1](#o1) shrinks to what's worth lending, selling or insuring.
+#### <a id="h1"></a>H1 — I'll keep an inventory if Hutch makes it effortless
+**Serves:** [O1](#o1). **Status:** ready, needs the Mac. **Appetite:** 3 weeks to build, then 1 week of use on my phone.
+- **Test:** the first Hutch app. It opens on the camera; one tap, and an on-device model turns the photo into an item ([X4](#x4)); I confirm it, say where it lives (picked from places I've used) and what I'd resell it for. A list shows each item's photo, name, place and price. When time runs short, everything else is cut first.
+- **Never cut:** encrypted at rest from the first write, with the key in the Keychain ([non-negotiable 1](AGENTS.md#non-negotiables), [D21](DECISIONS.md#d21--recovery-icloud-keychain-plus-a-printable-recovery-kit)); new items private; snapshot tests for each screen. Prior work: [#32](https://github.com/chtitoon/hutch/pull/32).
+- **Also learning:** SwiftUI, Swift 6 and CryptoKit, on a real app; the models are [X4](#x4).
+- **Signal:** 20 items in my first week of use, each added in under 20 s (timed on the phone, never sent), with a note each time I stop and each time I look something up.
+- **If yes:** keep building [O1](#o1) (barcode, search), then [H3](#h3). **If no:** my notes say whether it was speed (reshape capture) or motivation (O1 shrinks to what's worth lending, selling or insuring).
+- **Open:** a looked-up resale price would tell a price service what I own, which non-negotiable 1 rules out today ([D23](DECISIONS.md#d23--resale-prices-without-telling-anyone-what-i-own)).
+
+#### <a id="x4"></a>X4 — Photo to item, with on-device models
+**Tried on:** [H1](#h1). **Status:** starts with H1.
+- **Learning:** what Apple's on-device models can do with one photo: Vision to recognize the object, the Foundation Models framework to turn that into a name and category (and maybe a resale guess), Core ML if neither is enough.
+- **Question going in:** do I accept its suggestion as is for at least 7 items in 10, in under 2 seconds on my phone? Photos never leave the device ([D5](DECISIONS.md#d5--photo-based-ai-capture)).
+- **Verdict decides:** D5, and whether an on-device estimate is good enough for resale prices ([D23](DECISIONS.md#d23--resale-prices-without-telling-anyone-what-i-own)).
 
 #### <a id="h2"></a>H2 — Neighbors will join a shared vault and add to it
 **Serves:** [O2](#o2). **Status:** ready, needs only me. **Appetite:** 2 weeks.
@@ -75,9 +84,8 @@ At most two bets and one experiment.
 
 Riskiest first.
 
-1. <a id="h3"></a>**H3 — Photo-first capture gets me to 50 items.** Serves [O1](#o1). Needs the Mac. The iOS app and its four tasks ([AGENTS.md](AGENTS.md#commands-one-way-to-do-each-thing); prior work [#32](https://github.com/chtitoon/hutch/pull/32)), an encrypted item store (name, photo, location, `visibility`), photo and barcode capture, TestFlight on my phone. AI capture only on-device, if [D5](DECISIONS.md#d5--photo-based-ai-capture) allows. Needs the Apple Developer Program.
-2. <a id="x3"></a>**X3 — OpenSpec.** Tried on [H3](#h3). Does a spec per change make an agent's work better than a checklist, or just add a second plan to keep in sync?
-3. <a id="h4"></a>**H4 — My inventory survives a lost phone.** Serves [O1](#o1). Once I rely on it. Sync and recovery, together ([non-negotiable 4](AGENTS.md#non-negotiables), [D21](DECISIONS.md#d21--recovery-icloud-keychain-plus-a-printable-recovery-kit)). Needs [D3](DECISIONS.md#d3--platform-native-iphone-app--static-website-in-one-monorepo)'s sync approach confirmed.
+1. <a id="x3"></a>**X3 — OpenSpec.** Tried on [H1](#h1). Does a spec per change make an agent's work better than a checklist, or just add a second plan to keep in sync?
+2. <a id="h3"></a>**H3 — My inventory survives a lost phone.** Serves [O1](#o1). Once I rely on it. Sync and recovery, together ([non-negotiable 4](AGENTS.md#non-negotiables), [D21](DECISIONS.md#d21--recovery-icloud-keychain-plus-a-printable-recovery-kit)). Needs [D3](DECISIONS.md#d3--platform-native-iphone-app--static-website-in-one-monorepo)'s sync approach confirmed.
 
 ## Later
 
@@ -85,6 +93,6 @@ No order, no detail.
 
 - **Organize:** locations, categories, value, receipts, warranties. If [H1](#h1) shows lookups are what I use it for.
 - **Lending:** shaped by [H2](#h2). A vault every member writes to means every member holds its key, removing one re-keys it for all, and CloudKit sharing only reaches Apple users ([D3](DECISIONS.md#d3--platform-native-iphone-app--static-website-in-one-monorepo)).
-- **Selling:** eBay connect, listing, price estimates. After [O1](#o1): an empty inventory has nothing to sell.
-- **App icon and final logo:** the icon comes with [H3](#h3)'s TestFlight build.
+- **Selling:** eBay connect, listing, price estimates from sold listings ([D23](DECISIONS.md#d23--resale-prices-without-telling-anyone-what-i-own)). After [O1](#o1): an empty inventory has nothing to sell.
+- **App icon and final logo:** the icon comes with [H1](#h1)'s first build on my phone.
 - **App Store release:** needs [D6](DECISIONS.md#d6--personal-tool-vs-product) and the name revisited ([D1](DECISIONS.md#d1--name-and-domain-hutch-myhutchapp)).
