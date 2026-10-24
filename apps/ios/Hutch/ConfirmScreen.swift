@@ -137,11 +137,13 @@ struct ItemForm: View {
             .listRowBackground(Palette.surface)
 
             Section("Where it lives") {
-                if !rooms.isEmpty {
+                // Typing a room is only for when there's none to pick: no Apple Home rooms, none used yet.
+                if rooms.isEmpty {
+                    TextField("Room", text: $draft.room, prompt: Text("Room: Garage"))
+                } else {
                     RoomChips(rooms: rooms, selected: $draft.room)
                         .listRowInsets(EdgeInsets(top: Spacing.s2, leading: Spacing.s4, bottom: Spacing.s2, trailing: Spacing.s4))
                 }
-                TextField("Room", text: $draft.room, prompt: Text(rooms.isEmpty ? "Room: Garage" : "Or another room"))
                 TextField("Spot", text: $draft.spot, prompt: Text("Spot, if you like: left shelf"))
             }
             .listRowBackground(Palette.surface)

@@ -244,7 +244,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 ## D25 — Where it lives: an Apple Home room and an optional spot
 **Status:** Decided (Oct 2026), in [H1](ROADMAP.md#h1).
 
-**What:** "where it lives" is a room picked in one tap, plus an optional spot I type ("left shelf"). The rooms offered are the ones I've used, most recent first, then my Apple Home rooms, read through HomeKit. A room can still be typed if it isn't in Home.
+**What:** "where it lives" is a room picked in one tap, plus an optional spot I type ("left shelf"). The rooms offered are the ones I've used, most recent first, then my Apple Home rooms, read through HomeKit. A room is typed only when there is none to pick (no Home access or rooms, and none used yet); once rooms exist, it's chips only.
 
 **Why:** typing a place for every item is slow, and Home already knows my rooms. A room alone is too coarse for a garage, so the spot stays, but optional.
 
