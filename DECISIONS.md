@@ -38,7 +38,7 @@ Each entry: what, status, and why. Merging the PR that records a decision confir
 
 **Sync (proposed, confirm at [H3](ROADMAP.md#h3)):** CloudKit private database using encrypted fields, so Apple stores ciphertext and runs the servers. No backend to operate. Must be settled before H3, which depends on it (ROADMAP.md). Moved from issue #17.
 
-**Open risk for Phase 2:** CloudKit sharing only works between Apple users. If a neighbor is on Android, Phase 2 needs either our own small backend (storing only ciphertext) or a web view of the shared shelf. Decide before building lending, once [H2](ROADMAP.md#h2) shows what it should be (ROADMAP.md). A vault every member writes to (D22) makes this harder: every member needs the key. Moved from issue #19.
+**Open risk for Phase 2:** CloudKit sharing only works between Apple users. If a neighbor is on Android, Phase 2 needs either our own small backend (storing only ciphertext) or a web view of the shared shelf. Decide before building lending, once [H2](ROADMAP.md#h2) shows what it should be (ROADMAP.md). [H2](ROADMAP.md#h2) avoids the question at first: it sends one item through Messages, with no server. Moved from issue #19.
 
 ## D4 — Build order: personal first, sharing later
 **Status:** Decided in principle.
@@ -210,7 +210,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 - **Only [O1](ROADMAP.md#o1) is a gate:** nothing for other people gets built until I use Hutch myself. [O2](ROADMAP.md#o2) and [O3](ROADMAP.md#o3) are pursued when they're fun or people ask.
 - **A weekly review PR** checks the roadmap against what was merged and observed, closes bets past their appetite, and asks me what was fun and what was a slog. Every PR names its bet or experiment, or says `off-roadmap:` and why.
 - **Principles stay in AGENTS.md.** An appetite never shrinks a non-negotiable. Non-negotiable 1 gains encryption at rest, which lived only in the old M1: "On the device, nothing is written to disk unencrypted, with a test that asserts it."
-- [O1](ROADMAP.md#o1)'s proof becomes use, not effort: 50 items, still accurate two months later and used at least three times, instead of 50 items in two weeks. [O2](ROADMAP.md#o2)'s early signal is neighbors joining a shared vault and adding things themselves; [H2](ROADMAP.md#h2) tests that first, since Peerby found the opposite (CONTEXT.md).
+- [O1](ROADMAP.md#o1)'s proof becomes use, not effort: 50 items, still accurate two months later and used at least three times, instead of 50 items in two weeks. [O2](ROADMAP.md#o2)'s early signal is answering neighbors' requests from Hutch, following Peerby's finding that people ask more than they browse (CONTEXT.md).
 
 **Why:** a week after D20, all five merged PRs were website work and three named no milestone: the first milestone needed the Mac, so sessions without it did what they could, and the plan stopped describing the work. Milestones fixed the scope and left the time open, with the first real feedback after five of them. Bets fix the time, test the riskiest guess first, often without code, and say in advance what a result changes, so the plan moves with evidence instead of with what I once thought mattered. Hutch is also how I learn (performance.md and DESIGN.md were that, [X1](LEARNED.md#x1) and [X2](LEARNED.md#x2)), so learning gets its own lane rather than happening off the plan.
 
@@ -226,3 +226,11 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 2. **A lookup I trigger per item,** sending only a short search term I see and can edit first ("DeWalt 20V drill"), never the photo or anything else. Needs non-negotiable 1 reworded, as D21 did for keys.
 3. **Prices only when selling** ([O3](ROADMAP.md#o3)): listing an item publishes it to eBay anyway, so the lookup comes with a choice already made.
 4. **An on-device model's guess,** from what it knows, if [X4](ROADMAP.md#x4) shows it's close enough. Nothing leaves the phone, but the guess may be dated or rough.
+
+## D24 — Sending one item to someone I choose
+**Status:** Open (Oct 2026). Decide before [H2](ROADMAP.md#h2) builds sharing.
+
+**Tension:** H2 answers a neighbor's request by sending them one item's photo and name. Non-negotiable 1 says plaintext photos and names never leave the device, so as written it forbids that, even though it's my explicit choice, to one person, like sending a photo from my camera roll. Options:
+1. **Reword non-negotiable 1** to cover what Hutch sends to servers: "...never leave the device, except one item at a time, when I explicitly send it to someone I choose." Hutch's servers still see ciphertext only. The share sheet hands the card to Messages; Hutch keeps no copy elsewhere.
+2. **An encrypted link instead:** the item encrypted on the phone, the key only in the link (after the `#`, which browsers never send), a page on myhutch.app decrypting it with WebCrypto. The server sees ciphertext only and non-negotiable 1 stands; it costs a server, link expiry, and the site's first JavaScript.
+

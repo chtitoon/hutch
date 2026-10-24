@@ -49,7 +49,7 @@ What someone does differently because of Hutch. Only [O1](#o1) is a gate: nothin
 | | Outcome | Early signal | Proof |
 |---|---|---|---|
 | <a id="o1"></a>**O1** | I know what I own and where it is | 20 items in my first week; adding one takes under 20 s | 50 items, still accurate two months later, used at least 3 times to find, prove or decide something |
-| <a id="o2"></a>**O2** | Neighbors lend to each other | Neighbors join a shared vault and add things themselves | 3 households lending within a month; an "anyone have a ladder?" request answered |
+| <a id="o2"></a>**O2** | Neighbors lend to each other | When a neighbor asks for something, I answer from Hutch | 3 households lending within a month; an "anyone have a ladder?" request answered |
 | <a id="o3"></a>**O3** | I let go of things I don't use | — | 5 items sold from Hutch, each listed faster than with the eBay app |
 
 Signals come from my notes, what neighbors tell me and counts on my phone only I see: never telemetry ([non-negotiable 5](AGENTS.md#non-negotiables)).
@@ -73,12 +73,14 @@ At most two bets and one experiment.
 - **Question going in:** do I accept its suggestion as is for at least 7 items in 10, in under 2 seconds on my phone? Photos never leave the device ([D5](DECISIONS.md#d5--photo-based-ai-capture)).
 - **Verdict decides:** D5, and whether an on-device estimate is good enough for resale prices ([D23](DECISIONS.md#d23--resale-prices-without-telling-anyone-what-i-own)).
 
-#### <a id="h2"></a>H2 — Neighbors will join a shared vault and add to it
-**Serves:** [O2](#o2). **Status:** ready, needs only me. **Appetite:** 2 weeks.
-- **Against it:** Peerby found people won't list their things but help when asked for one ([CONTEXT.md](CONTEXT.md#research-findings-that-shape-the-product)). The riskiest assumption in [O2](#o2), so it goes first.
-- **Test:** a shared iCloud album, "Neighborhood shelf", seeded with 10 of my things; invite 6 neighbors to add what they'd lend. After two weeks, ask the group for one thing I need.
-- **Signal:** 3 of 6 add at least 2 things each without a second nudge; the request gets an offer.
-- **If yes:** [O2](#o2) is a vault members write to; maybe a lending bet before [O1](#o1)'s proof. **If they answer but don't add:** lending starts from requests. **If neither:** O2 moves to Later.
+#### <a id="h2"></a>H2 — When a neighbor asks, I answer from Hutch
+**Serves:** [O2](#o2). **Status:** counting starts now; building needs [H1](#h1)'s items. **Appetite:** 1 week to build, then a month of use.
+- **We believe:** neighbors ask for things more than they browse ([CONTEXT.md](CONTEXT.md#research-findings-that-shape-the-product): Peerby moved from listings to requests), and answering "I have one" with the item makes lending happen.
+- **First, no code:** for 2 weeks, count the "anyone have a…?" requests in my neighborhood texts and chats. If there are none, there's nothing to answer: H2 waits.
+- **Test:** on an item, one tap shares a card (photo, name, "happy to lend it") into the text thread through the share sheet. One item, never the inventory; nothing goes through a server, and they need no app.
+- **Signal:** 3 requests answered from Hutch within a month, at least one ending in a loan.
+- **If yes:** a link that opens the item for someone without Hutch, end-to-end encrypted, then loans and return reminders. **If no:** O2 moves to Later.
+- **Needs:** [D24](DECISIONS.md#d24--sending-one-item-to-someone-i-choose) decided: today non-negotiable 1 says photos and names never leave the device, even when I send them.
 
 ## Next
 
@@ -92,7 +94,7 @@ Riskiest first.
 No order, no detail.
 
 - **Organize:** locations, categories, value, receipts, warranties. If [H1](#h1) shows lookups are what I use it for.
-- **Lending:** shaped by [H2](#h2). A vault every member writes to means every member holds its key, removing one re-keys it for all, and CloudKit sharing only reaches Apple users ([D3](DECISIONS.md#d3--platform-native-iphone-app--static-website-in-one-monorepo)).
+- **Lending:** shaped by [H2](#h2): loans, return reminders, and maybe a shared vault neighbors add to (every member would hold its key, removing one re-keys it for all, and CloudKit sharing only reaches Apple users, [D3](DECISIONS.md#d3--platform-native-iphone-app--static-website-in-one-monorepo)).
 - **Selling:** eBay connect, listing, price estimates from sold listings ([D23](DECISIONS.md#d23--resale-prices-without-telling-anyone-what-i-own)). After [O1](#o1): an empty inventory has nothing to sell.
 - **App icon and final logo:** the icon comes with [H1](#h1)'s first build on my phone.
 - **App Store release:** needs [D6](DECISIONS.md#d6--personal-tool-vs-product) and the name revisited ([D1](DECISIONS.md#d1--name-and-domain-hutch-myhutchapp)).
