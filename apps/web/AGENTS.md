@@ -4,10 +4,8 @@ Instructions for agents working in `apps/web`. The root `AGENTS.md` still applie
 
 ## What to read
 
-| When | Read |
-|------|------|
-| Any visual change | `DESIGN.md` (how the site uses the design tokens) |
-| Before adding a page, asset or feature | `PERFORMANCE.md` (budgets, rules and the checklist) |
+- **Any visual change:** `DESIGN.md` (how the site uses the design tokens).
+- **Before adding a page, asset or feature:** `PERFORMANCE.md` (budgets, rules and the checklist).
 
 ## Rules
 

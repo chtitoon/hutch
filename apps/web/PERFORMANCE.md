@@ -53,10 +53,19 @@ myhutch.app should load instantly on a mid-range phone over a weak connection. S
 
 ## How it's enforced
 
-| Where | What | Blocks |
-|-------|------|--------|
-| `npm test` → `performance check` | `artifact`: budgets, origins and image rules, read from the built files. No browser (D16 keeps the Cloudflare build browser-free). | The Cloudflare deploy |
-| GitHub Actions → `performance measure`, then `compare` | `measure`: Lighthouse on main and the PR, alternating runs, then compared. Only pages whose built files differ from main are measured: identical files give identical results. | The PR's check |
+### In `npm test`
+
+- Runs `performance check`.
+- Checks `artifact`: budgets, origins and image rules, read from the built files.
+- No browser: D16 keeps the Cloudflare build browser-free.
+- Blocks the Cloudflare deploy.
+
+### In GitHub Actions
+
+- Runs `performance measure`, then `compare`.
+- Checks `measure`: Lighthouse on main and the PR, alternating runs, then compared.
+- Measures only pages whose built files differ from main: identical files give identical results.
+- Blocks the PR's check.
 
 The checks come from [performance.md](https://github.com/chtitoon/performance.md), a CLI that reads this file; it's a dev dependency pinned to a commit, and its `spec.md` defines every key above. It pins Lighthouse too, so upgrading it is a deliberate PR: comparisons stay fair (both sides run the same version), but the limits may need a look.
 

@@ -4,15 +4,15 @@ The values, color roles, type levels and rules live in the root [DESIGN.md](../.
 
 ## From DESIGN.md to CSS
 
-`npm run tokens` turns DESIGN.md's front matter into `src/styles/tokens.css`. `site.css` and the components use only those variables:
+`npm run tokens` turns DESIGN.md's front matter into `src/styles/tokens.css`. `site.css` and the components use only those variables. Examples:
 
-| In DESIGN.md | In CSS |
-|--------------|--------|
-| `colors.ink`, `colors.ink-dark` | `--color-ink`, overridden under `prefers-color-scheme: dark` |
-| `typography.headline-lg`, `headline-lg-wide` | `font: var(--type-headline-lg); letter-spacing: var(--type-headline-lg-tracking);`, with the wide size from `breakpoint-wide` up |
-| the headline and body families, and their weights | `--font-display`, `--font-text`, `--font-weight-regular` … `bold` (for emphasis inside text, such as `strong`) |
-| `rounded.md` | `--radius-md` |
-| `spacing.6`, `spacing.page-width` | `--space-6`, `--layout-page-width` |
+- **Colors:** `colors.ink` and `colors.ink-dark` become `--color-ink`, overridden under `prefers-color-scheme: dark`.
+- **Type levels:** `typography.headline-lg` becomes `font: var(--type-headline-lg); letter-spacing: var(--type-headline-lg-tracking);`.
+- **Wide type:** from `breakpoint-wide` up, the same variables take `headline-lg-wide`'s values.
+- **Families:** the headline and body families become `--font-display` and `--font-text`.
+- **Weights:** `--font-weight-regular` … `bold` (bold for emphasis inside text, such as `strong`).
+- **Radius:** `rounded.md` becomes `--radius-md`.
+- **Spacing:** `spacing.6` and `spacing.page-width` become `--space-6` and `--layout-page-width`.
 
 Always set `font` and `letter-spacing` together: `font` doesn't reset letter spacing, so a level's tracking would otherwise be inherited from the parent. Pages declare `color-scheme: light dark` and follow the system setting.
 
@@ -23,16 +23,18 @@ Always set `font` and `letter-spacing` together: `font` doesn't reset letter spa
 
 ## Spacing exceptions
 
-Layout gaps and padding come from `--space-*`. These cases are local to a component and stay in px; `design:lint:css` reads this table, so a new exception means a new row with its reason.
+Layout gaps and padding come from `--space-*`. These cases are local to a component and stay in px.
 
-| File | Selector | Property | Why |
-|------|----------|----------|-----|
-| `src/styles/site.css` | `.pill` | `padding` | The pill's side inset is sized to its 52px height, not to the page rhythm. |
-| `src/styles/site.css` | `.badge` | `padding` | Small component internals: a 13px label in a tight capsule. |
-| `src/styles/site.css` | `.phone-screen` | `gap` | Device geometry: the mockup draws the iPhone screen at phone scale. |
-| `src/styles/site.css` | `.phone-list` | `gap` | Device geometry: iOS list spacing at phone scale. |
-| `src/styles/site.css` | `.phone-list li` | `gap` | Device geometry: iOS list-row metrics at phone scale. |
-| `src/styles/site.css` | `.phone-list li` | `padding` | Device geometry: iOS list-row metrics at phone scale. |
+`design:lint:css` reads this list. A new exception is a new bullet, in the form ``- `selector` `property`: why``, under a ``### `file` `` heading.
+
+### `src/styles/site.css`
+
+- `.pill` `padding`: the pill's side inset is sized to its 52px height, not to the page rhythm.
+- `.badge` `padding`: small component internals, a 13px label in a tight capsule.
+- `.phone-screen` `gap`: device geometry; the mockup draws the iPhone screen at phone scale.
+- `.phone-list` `gap`: device geometry; iOS list spacing at phone scale.
+- `.phone-list li` `gap`: device geometry; iOS list-row metrics at phone scale.
+- `.phone-list li` `padding`: device geometry; iOS list-row metrics at phone scale.
 
 ## Fonts
 
@@ -42,27 +44,82 @@ Each web font is followed by a "Fallback" face, declared in `site.css`: Arial (L
 
 ## Sections (landing page)
 
-| Section | Background | Notes |
-|---------|-----------|-------|
-| Header | `background` | The logo (mark in `sage`, wordmark in `ink`); nav links `body-sm` in `ink`, hover `sage` |
-| Hero | `background` | `label-caps` eyebrow in `sage`, `headline-display` headline, `body-lg` lede in `ink-muted`, status pill, phone mockup |
-| Privacy band (`#privacy`) | `deep` | `headline-lg` title in `on-deep`, `body-lg` intro in `on-deep-muted`, `deep-rule` divider, `headline-sm` numerals in `accent`, `title-md` point titles |
-| Where we’re heading | `background` | Launch card: `surface`, solid, `border` shadow. Planned cards: no fill, dashed `border-dashed`. `headline-md` titles, `body-md` text |
-| Closing card | `surface-sunken`, `radius-lg` | `headline-lg` headline + status pill |
-| Footer | `background`, `border` top rule | The wordmark in `headline-sm`, `body-sm` text in `ink-subtle`, `ink` links |
+### Header
+
+- Background: `background`.
+- Logo: mark in `sage`, wordmark in `ink`.
+- Nav links: `body-sm` in `ink`, hover `sage`.
+
+### Hero
+
+- Background: `background`.
+- Eyebrow: `label-caps` in `sage`.
+- Headline: `headline-display`.
+- Lede: `body-lg` in `ink-muted`.
+- Then the status pill and the phone mockup.
+
+### Privacy band (`#privacy`)
+
+- Background: `deep`.
+- Title: `headline-lg` in `on-deep`.
+- Intro: `body-lg` in `on-deep-muted`.
+- Divider: `deep-rule`.
+- Numerals: `headline-sm` in `accent`.
+- Point titles: `title-md`.
+
+### Where we’re heading
+
+- Background: `background`.
+- Launch card: `surface`, solid, `border` shadow.
+- Planned cards: no fill, dashed `border-dashed`.
+- Titles: `headline-md`.
+- Text: `body-md`.
+
+### Closing card
+
+- Background: `surface-sunken`, corners `radius-lg`.
+- Content: `headline-lg` headline and the status pill.
+
+### Footer
+
+- Background: `background`, with a `border` top rule.
+- Wordmark: `headline-sm`.
+- Text: `body-sm` in `ink-subtle`.
+- Links: `ink`.
+
+### Space between sections
 
 Space between sections scales with the screen width (`clamp()` over `vw`): `spacing.16` on an iPhone, up to `spacing.28` (`spacing.30` around the roadmap and closing card) on a wide screen. Fixed desktop spacing left a phone scrolling through empty bands. The roadmap cards and the closing card belong together, so the gap between them is smaller, at most `spacing.16`.
+
+## Text pages
 
 Text pages (privacy, support, 404) use the same header and footer, a `layout-prose-width` column, `headline-lg` and `headline-md` headings, and `body-md` text in `ink-muted` with `ink` for bold.
 
 ## Components
 
-| Component | What it is |
-|-----------|-----------|
-| `AppStoreLink.astro` | The status pill (`ink` fill, `background` text, `label-lg`, `marker` dot). Becomes the App Store link once Hutch is listed. |
-| `PhoneMockup.astro` | The inventory screen illustration. The frame and its shadow are `device` (dark in both modes). The screen is `surface`, the search field `background`, and item swatches cycle through `surface-sunken`, `sage-tint`, `border` and `background`. |
-| `StageIcon.astro` | 22px line icon beside each roadmap badge: `private` (house), `lend` (two people), `sell` (tag), matching the SF Symbols the app will use. `ink-muted` on the launch card, `ink-subtle` on planned cards. Draws in `currentColor`. |
-| `Logo.astro` | The logo as inline SVG, traced from `design/light/logo.svg`: house-with-keyhole mark in `sage`, "hutch" in `ink`, so it follows light and dark mode. |
+### `AppStoreLink.astro`
+
+- The status pill: `ink` fill, `background` text, `label-lg`, `marker` dot.
+- Becomes the App Store link once Hutch is listed.
+
+### `PhoneMockup.astro`
+
+- The inventory screen illustration.
+- Frame and its shadow: `device` (dark in both modes).
+- Screen: `surface`.
+- Search field: `background`.
+- Item swatches cycle through `surface-sunken`, `sage-tint`, `border` and `background`.
+
+### `StageIcon.astro`
+
+- A 22px line icon beside each roadmap badge, drawn in `currentColor`.
+- Icons: `private` (house), `lend` (two people), `sell` (tag), matching the SF Symbols the app will use.
+- Color: `ink-muted` on the launch card, `ink-subtle` on planned cards.
+
+### `Logo.astro`
+
+- The logo as inline SVG, traced from `design/light/logo.svg`.
+- House-with-keyhole mark in `sage`, "hutch" in `ink`, so it follows light and dark mode.
 
 ## Link preview
 
