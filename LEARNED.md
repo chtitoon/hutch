@@ -19,6 +19,20 @@ Hutch collects nothing ([non-negotiable 5](AGENTS.md#non-negotiables)), so evide
 - what neighbors tell me
 - public research
 
+#### <a id="e5"></a>E5 — 11 of my photos: right in the top 5 once the catalog covers them, but the catalog was tuned to them
+
+- **Date:** 2026-10-24
+- **Bears on:** [X5](ROADMAP.md#x5)
+- **Effect:** supports, with a caveat
+- **Source:** `score.py`, SigLIP 2 base, hand-made catalog, `labels.csv` accepting kind-level names
+- **Before tuning,** with 382 entries: 5 of 10 in the top 5. Every miss was a kind the catalog lacked: rings, boats, desktops.
+- **After adding those kinds,** with 404 entries: 11 of 11 in the top 5, and 8 of 11 first.
+  - The ring on a hand, the inflatable kayak, the hand mixer on dark tiles and a bundle of old phones were all first.
+  - "Dell Inspiron Zino HD" came first from the image alone; its name is also printed on the front.
+  - The desk chair came second, behind "desk".
+  - The frame on a busy wall came third.
+- **The caveat:** kinds were added after seeing the misses, so 11 of 11 overstates it. The real test is a catalog built independently (the Google Product Taxonomy) on photos it hasn't seen.
+
 #### <a id="e4"></a>E4 — A catalog of names, matched by image embeddings: the right kind for 4 of 4
 
 - **Date:** 2026-10-24

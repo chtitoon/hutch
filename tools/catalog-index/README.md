@@ -12,7 +12,7 @@ The goal: from a photo, the phone suggests what a thing is by finding the closes
 ## Running it
 
 1. `python3 -m venv .venv && .venv/bin/pip install -r requirements.txt`
-2. Put photos in `photos/`, each named after what it really is: `Apple MacBook Air.heic`, `wooden picture frame 2.jpg`. A trailing number is ignored.
+2. Put photos in `photos/`, each named after what it really is: `Apple MacBook Air.heic`, `wooden picture frame 2.jpg`. A trailing number is ignored. Optionally, `photos/labels.csv` lists every catalog name that counts as right per photo (`Robot Mixer.JPG,hand mixer`).
 3. `.venv/bin/python -I score.py photos/`
 
 The first run downloads the model, about 1.5 GB. After that, nothing leaves the Mac.

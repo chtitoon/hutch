@@ -23,7 +23,17 @@ Google Chromebook
 Samsung Galaxy Tab
 Amazon Kindle e-reader
 Kobo e-reader
+# Desktops
+desktop computer
+mini PC
+Dell Inspiron desktop
+Dell Inspiron Zino HD
+HP Pavilion desktop
+Lenovo ThinkCentre desktop
+Intel NUC mini PC
 # Phones and wearables
+old mobile phones
+mobile phone
 Apple iPhone
 Samsung Galaxy phone
 Google Pixel phone
@@ -120,6 +130,12 @@ security camera
 smoke detector
 # Glasses and personal
 glasses case
+ring
+gold and silver ring
+wedding ring
+necklace
+earrings
+bracelet
 Ray-Ban sunglasses
 eyeglasses
 wristwatch
@@ -247,6 +263,13 @@ scooter
 electric scooter
 skateboard
 surfboard
+inflatable canoe
+inflatable kayak
+kayak
+canoe
+stand-up paddle board
+kayak paddle
+life jacket
 snowboard
 skis
 ski boots

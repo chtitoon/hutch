@@ -8,6 +8,7 @@ when that name is among its top 5. Unnamed photos (IMG_1234.jpg) just print thei
 Nothing leaves this Mac: the model runs locally once downloaded.
 """
 import argparse
+import csv
 import re
 import sys
 import time
@@ -32,9 +33,25 @@ def load_catalog():
     return [l.strip() for l in lines if l.strip() and not l.startswith("#")]
 
 
-def truth_of(path):
+def load_labels(photos):
+    """photos/labels.csv, optional: file name, then every catalog name that counts as right,
+    separated by ";". `Robot Mixer.JPG,hand mixer` accepts "hand mixer" for that photo."""
+    path = photos / "labels.csv"
+    if not path.exists():
+        return {}
+    labels = {}
+    for row in csv.reader(path.read_text().splitlines()):
+        if len(row) >= 2 and not row[0].startswith("#"):
+            labels[row[0].strip()] = [a.strip().lower() for a in row[1].split(";") if a.strip()]
+    return labels
+
+
+def truth_of(path, labels):
+    """What counts as right for a photo: its labels.csv entry, else its file name."""
+    if path.name in labels:
+        return labels[path.name]
     stem = re.sub(r"[\s_-]*\d+$", "", path.stem).strip()
-    return None if re.match(r"^(IMG|DSC|PXL|Photo)", stem, re.I) else stem
+    return None if re.match(r"^(IMG|DSC|PXL|Photo)", stem, re.I) else [stem.lower()]
 
 
 def main():
@@ -61,7 +78,9 @@ def main():
     if not photos:
         sys.exit(f"No photos in {args.photos}")
 
-    hits = scored = 0
+    labels = load_labels(args.photos)
+    known = {c.lower() for c in catalog}
+    hits = firsts = scored = 0
     for path in photos:
         image = ImageOps.exif_transpose(Image.open(path)).convert("RGB")
         start = time.perf_counter()
@@ -72,19 +91,20 @@ def main():
             scores = (emb @ text_emb.T)[0]
         ms = (time.perf_counter() - start) * 1000
         top = [catalog[i] for i in scores.topk(5).indices.tolist()]
-        truth = truth_of(path)
+        truth = truth_of(path, labels)
         mark = ""
         if truth:
             scored += 1
-            hit = any(t.lower() == truth.lower() for t in top)
-            hits += hit
-            mark = "HIT " if hit else "MISS"
-            if truth.lower() not in (c.lower() for c in catalog):
+            ranks = [i for i, t in enumerate(top) if t.lower() in truth]
+            hits += bool(ranks)
+            firsts += ranks[:1] == [0]
+            mark = f"#{ranks[0] + 1}  " if ranks else "MISS"
+            if not any(t in known for t in truth):
                 mark += " (not in catalog)"
         print(f"{mark:5} {path.name}  [{ms:.0f} ms]\n      " + " · ".join(top))
 
     if scored:
-        print(f"\nTop-5 hits: {hits} of {scored} ({args.model}, {len(catalog)} catalog entries)")
+        print(f"\nFirst: {firsts} of {scored}. Top 5: {hits} of {scored}. ({args.model}, {len(catalog)} catalog entries)")
 
 
 if __name__ == "__main__":
