@@ -96,5 +96,6 @@ I review UI from my phone, through the PR (D11).
 - Swift: Swift 6, strict concurrency, Swift Testing. Web: Astro with its version pinned; upgrade deliberately, in its own PR.
 - Tests alongside code.
 - Small PRs. Commit messages say *why*, not just what.
+- Docs read on a phone: no tables; short headings, one fact per bullet, nothing packed into one long line.
 - Secrets (Cloudflare tokens, eBay keys, App Store Connect keys) live in GitHub/Cloudflare secrets, never in the repo.
 - Agent tool settings, such as Claude Code's pre-approved commands in `.claude/settings.json`, are kept in step with the commands above. When you add a task, allow it there too.

@@ -46,11 +46,16 @@ Where Hutch is going and what's next. It only looks forward: what already happen
 
 What someone does differently because of Hutch. Only [O1](#o1) is a gate: nothing for other people gets built until I use Hutch myself.
 
-| | Outcome | Early signal | Proof |
-|---|---|---|---|
-| <a id="o1"></a>**O1** | I know what I own and where it is | 20 items in my first week; adding one takes under 20 s | 50 items, still accurate two months later, used at least 3 times to find, prove or decide something |
-| <a id="o2"></a>**O2** | Neighbors lend to each other | When a neighbor asks for something, I answer from Hutch | 3 households lending within a month; an "anyone have a ladder?" request answered |
-| <a id="o3"></a>**O3** | I let go of things I don't use | — | 5 items sold from Hutch, each listed faster than with the eBay app |
+#### <a id="o1"></a>O1 — I know what I own and where it is
+- **Early signal:** 20 items in my first week; adding one takes under 20 s.
+- **Proof:** 50 items, still accurate two months later, used at least 3 times to find, prove or decide something.
+
+#### <a id="o2"></a>O2 — Neighbors lend to each other
+- **Early signal:** when a neighbor asks for something, I answer from Hutch.
+- **Proof:** 3 households lending within a month; an "anyone have a ladder?" request answered.
+
+#### <a id="o3"></a>O3 — I let go of things I don't use
+- **Proof:** 5 items sold from Hutch, each listed faster than with the eBay app.
 
 Signals come from my notes, what neighbors tell me and counts on my phone only I see: never telemetry ([non-negotiable 5](AGENTS.md#non-negotiables)).
 
