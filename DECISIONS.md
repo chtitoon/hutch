@@ -270,3 +270,29 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 4. **A Core ML model** trained for household products, on the phone. Nothing leaves, but it's a project of its own, and it never knows products newer than its training.
 
 **To decide:** whether option 2's privacy cost is worth it for the items where on-device stays broad. X4's count of names kept as is, with and without narrowing, is the evidence.
+
+**Option 5, added Oct 2026:** a catalog on the phone, matched by image embeddings ([X5](ROADMAP.md#x5), [D27](#d27--a-product-catalog-on-the-phone-siglip-2-open-data-licenses-first)). Nothing leaves, and early results are good for kinds and famous brands (E4).
+
+## D27 — A product catalog on the phone: SigLIP 2, open data, licenses first
+**Status:** Proposed (Oct 2026). Confirm with [X5](ROADMAP.md#x5)'s phase 2 gate.
+
+**What:**
+- The phone embeds the photo with SigLIP 2's image encoder, converted to Core ML. It finds the nearest entries in a catalog built on the Mac. Only the image half ships, and nothing is sent.
+- The catalog comes from open data: the Google Product Taxonomy for kinds, and Wikidata (CC0) for product models.
+
+**The model: SigLIP 2, not MobileCLIP.**
+- MobileCLIP is smaller and faster, but in Aug 2025 Apple moved its weights to a research-only license that excludes "product development or use in any commercial product". It's unclear whether the 2024 sample-code license still covers the older files.
+- SigLIP 2 (`google/siglip2-base-patch16-224`) is Apache 2.0.
+
+**Icecat: not used until its license is clear.** Its Open Content License:
+- requires derived works that include its content to be "licensed as a whole at no charge to all third parties";
+- allows its data only if it is "NOT … utilized for machine learning training";
+- voids the license for commercial generative-AI use.
+
+Embedding with an already-trained model isn't training, and a free catalog file may be fine, but both are unclear. So no Icecat identifiers, specs, images or embeddings ship until I decide, ideally with an answer from Icecat in writing.
+
+**Size, projected:**
+- Image encoder: about 90 MB at int8, about 170 MB at fp16.
+- Vectors: 50,000 entries at 256 dimensions in int8, about 13 MB.
+- Catalog metadata: 10–30 MB.
+- Default packs (electronics, appliances, tools): roughly 115–150 MB in total.

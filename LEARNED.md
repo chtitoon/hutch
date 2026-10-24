@@ -19,7 +19,27 @@ Hutch collects nothing ([non-negotiable 5](AGENTS.md#non-negotiables)), so evide
 - what neighbors tell me
 - public research
 
-#### E3 — My MacBook Air came out as just "Computer"
+#### <a id="e4"></a>E4 — A catalog of names, matched by image embeddings: the right kind for 4 of 4
+
+- **Date:** 2026-10-24
+- **Bears on:** [X5](ROADMAP.md#x5), [D26](DECISIONS.md#d26--identifying-a-product-online-by-choice)
+- **Effect:** supports
+- **Source:** `tools/catalog-index/score.py` on the Mac, SigLIP 2 base, a hand-made catalog of 382 names
+- Two public photos of a MacBook Air, one on a wooden desk: "Apple MacBook Air" first both times.
+- My beer glass: the right kind, all 5 beer or pint glasses. The brewery's logo wasn't known: with decoy breweries added, another one ranked first and Bissell Brothers second.
+- A wooden frame on a busy shop wall:
+  - The whole photo: third, behind "screen print poster" and "framed art print".
+  - Cropped to the frame: first.
+- A hose spray nozzle: "Gardena hose spray nozzle" first. Grey and orange are Gardena's colors.
+- Before the catalog covered a kind, the answers were confident nonsense: "blender" for the glass, "desk" for the frame.
+- **What it says:**
+  - Kinds work.
+  - Famous brands work; small ones don't.
+  - Coverage of the catalog matters most, and cropping helps in busy scenes.
+  - About 15–45 ms per photo on the Mac.
+- Too few photos for a verdict: X5's gate asks for 20+.
+
+#### <a id="e3"></a>E3 — My MacBook Air came out as just "Computer"
 
 - **Date:** 2026-10-24
 - **Bears on:** [X4](ROADMAP.md#x4), [D26](DECISIONS.md#d26--identifying-a-product-online-by-choice)

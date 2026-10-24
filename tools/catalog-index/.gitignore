@@ -1,0 +1,4 @@
+# My own photos never enter the repo: they're test input on this Mac only.
+photos/
+.venv/
+__pycache__/

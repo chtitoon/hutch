@@ -92,6 +92,32 @@ At most two bets and one experiment.
 - **Question going in:** do I accept its suggestion as is for at least 7 items in 10, in under 2 seconds on my phone? Photos never leave the device ([D5](DECISIONS.md#d5--photo-based-ai-capture)).
 - **Verdict decides:** D5. Resale guesses wait for selling ([D23](DECISIONS.md#d23--resale-prices-without-telling-anyone-what-i-own)).
 
+#### <a id="x5"></a>X5 — Photo to product, with a catalog on the phone
+**Tried on:** [H1](#h1). **Status:** started 2026-10-24. It's X4's third learning goal ("when Core ML is worth it"), split out because it's big; it shares X4's lane in Now. **Appetite:** 2 weeks, gated after phase 2.
+- **Why:** Apple's on-device models named my MacBook Air "Computer" ([E3](LEARNED.md#e3)). Image embeddings matched against a catalog of names got the right kind for 4 of 4 of my photos ([E4](LEARNED.md#e4)), with nothing sent.
+- **Learning goals:**
+  - Build a product catalog from open data and embed it with SigLIP 2.
+  - Convert an image encoder to Core ML and prove it matches PyTorch.
+  - Know how far the right kind, brand and model can go without a network.
+- **How it works:**
+  - **On the Mac:** an index builder embeds catalog names, and later product images, with SigLIP 2.
+  - **On the phone:** only the image half runs (Core ML). It looks up, strongest evidence first:
+    1. barcode
+    2. model number read on the item
+    3. nearest catalog entries
+  - **Confirmed by me:** the result is always a suggestion, gated by confidence.
+- **Phases,** each ending with my review:
+  1. **Plan:** sizes, layout, licenses. In [the PR that starts X5](https://github.com/chtitoon/hutch/pulls).
+  2. **Prototype and eval** on my own photos: category accuracy, top-5 hit rate, a threshold sweep. **Gate:** 90% right at the category level I'd accept (for example "Laptops", not leaf SKUs), on 20+ of my photos.
+  3. **Core ML conversion:** cosine similarity of at least 0.99 against PyTorch; latency on my phone.
+  4. **Swift pipeline** behind protocols, with a debug screen showing the evidence.
+  5. **Integration** into adding an item, and `make catalog` to rebuild the index.
+- **Guardrails:**
+  - No network call in the lookup, with a test that fails if one is made.
+  - My photos never enter the repo.
+  - Nothing bundled whose license is unclear ([D27](DECISIONS.md#d27--a-product-catalog-on-the-phone-siglip-2-open-data-licenses-first)).
+- **Verdict decides:** whether the catalog ships with H1's successor, and [D26](DECISIONS.md#d26--identifying-a-product-online-by-choice) (online identification), which a good result makes unnecessary.
+
 #### <a id="h2"></a>H2 — When a neighbor asks, I answer from Hutch
 **Serves:** [O2](#o2). **Status:** counting starts now; building needs [H1](#h1)'s items. **Appetite:** 1 week to build, then a month of use.
 - **We believe:** neighbors ask for things more than they browse ([CONTEXT.md](CONTEXT.md#research-findings-that-shape-the-product): Peerby moved from listings to requests), and answering "I have one" with the item makes lending happen.

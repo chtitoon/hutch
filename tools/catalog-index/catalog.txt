@@ -1,0 +1,405 @@
+# One entry per line: what Hutch would name it. Brand + product line where one exists,
+# a plain kind otherwise. Lines starting with # are ignored.
+# Computers and tablets
+Apple MacBook Air
+Apple MacBook Pro
+Apple iMac
+Apple Mac mini
+Apple iPad
+Apple iPad Pro
+Apple iPad mini
+Microsoft Surface Pro
+Microsoft Surface Laptop
+Dell XPS laptop
+Dell Latitude laptop
+Lenovo ThinkPad laptop
+Lenovo Yoga laptop
+HP Spectre laptop
+HP EliteBook laptop
+Asus ZenBook laptop
+Razer Blade laptop
+Framework Laptop
+Google Chromebook
+Samsung Galaxy Tab
+Amazon Kindle e-reader
+Kobo e-reader
+# Phones and wearables
+Apple iPhone
+Samsung Galaxy phone
+Google Pixel phone
+Apple Watch
+Garmin sports watch
+Fitbit fitness tracker
+# Computer accessories
+Apple Magic Keyboard
+Apple Magic Mouse
+Apple Magic Trackpad
+Logitech MX Master mouse
+Logitech MX Keys keyboard
+mechanical keyboard
+computer monitor
+Apple Studio Display
+Dell UltraSharp monitor
+LG UltraFine monitor
+USB-C hub
+external hard drive
+Samsung T7 portable SSD
+SanDisk USB flash drive
+webcam
+Logitech webcam
+laptop stand
+laptop sleeve
+laptop backpack
+# Chargers, cables, power
+Apple USB-C power adapter
+Apple MagSafe charger
+RAVPower USB-C charger
+Anker USB-C charger
+Anker power bank
+Belkin wireless charger
+Ugreen USB-C charger
+Samsung fast charger
+USB-C cable
+Lightning cable
+HDMI cable
+extension cord
+power strip
+surge protector
+travel adapter
+# Audio and video
+Apple AirPods
+Apple AirPods Pro
+Apple AirPods Max
+Sony WH-1000XM headphones
+Bose QuietComfort headphones
+Sennheiser headphones
+Beats headphones
+JBL Bluetooth speaker
+Bose SoundLink speaker
+Sonos One speaker
+Sonos Beam soundbar
+Sonos Era speaker
+Apple HomePod
+Apple HomePod mini
+Amazon Echo smart speaker
+Google Nest speaker
+Marshall Bluetooth speaker
+turntable record player
+Apple TV
+Google Chromecast
+Roku streaming stick
+Samsung television
+LG OLED television
+Sony television
+projector
+Nintendo Switch
+Sony PlayStation 5
+Microsoft Xbox
+game controller
+Meta Quest VR headset
+# Cameras
+Canon DSLR camera
+Nikon DSLR camera
+Sony Alpha mirrorless camera
+Fujifilm X camera
+GoPro action camera
+DJI drone
+DJI Osmo gimbal
+camera lens
+camera tripod
+Polaroid instant camera
+Fujifilm Instax camera
+binoculars
+# Smart home and network
+Wi-Fi router
+Google Nest thermostat
+Philips Hue bridge
+Philips Hue light bulb
+Ring video doorbell
+security camera
+smoke detector
+# Glasses and personal
+glasses case
+Ray-Ban sunglasses
+eyeglasses
+wristwatch
+wallet
+backpack
+suitcase
+Samsonite suitcase
+Rimowa suitcase
+duffel bag
+umbrella
+# Power tools
+DeWalt cordless drill
+DeWalt impact driver
+DeWalt circular saw
+DeWalt battery
+Makita cordless drill
+Makita impact driver
+Makita circular saw
+Bosch cordless drill
+Bosch jigsaw
+Bosch angle grinder
+Milwaukee cordless drill
+Milwaukee impact driver
+Ryobi cordless drill
+Ryobi leaf blower
+Black and Decker drill
+Festool track saw
+Dremel rotary tool
+random orbital sander
+belt sander
+jigsaw
+angle grinder
+circular saw
+miter saw
+table saw
+reciprocating saw
+nail gun
+heat gun
+hot glue gun
+soldering iron
+air compressor
+pressure washer
+Kärcher pressure washer
+shop vacuum
+wet and dry vacuum
+generator
+welding machine
+battery charger for power tools
+# Hand tools
+hammer
+screwdriver set
+wrench set
+socket set
+adjustable wrench
+pliers
+utility knife
+tape measure
+spirit level
+laser level
+hand saw
+hacksaw
+chisel set
+clamp
+vise
+toolbox
+tool bag
+stud finder
+multimeter
+caulking gun
+paint roller
+paintbrush
+# Ladders and storage
+step ladder
+extension ladder
+aluminium step ladder
+folding step stool
+storage bin
+plastic storage box
+wooden crate
+metal shelving unit
+workbench
+pegboard
+# Garden
+lawn mower
+robotic lawn mower
+Husqvarna lawn mower
+Honda lawn mower
+string trimmer
+hedge trimmer
+leaf blower
+chainsaw
+Stihl chainsaw
+garden hose
+hose reel
+garden hose cap
+garden hose spray nozzle
+garden hose connector
+Gardena hose spray nozzle
+spray gun for garden hose
+wheelbarrow
+garden shovel
+rake
+pruning shears
+garden fork
+watering can
+garden sprinkler
+barbecue grill
+Weber barbecue grill
+Big Green Egg grill
+patio umbrella
+garden chair
+outdoor dining table
+fire pit
+# Bikes and sport
+road bike
+mountain bike
+electric bike
+kids bike
+balance bike
+bike helmet
+bike pump
+bike lock
+bike rack
+scooter
+electric scooter
+skateboard
+surfboard
+snowboard
+skis
+ski boots
+tennis racket
+golf clubs
+yoga mat
+dumbbells
+kettlebell
+exercise bike
+Peloton bike
+treadmill
+rowing machine
+football
+basketball
+# Camping
+tent
+Quechua tent
+sleeping bag
+camping stove
+camping chair
+cooler box
+headlamp
+lantern
+hiking backpack
+trekking poles
+# Car
+car roof box
+child car seat
+car jack
+jumper cables
+tire inflator
+snow chains
+# Kitchen
+Nespresso coffee machine
+De'Longhi espresso machine
+Breville espresso machine
+coffee grinder
+French press
+kettle
+toaster
+KitchenAid stand mixer
+hand mixer
+blender
+Vitamix blender
+food processor
+Thermomix
+slow cooker
+Instant Pot pressure cooker
+air fryer
+rice cooker
+microwave oven
+waffle maker
+pasta maker
+cast iron pan
+Le Creuset Dutch oven
+frying pan
+saucepan
+knife block
+chef's knife
+cutting board
+dish rack
+# Drinkware
+beer glass
+pint glass
+wine glass
+champagne flute
+cocktail glass
+whiskey tumbler
+drinking glass
+coffee mug
+travel mug
+water bottle
+Bissell Brothers beer glass
+Allagash beer glass
+Maine Beer Company beer glass
+Tree House Brewing beer glass
+Heineken beer glass
+Stella Artois beer glass
+Sierra Nevada beer glass
+Guinness pint glass
+Stanley tumbler
+Yeti tumbler
+Hydro Flask water bottle
+# Home appliances
+Dyson vacuum cleaner
+Dyson hair dryer
+Dyson fan
+robot vacuum
+iRobot Roomba
+steam iron
+ironing board
+sewing machine
+washing machine
+dryer
+dehumidifier
+air purifier
+electric heater
+fan
+humidifier
+# Furniture
+wooden dining chair
+office chair
+Herman Miller Aeron chair
+Herman Miller Eames lounge chair
+Eames plastic side chair
+IKEA Poäng armchair
+IKEA Billy bookcase
+IKEA Kallax shelf
+IKEA Malm dresser
+armchair
+sofa
+coffee table
+dining table
+desk
+standing desk
+bookshelf
+dresser
+bedside table
+bar stool
+folding chair
+rocking chair
+wooden stool
+floor lamp
+desk lamp
+table lamp
+mirror
+rug
+# Decor and clothing
+wooden picture frame
+picture frame
+framed art print
+screen print poster
+poster
+canvas painting
+wooden wall sign
+wall clock
+vase
+candle holder
+houseplant in a pot
+t-shirt
+hoodie
+jacket
+sneakers
+# Kids and music
+stroller
+baby crib
+high chair
+LEGO set
+board game
+acoustic guitar
+electric guitar
+guitar amplifier
+digital piano
+ukulele
+violin
+drum kit
