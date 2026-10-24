@@ -102,7 +102,7 @@ At most two bets and one experiment.
 - **How it works:**
   - **On the Mac:** an index builder embeds catalog names, and later product images, with SigLIP 2.
   - **On the phone:** only the image half runs (Core ML). It looks up, strongest evidence first:
-    1. barcode
+    1. barcode (rarely matches: Wikidata has few, and Icecat is out, [D27](DECISIONS.md#d27--a-product-catalog-on-the-phone-siglip-2-open-data-licenses-first))
     2. model number read on the item
     3. nearest catalog entries
   - **Confirmed by me:** the result is always a suggestion, gated by confidence.

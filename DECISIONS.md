@@ -284,12 +284,17 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 - MobileCLIP is smaller and faster, but in Aug 2025 Apple moved its weights to a research-only license that excludes "product development or use in any commercial product". It's unclear whether the 2024 sample-code license still covers the older files.
 - SigLIP 2 (`google/siglip2-base-patch16-224`) is Apache 2.0.
 
-**Icecat: not used until its license is clear.** Its Open Content License:
+**Icecat: not used (decided Oct 2026).** Its Open Content License:
 - requires derived works that include its content to be "licensed as a whole at no charge to all third parties";
 - allows its data only if it is "NOT … utilized for machine learning training";
 - voids the license for commercial generative-AI use.
 
-Embedding with an already-trained model isn't training, and a free catalog file may be fine, but both are unclear. So no Icecat identifiers, specs, images or embeddings ship until I decide, ideally with an answer from Icecat in writing.
+Embedding with an already-trained model isn't training, and a free catalog file may be fine, but both are open to dispute, and I'd rather not build on a license I'd have to argue about. No Icecat identifiers, specs, images or embeddings, in the app or the build. Revisit only if Icecat confirms in writing that this use is fine.
+
+**What that costs:**
+- Product models come from Wikidata alone: strong for phones, laptops, cameras and consoles, thin for tools and appliances.
+- Barcode lookups mostly won't find a match, since few Wikidata products carry a barcode number (GTIN, P3962).
+- Model numbers read on an item, and the nearest catalog names, carry the rest.
 
 **Size, projected:**
 - Image encoder: about 90 MB at int8, about 170 MB at fp16.
