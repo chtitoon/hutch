@@ -251,3 +251,22 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **Privacy:** Hutch only reads room names; it never controls accessories. Names stay in memory or inside an encrypted item, so non-negotiable 1 holds. Home access is asked for the first time I confirm an item, and declining just means no Home rooms.
 
 **Costs:** the HomeKit entitlement. Rooms only include what I've set up in the Home app.
+
+## D26 — Identifying a product online, by choice
+**Status:** Open (Oct 2026). Decide with [X4](ROADMAP.md#x4)'s verdict; nothing is built for it yet.
+
+**Tension:** the photo should give a specific name ("Apple MacBook Air", "Eames lounge chair"), and on-device tools often can't: Vision has about 1,300 broad labels, and Apple's on-device model is small (E1–E3 in LEARNED.md). Identifying an exact product reliably today means a large vision model or a visual search, which run on servers. Non-negotiable 1 says photos never leave the phone. D5 says the other options come back if on-device is too poor.
+
+**What stays the same in every option:** on-device first; one-tap questions narrow down what no photo shows (chip, memory, storage; size, material), already built in [H1](ROADMAP.md#h1); nothing leaves without an explicit tap.
+
+**Options:**
+1. **On-device only.** Narrowing questions carry the rest. Some things stay broad.
+2. **"Identify online" per photo,** a button I tap when the on-device name is too broad:
+   - Only the photo cropped to the object leaves, never its name, room, my other items, or anything that links photos together.
+   - A warning says it leaves the phone, the first time and on the button.
+   - A provider that keeps nothing and trains on nothing, called directly from the phone with no Hutch server in between.
+   - Needs non-negotiable 1 reworded, as D21 did for keys: "...never leave the device, except one photo at a time, when I explicitly ask to identify it."
+3. **Apple's Visual Look Up** (VisionKit), which I trigger on a photo. It's a system feature under Apple's privacy terms, with no provider of our own. But it covers few kinds of things (plants, pets, landmarks, art, some products), and it may not name a laptop or a chair model.
+4. **A Core ML model** trained for household products, on the phone. Nothing leaves, but it's a project of its own, and it never knows products newer than its training.
+
+**To decide:** whether option 2's privacy cost is worth it for the items where on-device stays broad. X4's count of names kept as is, with and without narrowing, is the evidence.
