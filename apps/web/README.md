@@ -4,18 +4,37 @@ Static website: what Hutch is, the App Store link, privacy policy and support pa
 
 ## Commands
 
-| Command | What it does |
-|---------|--------------|
-| `npm run setup` | Install pinned dependencies |
-| `npm test` | Both checks below, as Cloudflare runs them; GitHub runs each as its own workflow |
-| `npm run design:lint` | Lint the root DESIGN.md and check the styles use only its tokens (`design:lint:md`, `design:lint:css`) |
-| `npm run web:build` | Check generated files and the link preview are current, build, validate the HTML, check internal links, check every page against the budgets in `PERFORMANCE.md` |
-| `npm run run` | Serve the site locally with live reload |
-| `npm run tokens` | Regenerate `src/styles/tokens.css` and `public/favicon.svg` from the root `DESIGN.md` |
-| `npm run design:lint:md` | Lint the root `DESIGN.md`: references, contrast (light and dark), unused tokens |
-| `npm run design:lint:css` | Fail on styles that bypass the tokens: raw colors, undefined variables, type outside the scale, external fonts, off-scale spacing |
-| `npm run og` | Re-render the link-preview image (`public/og.png`) |
-| `npx performance check --report` | After a build, print each page's bytes by kind (for setting budgets) |
+### Everyday
+
+- `npm run setup`: install pinned dependencies.
+- `npm run run`: serve the site locally with live reload.
+- `npm test`: both checks below, as Cloudflare runs them. GitHub runs each as its own workflow.
+
+### The checks in `npm test`
+
+- `npm run design:lint`: runs `design:lint:md` and `design:lint:css`.
+- `npm run design:lint:md`: lints the root `DESIGN.md` for references, contrast (light and dark) and unused tokens.
+- `npm run design:lint:css`: fails on styles that bypass the tokens:
+  - raw colors
+  - undefined variables
+  - type outside the scale
+  - external fonts
+  - off-scale spacing
+- `npm run web:build`, in order:
+  - checks generated files and the link preview are current
+  - builds the site
+  - validates the HTML
+  - checks internal links
+  - checks every page against the budgets in `PERFORMANCE.md`
+
+### Regenerating files
+
+- `npm run tokens`: regenerates `src/styles/tokens.css` and `public/favicon.svg` from the root `DESIGN.md`.
+- `npm run og`: re-renders the link-preview image (`public/og.png`).
+
+### Measuring
+
+- `npx performance check --report`: after a build, prints each page's bytes by kind (for setting budgets).
 
 ## Where things live
 

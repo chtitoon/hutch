@@ -19,10 +19,20 @@ const defined = new Set([...tokensCss.matchAll(/(--[\w-]+):/g)].map((m) => m[1])
 const colorByValue = new Map([...tokensCss.matchAll(/(--color-[\w-]+): (#[0-9A-Fa-f]+);/g)].map((m) => [m[2].toLowerCase(), m[1]]).reverse());
 const spaceByPx = new Map([...tokensCss.matchAll(/(--space-\d+): (\d+)px;/g)].map((m) => [Number(m[2]), m[1]]));
 
-// The spacing allowlist: rows of the "Spacing exceptions" table in this folder's DESIGN.md.
+// The spacing allowlist: under "Spacing exceptions" in this folder's DESIGN.md, a "### `file`"
+// heading, then one "- `selector` `property`: why" bullet per exception.
 const guide = readFileSync(join(root, 'DESIGN.md'), 'utf8');
 const exceptions = (guide.split(/^## Spacing exceptions$/m)[1] ?? '').split(/^## /m)[0];
-const allowed = new Set([...exceptions.matchAll(/^\| `([^`]+)` \| `([^`]+)` \| `([^`]+)` \|/gm)].map((m) => `${m[1]}|${m[2]}|${m[3]}`));
+const allowed = new Set();
+let exceptionFile = null;
+for (const line of exceptions.split('\n')) {
+  const heading = line.match(/^### `([^`]+)`$/);
+  if (heading) exceptionFile = heading[1];
+  const bullet = line.match(/^- `([^`]+)` `([^`]+)`:/);
+  if (!bullet) continue;
+  if (!exceptionFile) throw new Error(`DESIGN.md, Spacing exceptions: "${line}" needs a ### \`file\` heading above it`);
+  allowed.add(`${exceptionFile}|${bullet[1]}|${bullet[2]}`);
+}
 
 // CSS named colors (CSS Color 4), so `color: red` can't slip through.
 const named = new Set(`aliceblue antiquewhite aqua aquamarine azure beige bisque black blanchedalmond blue blueviolet brown burlywood
