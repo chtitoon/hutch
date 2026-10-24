@@ -27,7 +27,7 @@ Work is planned in `ROADMAP.md` ([D22](DECISIONS.md#d22--an-outcome-roadmap-bets
 7. **Never merge.** I review and merge, usually from my phone.
 8. **Report briefly:** what changed, how to check it, what's next.
 
-**Weekly review.** Once a week, a session opens a PR titled *Weekly review*. It compares what was merged and observed that week with `ROADMAP.md`; closes bets past their appetite (kept, reshaped or killed); reranks **Next**; lists work that named no bet or experiment; and asks me what was fun and what was a slog, recording my answer. It proposes; I merge, edit or close.
+**Weekly review.** Once a week, a session opens a PR titled *Weekly review*. It compares what was merged and observed that week with `ROADMAP.md`; closes bets past their appetite (kept, reshaped or killed); reranks **Next**; lists work that named no bet or experiment; and asks me what was fun and what was a chore, recording my answer. It proposes; I merge, edit or close.
 
 ## Talking to me
 

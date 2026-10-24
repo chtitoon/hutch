@@ -208,7 +208,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 - **Experiments** (X1…) are tools or ways of working I want to learn, each tried on a real need of Hutch's, with a question going in and a verdict coming out.
 - **LEARNED.md** holds what happened: dated evidence and each verdict. A signal or verdict counts only with evidence.
 - **Only [O1](ROADMAP.md#o1) is a gate:** nothing for other people gets built until I use Hutch myself. [O2](ROADMAP.md#o2) and [O3](ROADMAP.md#o3) are pursued when they're fun or people ask.
-- **A weekly review PR** checks the roadmap against what was merged and observed, closes bets past their appetite, and asks me what was fun and what was a slog. Every PR names its bet or experiment, or says `off-roadmap:` and why.
+- **A weekly review PR** checks the roadmap against what was merged and observed, closes bets past their appetite, and asks me what was fun and what was a chore. Every PR names its bet or experiment, or says `off-roadmap:` and why.
 - **Principles stay in AGENTS.md.** An appetite never shrinks a non-negotiable. Non-negotiable 1 gains encryption at rest, which lived only in the old M1: "On the device, nothing is written to disk unencrypted, with a test that asserts it."
 - [O1](ROADMAP.md#o1)'s proof becomes use, not effort: 50 items, still accurate two months later and used at least three times, instead of 50 items in two weeks. [O2](ROADMAP.md#o2)'s early signal is answering neighbors' requests from Hutch, following Peerby's finding that people ask more than they browse (CONTEXT.md).
 
