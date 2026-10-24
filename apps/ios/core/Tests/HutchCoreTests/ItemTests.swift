@@ -90,15 +90,22 @@ import Testing
 @Suite struct SuggestionTests {
     @Test func fallbackSkipsGenericLabels() {
         let findings = VisionFindings(labels: ["tool", "power_drill", "machine"], text: ["DEWALT"])
-        #expect(findings.fallbackSuggestion == Suggestion(name: "Power drill", source: .labelsOnly))
+        #expect(findings.fallbackSuggestion(because: "off") == Suggestion(name: "Power drill", source: .labelsOnly, fallbackReason: "off"))
     }
 
     @Test func fallbackUsesAGenericLabelIfThatsAllThereIs() {
         #expect(VisionFindings(labels: ["furniture"], text: []).fallbackName == "Furniture")
     }
 
-    @Test func noLabelsNoSuggestion() {
-        #expect(VisionFindings(labels: [], text: []).fallbackSuggestion == .empty)
+    @Test func noLabelsNoSuggestionButStillAReason() {
+        #expect(VisionFindings(labels: [], text: []).fallbackSuggestion(because: "off") == Suggestion(name: "", source: .none, fallbackReason: "off"))
+    }
+
+    @Test func unknownIsNoName() {
+        #expect(Suggestion.isPlaceholder("Unknown"))
+        #expect(Suggestion.isPlaceholder("unknow."))
+        #expect(Suggestion.isPlaceholder("  "))
+        #expect(!Suggestion.isPlaceholder("Laptop charger"))
     }
 
     @Test func promptCarriesWhatVisionSaw() {

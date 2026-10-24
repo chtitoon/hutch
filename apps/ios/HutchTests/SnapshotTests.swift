@@ -45,7 +45,21 @@ import Testing
     @Test func confirmWithSuggestion() {
         let draft = Draft(name: "DeWalt 18V cordless drill", category: "Tools", room: "Garage", spot: "Left shelf")
         let rooms = ["Garage", "Attic", "Kitchen", "Living Room", "Bedroom", "Office", "Basement"]
-        check(form(draft, suggesting: false, rooms: rooms), named: "confirm-suggested")
+        let note = ConfirmScreen.note(for: Suggestion(name: draft.name, source: .modelWithImage))
+        check(form(draft, suggesting: false, note: note, rooms: rooms), named: "confirm-suggested")
+    }
+
+    /// Apple Intelligence off: Vision's label, and why.
+    @Test func confirmWithFallback() {
+        let suggestion = VisionFindings(labels: ["bookshelf"], text: []).fallbackSuggestion(because: "Apple Intelligence is off. Turn it on in Settings.")
+        let draft = Draft(name: suggestion.name)
+        check(form(draft, suggesting: false, note: ConfirmScreen.note(for: suggestion), rooms: ["Garage"]), named: "confirm-fallback")
+    }
+
+    @Test func notesSayWhichPathNamedIt() {
+        #expect(ConfirmScreen.note(for: Suggestion(name: "x", source: .modelWithImage))?.contains("from the photo") == true)
+        #expect(ConfirmScreen.note(for: Suggestion(name: "x", source: .labelsOnly, fallbackReason: "Off.")) == "Off. This is Vision's rough label.")
+        #expect(ConfirmScreen.note(for: Suggestion(name: "", source: .none, fallbackReason: "Off.")) == "Off.")
     }
 
     @Test func emptyList() {
@@ -58,10 +72,10 @@ import Testing
         check(NavigationStack { ItemList(items: items, thumbnails: thumbnails, stats: CaptureStats(items: items)).navigationTitle("Items") }, named: "list")
     }
 
-    private func form(_ draft: Draft, suggesting: Bool, rooms: [String]) -> some View {
+    private func form(_ draft: Draft, suggesting: Bool, note: String? = nil, rooms: [String]) -> some View {
         NavigationStack {
             ItemForm(photo: Fixtures.photo("wrench.and.screwdriver"), draft: .constant(draft), suggesting: suggesting,
-                     rooms: rooms, onSave: {})
+                     suggestionNote: note, rooms: rooms, onSave: {})
         }
     }
 }

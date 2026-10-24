@@ -19,6 +19,7 @@ struct ConfirmScreen: View {
                 photo: capture.image,
                 draft: $draft,
                 suggesting: suggestion == nil,
+                suggestionNote: suggestion.flatMap(Self.note(for:)),
                 rooms: library.rooms,
                 error: error,
                 canSave: !saving,
@@ -48,6 +49,16 @@ struct ConfirmScreen: View {
         // Fill only what I haven't typed myself. The category isn't shown, but is kept.
         if draft.name.isEmpty { draft.name = result.name }
         draft.category = result.category
+    }
+
+    /// Which path named it, so a poor guess can be told apart from a model that never ran (X4).
+    static func note(for suggestion: Suggestion) -> String? {
+        switch suggestion.source {
+        case .modelWithImage: "Named by Apple Intelligence on this iPhone, from the photo."
+        case .modelWithLabels: "Named by Apple Intelligence on this iPhone, from Vision's labels."
+        case .labelsOnly: [suggestion.fallbackReason, "This is Vision's rough label."].compactMap(\.self).joined(separator: " ")
+        case .none: suggestion.fallbackReason
+        }
     }
 
     private func save() {
@@ -91,6 +102,7 @@ struct ItemForm: View {
     let photo: UIImage
     @Binding var draft: Draft
     let suggesting: Bool
+    var suggestionNote: String?
     /// Rooms I've used, then my Apple Home rooms.
     let rooms: [String]
     var error: String?
@@ -116,6 +128,10 @@ struct ItemForm: View {
                     if suggesting && draft.name.isEmpty {
                         ProgressView()
                     }
+                }
+            } footer: {
+                if let suggestionNote {
+                    Text(suggestionNote)
                 }
             }
             .listRowBackground(Palette.surface)

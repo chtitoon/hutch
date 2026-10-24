@@ -19,7 +19,22 @@ Hutch collects nothing ([non-negotiable 5](AGENTS.md#non-negotiables)), so evide
 - what neighbors tell me
 - public research
 
-None yet. [H1](ROADMAP.md#h1) and [H2](ROADMAP.md#h2) write the first.
+#### E1 — First 3 photos: no suggestion was right
+
+- **Date:** 2026-10-24
+- **Bears on:** [X4](ROADMAP.md#x4)
+- **Effect:** weakens, though the cause isn't known yet
+- **Source:** my notes, on my iPhone 17, first build of [H1](ROADMAP.md#h1)
+- A glasses box was named "Bookshelf".
+- A charger was named "Computer".
+- A laptop got "Unknown".
+- 0 of 3 kept as is, against X4's bar of 7 in 10.
+- The first two are raw Vision labels, so Apple Intelligence probably never ran: off, still downloading, or failing silently. Vision also labeled the whole scene, not the object.
+- **What changed because of it:**
+  - The confirm screen now says which path named the item, and why Apple Intelligence wasn't used.
+  - Vision crops to the main object first.
+  - "Unknown" counts as no suggestion.
+  - The next photos tell whether the model is the problem or just wasn't running.
 
 <!-- Template:
 

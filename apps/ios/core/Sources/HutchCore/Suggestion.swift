@@ -6,11 +6,21 @@ public struct Suggestion: Sendable, Equatable {
     public var name: String
     public var category: String
     public var source: SuggestionSource
+    /// Why Apple Intelligence wasn't used, when it wasn't: shown under the name, so a poor
+    /// guess can be told apart from a model that never ran.
+    public var fallbackReason: String?
 
-    public init(name: String, category: String = "", source: SuggestionSource) {
+    public init(name: String, category: String = "", source: SuggestionSource, fallbackReason: String? = nil) {
         self.name = name
         self.category = category
         self.source = source
+        self.fallbackReason = fallbackReason
+    }
+
+    /// Names a model gives when it can't tell, which are no suggestion at all.
+    static func isPlaceholder(_ name: String) -> Bool {
+        let words = name.lowercased().trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
+        return words.isEmpty || ["unknown", "unknow", "unknown object", "object", "item", "thing", "n/a", "none"].contains(words)
     }
 
     public static let empty = Suggestion(name: "", source: .none)
@@ -63,9 +73,9 @@ public struct VisionFindings: Sendable, Equatable {
         return words.prefix(1).uppercased() + words.dropFirst()
     }
 
-    /// The suggestion when no language model is available.
-    public var fallbackSuggestion: Suggestion {
+    /// The suggestion when no language model is available, saying why.
+    public func fallbackSuggestion(because reason: String) -> Suggestion {
         let name = fallbackName
-        return name.isEmpty ? .empty : Suggestion(name: name, source: .labelsOnly)
+        return Suggestion(name: name, source: name.isEmpty ? .none : .labelsOnly, fallbackReason: reason)
     }
 }
