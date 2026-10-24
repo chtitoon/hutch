@@ -31,6 +31,8 @@ Hutch collects nothing ([non-negotiable 5](AGENTS.md#non-negotiables)), so evide
   - "Dell Inspiron Zino HD" came first from the image alone; its name is also printed on the front.
   - The desk chair came second, behind "desk".
   - The frame on a busy wall came third.
+- **Two photos the catalog wasn't tuned for,** a desk and a table lamp: both first.
+- **All 13:** in the top 5 every time, first for 10. The three that weren't first sit in busy scenes, where cropping should help: the chair at a desk, the glass among others, the frame on a wall.
 - **The caveat:** kinds were added after seeing the misses, so 11 of 11 overstates it. The real test is a catalog built independently (the Google Product Taxonomy) on photos it hasn't seen.
 
 #### <a id="e4"></a>E4 — A catalog of names, matched by image embeddings: the right kind for 4 of 4
