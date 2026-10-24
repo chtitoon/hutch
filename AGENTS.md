@@ -6,12 +6,10 @@ This repo is the project's only memory. When a conversation produces a decision,
 
 ## What to read
 
-| When | Read |
-|------|------|
-| Every session | `ROADMAP.md` (where Hutch is going, and what's next) and `DECISIONS.md` (what's settled, what's open) |
-| Before proposing product changes | The outcomes in `ROADMAP.md`, `LEARNED.md` (evidence so far), `CONTEXT.md` (research) and D13 in `DECISIONS.md` (what's deliberately out of scope) |
-| Any UI, visual or web work | `DESIGN.md` (the design system), then the platform's guide: `apps/ios/DESIGN.md` or `apps/web/DESIGN.md` |
-| Work inside an app | That app's own `AGENTS.md`, if it has one (`apps/web/AGENTS.md`) |
+- **Every session:** `ROADMAP.md` (where Hutch is going, and what's next) and `DECISIONS.md` (what's settled, what's open).
+- **Before proposing product changes:** the outcomes in `ROADMAP.md`, `LEARNED.md` (evidence so far), `CONTEXT.md` (research) and D13 in `DECISIONS.md` (what's deliberately out of scope).
+- **Any UI, visual or web work:** `DESIGN.md` (the design system), then the platform's guide: `apps/ios/DESIGN.md` or `apps/web/DESIGN.md`.
+- **Work inside an app:** that app's own `AGENTS.md`, if it has one (`apps/web/AGENTS.md`).
 
 ## The work loop
 
@@ -55,12 +53,20 @@ I often check in from my phone while work runs on my Mac. Keep replies short and
 
 Each app uses its ecosystem's own task runner, with the same four task names, so any session runs things the same way. Always use these rather than typing raw commands; if one is missing or wrong, fix it.
 
-| Task | iOS: `make <task>` in `apps/ios` | Web: `npm run <task>` in `apps/web` |
-|------|-----------------------------------|-------------------------------------|
-| `setup` | From a fresh clone: check Xcode and XcodeGen, generate the project | Install dependencies |
-| `test` | Build and run all tests on an iPhone simulator; print which one; fail on any error | Check the build, HTML, links and performance budgets |
-| `run` | Build, boot a simulator, install and launch the app | Serve the site locally |
-| `tokens` | Regenerate Swift colors and constants from `DESIGN.md` | Regenerate CSS variables from `DESIGN.md` |
+iOS runs `make <task>` in `apps/ios`; web runs `npm run <task>` in `apps/web`.
+
+- **`setup`**
+  - iOS: from a fresh clone, check Xcode and XcodeGen, generate the project.
+  - Web: install dependencies.
+- **`test`**
+  - iOS: build and run all tests on an iPhone simulator; print which one; fail on any error.
+  - Web: check the build, HTML, links and performance budgets.
+- **`run`**
+  - iOS: build, boot a simulator, install and launch the app.
+  - Web: serve the site locally.
+- **`tokens`**
+  - iOS: regenerate Swift colors and constants from `DESIGN.md`.
+  - Web: regenerate CSS variables from `DESIGN.md`.
 
 A root `Makefile` delegates, so from the top of the repo `make test` runs both apps, and `make ios-test` or `make web-test` runs one.
 
@@ -96,6 +102,6 @@ I review UI from my phone, through the PR (D11).
 - Swift: Swift 6, strict concurrency, Swift Testing. Web: Astro with its version pinned; upgrade deliberately, in its own PR.
 - Tests alongside code.
 - Small PRs. Commit messages say *why*, not just what.
-- Docs read on a phone: no tables; short headings, one fact per bullet, nothing packed into one long line.
+- **No tables in any Markdown file,** ever: I read docs on my phone, where tables don't fit. Use short headings and one fact per bullet, with nothing packed into one long line.
 - Secrets (Cloudflare tokens, eBay keys, App Store Connect keys) live in GitHub/Cloudflare secrets, never in the repo.
 - Agent tool settings, such as Claude Code's pre-approved commands in `.claude/settings.json`, are kept in step with the commands above. When you add a task, allow it there too.
