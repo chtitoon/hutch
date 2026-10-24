@@ -72,8 +72,10 @@ public struct OnDeviceSuggester: ItemSuggesting {
     static func see(_ image: CGImage) async -> VisionFindings {
         async let labels = (try? await ClassifyImageRequest().perform(on: image)) ?? []
         async let lines: [RecognizedTextObservation] = {
+            // Accurate, not fast: brands are often small, embossed or low-contrast print.
             var request = RecognizeTextRequest()
-            request.recognitionLevel = .fast
+            request.recognitionLevel = .accurate
+            request.usesLanguageCorrection = false
             return (try? await request.perform(on: image)) ?? []
         }()
         return VisionFindings(
@@ -107,8 +109,10 @@ public struct OnDeviceSuggester: ItemSuggesting {
 
     static let instructions = """
         You help someone catalog the things they own at home, one photo at a time. \
-        Name the single main object as they would write it on a label: short, with the brand \
-        and model when the text on it shows them. Never invent a brand that isn't visible. \
+        Name the single main object as they would write it on a label: brand first when the \
+        text on it shows one, then what the thing is, then the model or a key spec if shown. \
+        For example "RAVPower 61W USB-C charger", "Ray-Ban glasses case", "Bosch PSB 18 drill". \
+        Never invent a brand that isn't visible; without one, just say what it is. \
         The labels come from a scene classifier and are often wrong about small objects: \
         trust the photo and the text on the object over them.
         """
@@ -117,13 +121,14 @@ public struct OnDeviceSuggester: ItemSuggesting {
         """
         Labels from image recognition, most likely first: \(findings.labels.joined(separator: ", ")).
         Text read on the object: \(findings.text.isEmpty ? "none" : findings.text.joined(separator: " | ")).
+        \(findings.brand.map { "The brand is probably \($0)." } ?? "")
         """
     }
 }
 
 @Generable
 struct ItemGuess {
-    @Guide(description: "Short everyday name with brand and model if visible, e.g. 'DeWalt 20V cordless drill' or 'Aluminium step ladder'")
+    @Guide(description: "Brand (if visible) + what it is + model or key spec (if visible), e.g. 'RAVPower 61W USB-C charger' or 'Aluminium step ladder'")
     var name: String
     @Guide(description: "One broad category: Tools, Garden, Sports, Bikes, Camping, Kitchen, Electronics, Furniture, Toys, Car, Household or Other")
     var category: String

@@ -90,7 +90,26 @@ import Testing
 @Suite struct SuggestionTests {
     @Test func fallbackSkipsGenericLabels() {
         let findings = VisionFindings(labels: ["tool", "power_drill", "machine"], text: ["DEWALT"])
-        #expect(findings.fallbackSuggestion(because: "off") == Suggestion(name: "Power drill", source: .labelsOnly, fallbackReason: "off"))
+        #expect(findings.fallbackSuggestion(because: "off") == Suggestion(name: "DEWALT Power drill", source: .labelsOnly, fallbackReason: "off"))
+    }
+
+    @Test func brandIsTheFirstWordThatLooksLikeOne() {
+        let charger = VisionFindings(labels: ["computer"], text: ["INPUT 100-240V", "RAVPOWER", "USB-C 61W"])
+        #expect(charger.brand == "RAVPOWER")
+        #expect(charger.fallbackName == "RAVPOWER Computer")
+    }
+
+    @Test func noBrandFromLabelWordsOrNumbers() {
+        #expect(VisionFindings(labels: [], text: ["Made in China", "61W", "USB-C"]).brand == nil)
+        #expect(VisionFindings(labels: ["ladder"], text: []).fallbackName == "Ladder")
+    }
+
+    @Test func brandAloneWhenThereIsNoLabel() {
+        #expect(VisionFindings(labels: [], text: ["Anker"]).fallbackName == "Anker")
+    }
+
+    @Test func promptPassesTheBrandOn() {
+        #expect(OnDeviceSuggester.details(VisionFindings(labels: ["computer"], text: ["RAVPOWER"])).contains("The brand is probably RAVPOWER."))
     }
 
     @Test func fallbackUsesAGenericLabelIfThatsAllThereIs() {

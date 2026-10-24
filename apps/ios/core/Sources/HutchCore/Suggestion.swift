@@ -61,12 +61,36 @@ public struct VisionFindings: Sendable, Equatable {
         "floor", "wall", "garage", "shelf", "table", "object", "furniture", "plastic", "metal",
     ]
 
-    /// A name from the labels alone: the most confident specific label, made readable.
-    /// "power_drill" becomes "Power drill".
+    /// A name without a language model: a brand read on the object, then the most confident
+    /// specific label, made readable. "power_drill" with "DEWALT" on it becomes "DEWALT Power drill".
     public var fallbackName: String {
-        let label = labels.first { !Self.generic.contains($0) } ?? labels.first
-        return label.map(Self.readable) ?? ""
+        let label = (labels.first { !Self.generic.contains($0) } ?? labels.first).map(Self.readable) ?? ""
+        guard let brand, !label.localizedCaseInsensitiveContains(brand) else { return label }
+        return label.isEmpty ? brand : "\(brand) \(label)"
     }
+
+    /// The first word in the text that looks like a brand: letters only, 3 to 14 of them,
+    /// with a capital, and not one of the words printed on every label.
+    public var brand: String? {
+        text.lazy
+            .flatMap { $0.split(whereSeparator: { !$0.isLetter && !$0.isNumber && $0 != "-" }) }
+            .map(String.init)
+            .first { word in
+                (3...14).contains(word.count)
+                    && word.allSatisfy(\.isLetter)
+                    && word.contains(where: \.isUppercase)
+                    && !Self.labelWords.contains(word.lowercased())
+            }
+    }
+
+    /// Words printed on chargers, tools and boxes that are never the brand.
+    static let labelWords: Set<String> = [
+        "input", "output", "model", "made", "china", "designed", "power", "volt", "volts", "watt", "watts",
+        "warning", "caution", "danger", "charger", "charging", "charge", "fast", "quick", "battery", "adapter",
+        "class", "serial", "type", "usb", "max", "only", "use", "indoor", "outdoor", "with", "for", "and", "the",
+        "certified", "listed", "rated", "new", "pro", "plus", "mini", "series", "item", "size", "color",
+        "assembled", "contents", "lot", "date", "ref", "art", "patent", "pending", "tested", "approved",
+    ]
 
     static func readable(_ identifier: String) -> String {
         let words = identifier.replacingOccurrences(of: "_", with: " ").trimmingCharacters(in: .whitespaces)
