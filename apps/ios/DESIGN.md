@@ -1,6 +1,6 @@
 # Design in the iPhone app
 
-The values, color roles, type levels and rules live in the root [DESIGN.md](../../DESIGN.md); read it first. This page covers how the SwiftUI app applies them. Most of it lands with M0 and M2 (the first screens); until then it's the plan.
+The values, color roles, type levels and rules live in the root [DESIGN.md](../../DESIGN.md); read it first. This page covers how the SwiftUI app applies them. Most of it lands with [H1](../../ROADMAP.md#h1), the first bet with screens; until then it's the plan.
 
 ## Standard components first
 
@@ -22,7 +22,7 @@ The spacing scale and `rounded` values become constants (`Spacing.s6`, `Radius.m
 
 `make tokens` in `apps/ios` will read DESIGN.md's front matter and generate the asset-catalog colors and a Swift file of type, spacing and radius constants, the way `npm run tokens` generates CSS for the website. Generated files are marked as such; change DESIGN.md and regenerate.
 
-## Enforcement (planned for M0)
+## Enforcement (planned for H1)
 
 As on the web, `make test` will fail when the app bypasses the tokens:
 
