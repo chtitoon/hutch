@@ -1,6 +1,6 @@
 # Design in the iPhone app
 
-The values, color roles, type levels and rules live in the root [DESIGN.md](../../DESIGN.md); read it first. This page covers how the SwiftUI app applies them. Most of it lands with H3, the first bet with screens; until then it's the plan.
+The values, color roles, type levels and rules live in the root [DESIGN.md](../../DESIGN.md); read it first. This page covers how the SwiftUI app applies them. Most of it lands with [H3](../../ROADMAP.md#h3), the first bet with screens; until then it's the plan.
 
 ## Standard components first
 

@@ -36,9 +36,9 @@ Each entry: what, status, and why. Merging the PR that records a decision confir
 - Apple Developer Program, $99/year, needed for TestFlight and the App Store.
 - Work that compiles Swift only happens when the Mac is on and linked to the session. With the Mac off, sessions are limited to docs and the website.
 
-**Sync (proposed, confirm at H4):** CloudKit private database using encrypted fields, so Apple stores ciphertext and runs the servers. No backend to operate. Must be settled before H4, which depends on it (ROADMAP.md). Moved from issue #17.
+**Sync (proposed, confirm at [H4](ROADMAP.md#h4)):** CloudKit private database using encrypted fields, so Apple stores ciphertext and runs the servers. No backend to operate. Must be settled before H4, which depends on it (ROADMAP.md). Moved from issue #17.
 
-**Open risk for Phase 2:** CloudKit sharing only works between Apple users. If a neighbor is on Android, Phase 2 needs either our own small backend (storing only ciphertext) or a web view of the shared shelf. Decide before building lending, once H2 shows what it should be (ROADMAP.md). A vault every member writes to (D22) makes this harder: every member needs the key. Moved from issue #19.
+**Open risk for Phase 2:** CloudKit sharing only works between Apple users. If a neighbor is on Android, Phase 2 needs either our own small backend (storing only ciphertext) or a web view of the shared shelf. Decide before building lending, once [H2](ROADMAP.md#h2) shows what it should be (ROADMAP.md). A vault every member writes to (D22) makes this harder: every member needs the key. Moved from issue #19.
 
 ## D4 — Build order: personal first, sharing later
 **Status:** Decided in principle.
@@ -48,7 +48,7 @@ Each entry: what, status, and why. Merging the PR that records a decision confir
 ## D5 — Photo-based AI capture
 **Status:** Open.
 
-**Tension:** sending photos to a cloud model to auto-fill items breaks zero-knowledge. Options: manual entry + barcode only; on-device model; or explicit opt-in per photo with a clear warning. Decide before H3's capture work, which depends on it (ROADMAP.md). Moved from issue #18.
+**Tension:** sending photos to a cloud model to auto-fill items breaks zero-knowledge. Options: manual entry + barcode only; on-device model; or explicit opt-in per photo with a clear warning. Decide before [H3](ROADMAP.md#h3)'s capture work, which depends on it (ROADMAP.md). Moved from issue #18.
 
 ## D6 — Personal tool vs. product
 **Status:** Open, leaning personal tool (Oct 2026). Hutch is mostly for me, and a way to learn (D22); if it lands with people around me, even better. Settle before an App Store release.
@@ -76,7 +76,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **Why:** issues show up in the GitHub app on my phone, PRs close them automatically, and the history is kept. Milestones are the three phases; issues are the units of work, each with a "Done when." The milestone descriptions hold each phase's goal, order and success test; durable reasoning stays in these docs. There is no separate plan file, because a second copy of the plan would drift.
 
 ## D11 — UI review through snapshot tests
-**Status:** Proposed (Oct 2026). The approach is decided; confirm the library with me in H3, the first bet with screens.
+**Status:** Proposed (Oct 2026). The approach is decided; confirm the library with me in [H3](ROADMAP.md#h3), the first bet with screens.
 
 **What:** each screen renders to reference images (light, dark, large Dynamic Type) stored with its tests. GitHub shows changed images side by side in a PR's file changes, so I can review UI from my phone with no extra tooling, and an unintended change fails the tests.
 
@@ -151,7 +151,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 - **Dark mode as a `-dark` suffix** in the one colors map (`ink`, `ink-dark`). The spec has no modes; unknown color names are valid, so the file stays spec-conformant, the linter checks every value, and each generator maps the suffix to its platform (a `prefers-color-scheme` block on the web, an asset-catalog appearance on iOS). The same pattern, `-wide`, gives a type level its size on wide screens: sizes are fixed, never fluid, because the spec has no `clamp()`.
 - **A full type scale** (sixteen levels plus three for the link preview) replaces two families and four weights. Merging the site's ad hoc sizes into it changed some sizes on purpose (section titles share one size, prose is 16px).
 - **Contrast is declared, then checked.** Every text-on-background pair is a `components` entry, with a `-dark` twin when its colors change in dark mode. Pairs ending in `-graphic` are marks and need 3:1.
-- **Enforced on both sides, in `npm test`, which both GitHub (on every PR, as the required checks **Design / Validate DESIGN.md** and **Web / Validate Web Build**) and Cloudflare's build run, so a break can't be merged or deployed:** `design:lint:md` runs the linter and fails on any warning (the CLI only warns on low contrast), plus the `-dark` twin and `-graphic` rules; `design:lint:css` fails on raw colors, undefined variables, type outside the scale, external fonts and off-scale spacing in the website's code, with a reasoned allowlist in `apps/web/DESIGN.md`. iOS gets the equivalent with its first code (H3): Swift generated from DESIGN.md and a SwiftLint rule banning raw colors and sizes.
+- **Enforced on both sides, in `npm test`, which both GitHub (on every PR, as the required checks **Design / Validate DESIGN.md** and **Web / Validate Web Build**) and Cloudflare's build run, so a break can't be merged or deployed:** `design:lint:md` runs the linter and fails on any warning (the CLI only warns on low contrast), plus the `-dark` twin and `-graphic` rules; `design:lint:css` fails on raw colors, undefined variables, type outside the scale, external fonts and off-scale spacing in the website's code, with a reasoned allowlist in `apps/web/DESIGN.md`. iOS gets the equivalent with its first code ([H3](ROADMAP.md#h3)): Swift generated from DESIGN.md and a SwiftLint rule banning raw colors and sizes.
 - Fixing what the linter found: `sage` darkened from `#3E7A62` to `#3D7961` (4.47:1 → 4.53:1 on the background), and a new `marker` role for the status pill's dot, deeper brass in dark mode (1.97:1 → 3.27:1).
 
 **Why:** one file that agents and people both read, values next to the reasons, in a format the tools around agents are starting to understand. A token file alone said what but not why; the reasoning lived in two other files that could drift from it.
@@ -193,7 +193,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 ## D21 — Recovery: iCloud Keychain, plus a printable recovery kit
 **Status:** Decided (Oct 2026). Rewords non-negotiable 1 in AGENTS.md.
 
-**What:** the inventory key is stored as a synchronizable Keychain item, so iCloud Keychain carries it to a new iPhone signed into my Apple account and restore just works. A printable recovery kit (a recovery key, 1Password-style) restores everything without the Apple account, if that is lost too. Both are part of H4 (ROADMAP.md); the cryptographic details are H4's to design and explain (non-negotiable 3).
+**What:** the inventory key is stored as a synchronizable Keychain item, so iCloud Keychain carries it to a new iPhone signed into my Apple account and restore just works. A printable recovery kit (a recovery key, 1Password-style) restores everything without the Apple account, if that is lost too. Both are part of [H4](ROADMAP.md#h4) (ROADMAP.md); the cryptographic details are H4's to design and explain (non-negotiable 3).
 
 **Why:** a kit alone means a lost kit and a lost phone lose everything, and most people never print it. iCloud Keychain is end-to-end encrypted, so Apple can't read the key, and it costs nothing to run. The kit covers the case where the Apple account is gone.
 
@@ -203,17 +203,17 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **Status:** Decided (Oct 2026). Replaces D20's phases of milestones; ROADMAP.md stays the one plan. Rewords non-negotiable 1.
 
 **What:**
-- **ROADMAP.md only looks forward:** why Hutch exists, three **outcomes** (O1–O3, the phases, named as behaviors), then **Now**, **Next** and **Later**. Now holds at most two bets and one experiment.
+- **ROADMAP.md only looks forward:** why Hutch exists, three **outcomes** ([O1](ROADMAP.md#o1)–[O3](ROADMAP.md#o3), the phases, named as behaviors), then **Now**, **Next** and **Later**. Now holds at most two bets and one experiment.
 - **Bets** (H1…) are what we try to move an outcome: a test, a signal, an **appetite** (the time it's worth; scope shrinks, time doesn't), and what each result changes, written before it runs. When the appetite runs out, the bet is kept, reshaped or killed. Outputs are worked out when a bet starts, in its PRs.
 - **Experiments** (X1…) are tools or ways of working I want to learn, each tried on a real need of Hutch's, with a question going in and a verdict coming out.
 - **LEARNED.md** holds what happened: dated evidence and each verdict. A signal or verdict counts only with evidence.
-- **Only O1 is a gate:** nothing for other people gets built until I use Hutch myself. O2 and O3 are pursued when they're fun or people ask.
+- **Only [O1](ROADMAP.md#o1) is a gate:** nothing for other people gets built until I use Hutch myself. [O2](ROADMAP.md#o2) and [O3](ROADMAP.md#o3) are pursued when they're fun or people ask.
 - **A weekly review PR** checks the roadmap against what was merged and observed, closes bets past their appetite, and asks me what was fun and what was a slog. Every PR names its bet or experiment, or says `off-roadmap:` and why.
 - **Principles stay in AGENTS.md.** An appetite never shrinks a non-negotiable. Non-negotiable 1 gains encryption at rest, which lived only in the old M1: "On the device, nothing is written to disk unencrypted, with a test that asserts it."
-- O1's proof becomes use, not effort: 50 items, still accurate two months later and used at least three times, instead of 50 items in two weeks. O2's early signal is neighbors joining a shared vault and adding things themselves; H2 tests that first, since Peerby found the opposite (CONTEXT.md).
+- [O1](ROADMAP.md#o1)'s proof becomes use, not effort: 50 items, still accurate two months later and used at least three times, instead of 50 items in two weeks. [O2](ROADMAP.md#o2)'s early signal is neighbors joining a shared vault and adding things themselves; [H2](ROADMAP.md#h2) tests that first, since Peerby found the opposite (CONTEXT.md).
 
-**Why:** a week after D20, all five merged PRs were website work and three named no milestone: the first milestone needed the Mac, so sessions without it did what they could, and the plan stopped describing the work. Milestones fixed the scope and left the time open, with the first real feedback after five of them. Bets fix the time, test the riskiest guess first, often without code, and say in advance what a result changes, so the plan moves with evidence instead of with what I once thought mattered. Hutch is also how I learn (performance.md and DESIGN.md were that, X1 and X2), so learning gets its own lane rather than happening off the plan.
+**Why:** a week after D20, all five merged PRs were website work and three named no milestone: the first milestone needed the Mac, so sessions without it did what they could, and the plan stopped describing the work. Milestones fixed the scope and left the time open, with the first real feedback after five of them. Bets fix the time, test the riskiest guess first, often without code, and say in advance what a result changes, so the plan moves with evidence instead of with what I once thought mattered. Hutch is also how I learn (performance.md and DESIGN.md were that, [X1](LEARNED.md#x1) and [X2](LEARNED.md#x2)), so learning gets its own lane rather than happening off the plan.
 
-**Old ids:** M0–M4 became H3 and H4; M5–M12, B1, T1 and A1 are under Later or in H3; W1–W5 are done and listed in LEARNED.md. Older entries above still name milestones where they're history.
+**Old ids:** M0–M4 became [H3](ROADMAP.md#h3) and [H4](ROADMAP.md#h4); M5–M12, B1, T1 and A1 are under Later or in H3; W1–W5 are done and listed in LEARNED.md. Older entries above still name milestones where they're history.
 
 **How to reverse:** restore ROADMAP.md and AGENTS.md's work loop from before this change; LEARNED.md can stay as a log.

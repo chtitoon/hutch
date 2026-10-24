@@ -15,10 +15,12 @@ This repo is the project's only memory. When a conversation produces a decision,
 
 ## The work loop
 
-Work is planned in `ROADMAP.md` (D22). **Outcomes** (O1…) say what should change for someone; **bets** (H1…) are what we try in order to move them, each with a test, a signal and an **appetite** (the time it's worth); **experiments** (X1…) are tools or ways of working I want to learn, each tried on a real need of Hutch's. `LEARNED.md` holds the evidence and each finished bet's or experiment's verdict. Open questions are **Open** or **Proposed** entries in `DECISIONS.md`.
+Work is planned in `ROADMAP.md` ([D22](DECISIONS.md#d22--an-outcome-roadmap-bets-and-experiments)). **Outcomes** (O1…) say what should change for someone; **bets** (H1…) are what we try in order to move them, each with a test, a signal and an **appetite** (the time it's worth); **experiments** (X1…) are tools or ways of working I want to learn, each tried on a real need of Hutch's. `LEARNED.md` holds the evidence and each finished bet's or experiment's verdict. Open questions are **Open** or **Proposed** entries in `DECISIONS.md`.
 
-0. **Open with where things stand.** Before anything else, in two lines: what's in **Now**, and any bet or experiment past its appetite or with no evidence yet (e.g. "H1 started 5 days ago, no evidence yet").
-1. **Find the work.** If I asked for something, do that; if it serves no bet or experiment, say so in one line and ask whether it's a new experiment, then do it either way. Otherwise take the first item in **Now** a session can do, then the first in **Next**. Some bets need only me (H1, H2): then help me run them, or record what I report. If what an item needs isn't there (a decision still **Open** or **Proposed**, an account, the Mac), stop and ask; when a decision it needs is settled, record it in `DECISIONS.md` in the same PR.
+**Ids link to their entry.** Each outcome, bet and experiment carries a short anchor with its id (`<a id="h3"></a>`), so its first mention in a paragraph, in any doc, links to it: `[H3](ROADMAP.md#h3)`. When one moves from `ROADMAP.md` to `LEARNED.md`, its anchor moves with it and the PR updates the links. Decisions link the same way, to their heading in `DECISIONS.md`.
+
+0. **Open with where things stand.** Before anything else, in two lines: what's in **Now**, and any bet or experiment past its appetite or with no evidence yet (e.g. "[H1](ROADMAP.md#h1) started 5 days ago, no evidence yet").
+1. **Find the work.** If I asked for something, do that; if it serves no bet or experiment, say so in one line and ask whether it's a new experiment, then do it either way. Otherwise take the first item in **Now** a session can do, then the first in **Next**. Some bets need only me ([H1](ROADMAP.md#h1), [H2](ROADMAP.md#h2)): then help me run them, or record what I report. If what an item needs isn't there (a decision still **Open** or **Proposed**, an account, the Mac), stop and ask; when a decision it needs is settled, record it in `DECISIONS.md` in the same PR.
 2. **Confirm the slice.** In one or two lines: the bet or experiment, the signal it serves, and what you'll build this session. A bet's outputs are worked out when it starts, not before, and live in its PRs. One clear slice per session.
 3. **Build on a branch** named `<id>-<short-name>` (e.g. `h3-item-store`), with tests.
 4. **Prove it.** Green `make test` for every app you touched, plus snapshot tests for UI work (see Reviewing UI changes). An appetite can shrink a bet's scope, never a non-negotiable.
@@ -62,7 +64,7 @@ Each app uses its ecosystem's own task runner, with the same four task names, so
 
 A root `Makefile` delegates, so from the top of the repo `make test` runs both apps, and `make ios-test` or `make web-test` runs one.
 
-Tasks must work from a clean clone, run non-interactively (no prompts), and fail loudly. The iOS Makefile and root Makefile come with H3, the first bet with iOS code.
+Tasks must work from a clean clone, run non-interactively (no prompts), and fail loudly. The iOS Makefile and root Makefile come with [H3](ROADMAP.md#h3), the first bet with iOS code.
 
 ## Building the iOS app
 
@@ -71,14 +73,14 @@ Work happens on my Mac, in `~/Projects/hutch`, with Xcode installed.
 - Never call work done without a green `make test` in `apps/ios`, and say which simulator it ran on.
 - Keep logic in the Swift package so it's covered by unit tests.
 - CI on a GitHub macOS runner is an optional safety net, not the main loop: macOS minutes are expensive. If added, scope it to `apps/ios/**` and pull requests only.
-- One Linux workflow per area runs on every PR, named for the area, with one job per check: **Design** (`.github/workflows/validate-design.yml`): *Validate DESIGN.md* (`npm run design:lint`); **Web** (`validate-web.yml`): *Validate Web Build* (`npm run web:build`) and *Validate Page Speed* (Lighthouse, only when the PR touches the website). Naming: file `validate-<area>.yml`, workflow *Area*, job *Validate <What>* in title case. The job name is all branch protection shows, so make it clear and unique on its own (*Validate Web Build*, not *Validate Build*). *Validate DESIGN.md* and *Validate Web Build* are required on `main`. A cheap iOS lint (SwiftLint, no build) can join with H3 as **iOS** (`validate-ios.yml`), job *Validate Code*.
+- One Linux workflow per area runs on every PR, named for the area, with one job per check: **Design** (`.github/workflows/validate-design.yml`): *Validate DESIGN.md* (`npm run design:lint`); **Web** (`validate-web.yml`): *Validate Web Build* (`npm run web:build`) and *Validate Page Speed* (Lighthouse, only when the PR touches the website). Naming: file `validate-<area>.yml`, workflow *Area*, job *Validate <What>* in title case. The job name is all branch protection shows, so make it clear and unique on its own (*Validate Web Build*, not *Validate Build*). *Validate DESIGN.md* and *Validate Web Build* are required on `main`. A cheap iOS lint (SwiftLint, no build) can join with [H3](ROADMAP.md#h3) as **iOS** (`validate-ios.yml`), job *Validate Code*.
 
 **If the session is not on the Mac** (a cloud session with no link to the laptop), it cannot build Swift. Say so, limit the work to docs or the website, or ask me to open the session from my Mac.
 
 ## Reviewing UI changes
 
 I review UI from my phone, through the PR (D11).
-- **From the first screens on (H3), every screen has snapshot tests:** it's rendered to reference images, in light and dark mode and at a large Dynamic Type size, stored next to its tests. A change to a screen shows up as before-and-after images in the PR's file changes, and an accidental change fails `make test`.
+- **From the first screens on ([H3](ROADMAP.md#h3)), every screen has snapshot tests:** it's rendered to reference images, in light and dark mode and at a large Dynamic Type size, stored next to its tests. A change to a screen shows up as before-and-after images in the PR's file changes, and an accidental change fails `make test`.
 - Only update reference images on purpose, and say why in the PR.
 - Until snapshot tests exist, describe any visual change in a line or two in the PR.
 - Never commit throwaway screenshots.
