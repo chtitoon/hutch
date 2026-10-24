@@ -37,14 +37,14 @@ None yet. [H1](ROADMAP.md#h1) and [H2](ROADMAP.md#h2) write the first.
 
 #### <a id="x2"></a>X2 — DESIGN.md: kept
 
-- **Learning:** Google's alpha DESIGN.md format, enforced on both apps.
+- **Learning goal:** Google's alpha DESIGN.md format, enforced on both apps.
 - **Need:** one design source that agents and I both read ([D18](DECISIONS.md#d18--designmd-is-the-design-systems-source-of-truth-enforced-on-both-sides)).
 - **Verdict:** the tokens and their reasons live in one file, linted on every PR.
 - **If it stalls:** the exit plan is in D18.
 
 #### <a id="x1"></a>X1 — performance.md: kept
 
-- **Learning:** a spec format and CLI for web performance, built from scratch.
+- **Learning goal:** a spec format and CLI for web performance, built from scratch.
 - **Need:** nothing checked the website's speed ([D19](DECISIONS.md#d19--website-performance-one-file-budgets-at-the-deploy-gate-lighthouse-on-pull-requests)).
 - **What happened:**
   - Pages went from 156 KB to 46 KB.
