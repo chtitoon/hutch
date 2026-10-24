@@ -75,8 +75,8 @@ struct ItemRow: View {
                 Text(item.name)
                     .font(Typography.labelLg)
                     .foregroundStyle(Palette.ink)
-                if !item.details.isEmpty {
-                    Text(item.details.map(\.answer).joined(separator: " · "))
+                if !item.aspects.isEmpty {
+                    Text(item.aspects.map(\.value).joined(separator: " · "))
                         .font(Typography.bodySm)
                         .foregroundStyle(Palette.ink)
                 }

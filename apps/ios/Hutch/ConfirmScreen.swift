@@ -20,7 +20,7 @@ struct ConfirmScreen: View {
                 draft: $draft,
                 suggesting: suggestion == nil,
                 suggestionNote: suggestion.flatMap(Self.note(for:)),
-                questions: suggestion?.questions ?? [],
+                aspects: suggestion?.aspects ?? [],
                 rooms: library.rooms,
                 error: error,
                 canSave: !saving,
@@ -47,9 +47,12 @@ struct ConfirmScreen: View {
         let result = await library.suggester.suggest(for: image)
         suggestionSeconds = Date.now.timeIntervalSince(capture.takenAt)
         suggestion = result
-        // Fill only what I haven't typed myself. The category isn't shown, but is kept.
+        // Fill only what I haven't typed or picked myself. The category isn't shown, but is kept.
         if draft.name.isEmpty { draft.name = result.name }
         draft.category = result.category
+        for aspect in result.aspects where !aspect.value.isEmpty && draft.values[aspect.name] == nil {
+            draft.values[aspect.name] = aspect.value
+        }
     }
 
     /// Which path named it, so a poor guess can be told apart from a model that never ran (X4).
@@ -70,7 +73,7 @@ struct ConfirmScreen: View {
             category: draft.category,
             room: draft.room.trimmingCharacters(in: .whitespacesAndNewlines),
             spot: draft.spot.trimmingCharacters(in: .whitespacesAndNewlines),
-            details: draft.details(for: suggestion?.questions ?? []),
+            aspects: draft.aspects(for: suggestion?.aspects ?? []),
             capture: CaptureRecord(
                 seconds: Date.now.timeIntervalSince(capture.takenAt),
                 suggestionSeconds: suggestionSeconds,
@@ -97,13 +100,13 @@ struct Draft: Equatable {
     var category = ""
     var room = ""
     var spot = ""
-    /// My answer to each narrowing question, by its label.
-    var answers: [String: String] = [:]
+    /// The value of each aspect, by its name: read off the photo, or picked.
+    var values: [String: String] = [:]
 
-    /// The answered questions, in the order they were asked.
-    func details(for questions: [Question]) -> [Detail] {
-        questions.compactMap { question in
-            answers[question.label].map { Detail(question: question.label, answer: $0) }
+    /// The aspects with a value, in the order suggested.
+    func aspects(for suggested: [SuggestedAspect]) -> [Aspect] {
+        suggested.compactMap { aspect in
+            values[aspect.name].map { Aspect(name: aspect.name, value: $0) }
         }
     }
 }
@@ -114,13 +117,16 @@ struct ItemForm: View {
     @Binding var draft: Draft
     let suggesting: Bool
     var suggestionNote: String?
-    /// One-tap questions to narrow it down; skipping one is fine.
-    var questions: [Question] = []
+    /// Its aspects: values the photo showed are already picked; the rest take a tap, or none.
+    var aspects: [SuggestedAspect] = []
     /// Rooms I've used, then my Apple Home rooms.
     let rooms: [String]
     var error: String?
     var canSave = true
     let onSave: () -> Void
+
+    /// Picked aspects I've tapped to change, shown with their choices again.
+    @State private var editing: Set<String> = []
 
     var body: some View {
         Form {
@@ -149,10 +155,34 @@ struct ItemForm: View {
             }
             .listRowBackground(Palette.surface)
 
-            ForEach(questions, id: \.self) { question in
-                Section(question.label) {
-                    Chips(options: question.choices, selected: answer(to: question))
-                        .listRowInsets(EdgeInsets(top: Spacing.s2, leading: Spacing.s4, bottom: Spacing.s2, trailing: Spacing.s4))
+            if !aspects.isEmpty {
+                Section("About it") {
+                    ForEach(aspects, id: \.self) { aspect in
+                        let current = draft.values[aspect.name] ?? ""
+                        if !current.isEmpty && !editing.contains(aspect.name) {
+                            // Picked: one line, "Color   Silver". Tap to change.
+                            Button { editing.insert(aspect.name) } label: {
+                                LabeledContent(aspect.name) {
+                                    Text(current).foregroundStyle(Palette.ink)
+                                }
+                                .foregroundStyle(Palette.inkSubtle)
+                            }
+                            .accessibilityHint("Change")
+                        } else {
+                            VStack(alignment: .leading, spacing: Spacing.s2) {
+                                Text(aspect.name)
+                                    .font(Typography.labelSm)
+                                    .foregroundStyle(Palette.inkSubtle)
+                                if aspect.choices.count > 1 {
+                                    Chips(options: aspect.choices, selected: value(of: aspect))
+                                } else {
+                                    TextField(aspect.name, text: value(of: aspect))
+                                        .onSubmit { editing.remove(aspect.name) }
+                                }
+                            }
+                            .listRowInsets(EdgeInsets(top: Spacing.s3, leading: Spacing.s4, bottom: Spacing.s3, trailing: Spacing.s4))
+                        }
+                    }
                 }
                 .listRowBackground(Palette.surface)
             }
@@ -200,11 +230,15 @@ struct ItemForm: View {
         }
     }
 
-    /// The answer to one question as a chip selection; "" is no answer.
-    private func answer(to question: Question) -> Binding<String> {
+    /// One aspect's value as a chip selection or text; "" is no value. Picking a chip folds
+    /// the aspect back into one line.
+    private func value(of aspect: SuggestedAspect) -> Binding<String> {
         Binding(
-            get: { draft.answers[question.label] ?? "" },
-            set: { draft.answers[question.label] = $0.isEmpty ? nil : $0 }
+            get: { draft.values[aspect.name] ?? "" },
+            set: { newValue in
+                draft.values[aspect.name] = newValue.isEmpty ? nil : newValue
+                if !newValue.isEmpty && aspect.choices.count > 1 { editing.remove(aspect.name) }
+            }
         )
     }
 }

@@ -49,17 +49,22 @@ import Testing
         check(form(draft, suggesting: false, note: note, rooms: rooms), named: "confirm-suggested")
     }
 
-    /// A broad-but-specific name, and one-tap questions for what the photo can't show.
-    @Test func confirmNarrowingDown() {
-        let questions = [
-            Question(label: "Chip and year", choices: ["M1, 2020", "M2, 2022", "M3, 2024", "M4, 2025"]),
-            Question(label: "Memory", choices: ["8 GB", "16 GB", "24 GB"]),
-            Question(label: "Storage", choices: ["256 GB", "512 GB", "1 TB", "2 TB"]),
+    /// A broad-but-specific name, and its aspects: brand and color read off the photo, the
+    /// rest one tap away.
+    @Test func confirmWithAspects() {
+        let aspects = [
+            SuggestedAspect(name: "Brand", value: "Apple", choices: ["Apple"]),
+            SuggestedAspect(name: "Color", value: "Silver", choices: ["Silver", "Space Gray", "Starlight", "Midnight"]),
+            SuggestedAspect(name: "Chip and year", choices: ["M1, 2020", "M2, 2022", "M3, 2024", "M4, 2025"]),
+            SuggestedAspect(name: "Memory", choices: ["8 GB", "16 GB", "24 GB"]),
+            SuggestedAspect(name: "Storage", choices: ["256 GB", "512 GB", "1 TB", "2 TB"]),
         ]
-        let draft = Draft(name: "Apple MacBook Air", room: "Office", answers: ["Chip and year": "M2, 2022"])
+        let draft = Draft(name: "Apple MacBook Air", room: "Office", values: ["Brand": "Apple", "Color": "Silver", "Storage": "256 GB"])
         let note = ConfirmScreen.note(for: Suggestion(name: draft.name, source: .modelWithImage))
-        check(form(draft, suggesting: false, note: note, questions: questions, rooms: ["Office", "Garage"]), named: "confirm-narrowing")
-        #expect(draft.details(for: questions) == [Detail(question: "Chip and year", answer: "M2, 2022")])
+        check(form(draft, suggesting: false, note: note, aspects: aspects, rooms: ["Office", "Garage"]), named: "confirm-aspects")
+        #expect(draft.aspects(for: aspects) == [
+            Aspect(name: "Brand", value: "Apple"), Aspect(name: "Color", value: "Silver"), Aspect(name: "Storage", value: "256 GB"),
+        ])
     }
 
     /// Apple Intelligence off: Vision's label, and why.
@@ -85,10 +90,10 @@ import Testing
         check(NavigationStack { ItemList(items: items, thumbnails: thumbnails, stats: CaptureStats(items: items)).navigationTitle("Items") }, named: "list")
     }
 
-    private func form(_ draft: Draft, suggesting: Bool, note: String? = nil, questions: [Question] = [], rooms: [String]) -> some View {
+    private func form(_ draft: Draft, suggesting: Bool, note: String? = nil, aspects: [SuggestedAspect] = [], rooms: [String]) -> some View {
         NavigationStack {
             ItemForm(photo: Fixtures.photo("wrench.and.screwdriver"), draft: .constant(draft), suggesting: suggesting,
-                     suggestionNote: note, questions: questions, rooms: rooms, onSave: {})
+                     suggestionNote: note, aspects: aspects, rooms: rooms, onSave: {})
         }
     }
 }
@@ -102,7 +107,7 @@ enum Fixtures {
 
     static let items: [Item] = [
         Item(name: "DeWalt 18V cordless drill", category: "Tools", room: "Garage", spot: "Left shelf",
-             details: [Detail(question: "Battery", answer: "2 × 2 Ah")],
+             aspects: [Aspect(name: "Brand", value: "DeWalt"), Aspect(name: "Battery", value: "2 × 2 Ah")],
              createdAt: Date(timeIntervalSince1970: 4), capture: CaptureRecord(seconds: 11, suggestionSeconds: 1.4, suggestionSource: .modelWithImage, keptSuggestedName: true)),
         Item(name: "Aluminium step ladder", category: "Household", room: "Garage", spot: "Back wall",
              createdAt: Date(timeIntervalSince1970: 3), capture: CaptureRecord(seconds: 14, suggestionSeconds: 1.2, suggestionSource: .modelWithImage, keptSuggestedName: true)),

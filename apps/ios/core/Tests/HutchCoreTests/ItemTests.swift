@@ -33,12 +33,19 @@ import Testing
         #expect(item.name == "Drill")
         #expect(item.room == "Garage")
         #expect(item.spot.isEmpty)
-        #expect(item.details.isEmpty)
+        #expect(item.aspects.isEmpty)
         #expect(item.visibility == .private)
     }
 
-    @Test func detailsSurviveARoundTrip() throws {
-        let item = Item(name: "Apple MacBook Air", details: [Detail(question: "Memory", answer: "16 GB")])
+    /// One build saved what the photo couldn't show as questions and answers.
+    @Test func readsQuestionsAndAnswersAsAspects() throws {
+        let json = #"{"id":"6F9619FF-8B86-D011-B42D-00C04FC964FF","name":"Laptop","createdAt":0,"details":[{"question":"Memory","answer":"16 GB"}]}"#
+        let item = try JSONDecoder().decode(Item.self, from: Data(json.utf8))
+        #expect(item.aspects == [Aspect(name: "Memory", value: "16 GB")])
+    }
+
+    @Test func aspectsSurviveARoundTrip() throws {
+        let item = Item(name: "Apple MacBook Air", aspects: [Aspect(name: "Brand", value: "Apple"), Aspect(name: "Memory", value: "16 GB")])
         #expect(try JSONDecoder().decode(Item.self, from: JSONEncoder().encode(item)) == item)
     }
 
@@ -147,17 +154,24 @@ import Testing
         #expect(!details.contains("Wooden Box"))
     }
 
-    @Test func questionsAreCleanedUp() {
-        let cleaned = Question.cleaned([
-            Question(label: "Chip and year", choices: ["M1, 2020", " M2, 2022 ", "m2, 2022", "Not sure", "", "M3, 2024", "M4, 2025", "M5", "M6"]),
-            Question(label: "Colour", choices: ["Unknown"]),
-            Question(label: " ", choices: ["a", "b"]),
-            Question(label: "Memory", choices: ["8 GB", "16 GB"]),
-            Question(label: "Storage", choices: ["256 GB", "512 GB"]),
-            Question(label: "Charger", choices: ["30 W", "35 W"]),
+    @Test func aspectsAreCleanedUp() {
+        let cleaned = SuggestedAspect.cleaned([
+            SuggestedAspect(name: "Brand", value: "Apple"),
+            SuggestedAspect(name: "Color", value: "Silver", choices: ["Space Gray", "silver", "Midnight"]),
+            SuggestedAspect(name: "Chip and year", value: "Unknown", choices: ["M1, 2020", " M2, 2022 ", "m2, 2022", "Not sure", "", "M3, 2024", "M4, 2025", "M5", "M6"]),
+            SuggestedAspect(name: "Size", value: "", choices: ["Unknown"]),
+            SuggestedAspect(name: " ", choices: ["a", "b"]),
+            SuggestedAspect(name: "brand", value: "Dell"),
+            SuggestedAspect(name: "Memory", choices: ["8 GB", "16 GB"]),
+            SuggestedAspect(name: "Storage", choices: ["256 GB", "512 GB"]),
+            SuggestedAspect(name: "Charger", choices: ["30 W", "35 W"]),
+            SuggestedAspect(name: "Keyboard", choices: ["US", "UK"]),
         ])
-        #expect(cleaned.map(\.label) == ["Chip and year", "Memory", "Storage"])
-        #expect(cleaned[0].choices == ["M1, 2020", "M2, 2022", "M3, 2024", "M4, 2025", "M5"])
+        #expect(cleaned.map(\.name) == ["Brand", "Color", "Chip and year", "Memory", "Storage", "Charger"])
+        #expect(cleaned[0] == SuggestedAspect(name: "Brand", value: "Apple", choices: ["Apple"]))
+        #expect(cleaned[1].choices == ["Silver", "Space Gray", "Midnight"])
+        #expect(cleaned[2].value.isEmpty)
+        #expect(cleaned[2].choices == ["M1, 2020", "M2, 2022", "M3, 2024", "M4, 2025", "M5"])
     }
 
     @Test func promptPassesTheBrandOn() {

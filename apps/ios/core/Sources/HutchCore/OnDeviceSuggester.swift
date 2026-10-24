@@ -103,7 +103,7 @@ public struct OnDeviceSuggester: ItemSuggesting {
         return Suggestion(
             name: guess.name.trimmingCharacters(in: .whitespacesAndNewlines),
             category: guess.category.trimmingCharacters(in: .whitespacesAndNewlines),
-            questions: Question.cleaned(guess.questions.map { Question(label: $0.label, choices: $0.choices) }),
+            aspects: SuggestedAspect.cleaned(guess.aspects.map { SuggestedAspect(name: $0.name, value: $0.value, choices: $0.choices) }),
             source: source
         )
     }
@@ -117,11 +117,12 @@ public struct OnDeviceSuggester: ItemSuggesting {
         not "computer"; "Wooden dining chair", not "furniture". Not too narrow: never guess a \
         year, model number or size you can't see. Never invent a brand. \
         For example "RAVPower 61W USB-C charger", "Ray-Ban glasses case", "Bosch PSB 18 drill". \
-        Then ask up to three short questions the owner can answer in one tap, to pin down \
-        what the photo can't show and that matters for owning, lending or selling it: \
-        which brand if you can't tell, then which exact model or generation, then specs like \
-        chip, memory, storage, size or material. Give each two to five short, real choices, \
-        most likely first. \
+        Then list its aspects, the ones that matter for owning, lending or selling this kind \
+        of thing, most useful first: brand, model or generation, color, material, size, and \
+        specs like chip, memory or storage. Fill in each value the photo or the text on it \
+        shows, such as the brand or the color; leave it empty when the photo can't show it. \
+        Give each two to five short, real choices, most likely first, so the owner picks in \
+        one tap. \
         The labels come from a scene classifier and are often wrong about small objects: \
         trust the photo and the text on the object over them. Scene labels describe what's \
         around the object, such as the table it sits on; never name the object after them.
@@ -145,14 +146,16 @@ struct ItemGuess {
     var name: String
     @Guide(description: "One broad category: Tools, Garden, Sports, Bikes, Camping, Kitchen, Electronics, Furniture, Toys, Car, Household or Other")
     var category: String
-    @Guide(description: "Up to three questions that narrow it down, most useful first", .maximumCount(3))
-    var questions: [ItemQuestion]
+    @Guide(description: "Its aspects, most useful first, e.g. Brand, Model, Color, Memory, Storage", .maximumCount(6))
+    var aspects: [ItemAspect]
 }
 
 @Generable
-struct ItemQuestion {
-    @Guide(description: "A short label, e.g. 'Chip and year', 'Memory', 'Storage', 'Material'")
-    var label: String
-    @Guide(description: "Two to five short, real answers, most likely first, e.g. 'M1, 2020', 'M2, 2022', 'M3, 2024'", .count(2...5))
+struct ItemAspect {
+    @Guide(description: "A short aspect name, e.g. 'Brand', 'Chip and year', 'Color', 'Memory', 'Storage', 'Material'")
+    var name: String
+    @Guide(description: "The value if the photo or the text on it shows it, e.g. 'Apple' or 'Silver'; empty if it can't be seen")
+    var value: String
+    @Guide(description: "Two to five short, real values, most likely first, e.g. '8 GB', '16 GB', '24 GB'", .count(2...5))
     var choices: [String]
 }

@@ -10,8 +10,9 @@ public struct Item: Codable, Identifiable, Sendable, Equatable {
     public var room: String
     /// Where in the room, optional: "left shelf".
     public var spot: String
-    /// What the photo couldn't show, answered in one tap: "Chip and year: M2, 2022".
-    public var details: [Detail]
+    /// What it is, aspect by aspect: "Brand: Apple", "Color: Silver", "Memory: 16 GB". Some
+    /// read off the photo, the rest picked in one tap.
+    public var aspects: [Aspect]
     /// Who can see it. Always `.private` when created (non-negotiable 2); only an explicit action changes it.
     public private(set) var visibility: Visibility
     public let createdAt: Date
@@ -25,7 +26,7 @@ public struct Item: Codable, Identifiable, Sendable, Equatable {
         category: String = "",
         room: String = "",
         spot: String = "",
-        details: [Detail] = [],
+        aspects: [Aspect] = [],
         createdAt: Date = .now,
         capture: CaptureRecord? = nil
     ) {
@@ -34,7 +35,7 @@ public struct Item: Codable, Identifiable, Sendable, Equatable {
         self.category = category
         self.room = room
         self.spot = spot
-        self.details = details
+        self.aspects = aspects
         self.visibility = .private
         self.createdAt = createdAt
         self.capture = capture
@@ -50,7 +51,9 @@ public struct Item: Codable, Identifiable, Sendable, Equatable {
         category = try c.decodeIfPresent(String.self, forKey: .category) ?? ""
         room = try c.decodeIfPresent(String.self, forKey: .room) ?? c.decodeIfPresent(String.self, forKey: .place) ?? ""
         spot = try c.decodeIfPresent(String.self, forKey: .spot) ?? ""
-        details = try c.decodeIfPresent([Detail].self, forKey: .details) ?? []
+        aspects = try c.decodeIfPresent([Aspect].self, forKey: .aspects)
+            ?? c.decodeIfPresent([LegacyDetail].self, forKey: .details)?.map { Aspect(name: $0.question, value: $0.answer) }
+            ?? []
         visibility = try c.decodeIfPresent(Visibility.self, forKey: .visibility) ?? .private
         createdAt = try c.decode(Date.self, forKey: .createdAt)
         capture = try c.decodeIfPresent(CaptureRecord.self, forKey: .capture)
@@ -63,29 +66,36 @@ public struct Item: Codable, Identifiable, Sendable, Equatable {
         try c.encode(category, forKey: .category)
         try c.encode(room, forKey: .room)
         try c.encode(spot, forKey: .spot)
-        try c.encode(details, forKey: .details)
+        try c.encode(aspects, forKey: .aspects)
         try c.encode(visibility, forKey: .visibility)
         try c.encode(createdAt, forKey: .createdAt)
         try c.encodeIfPresent(capture, forKey: .capture)
     }
 
     enum CodingKeys: String, CodingKey {
-        case id, name, category, room, spot, details, visibility, createdAt, capture
+        case id, name, category, room, spot, aspects, visibility, createdAt, capture
         /// The first build's room and spot in one string.
         case place
+        /// An early build's aspects, as questions and answers.
+        case details
+    }
+
+    private struct LegacyDetail: Decodable {
+        var question: String
+        var answer: String
     }
 }
 
-/// One question the photo couldn't answer, and my answer.
-public struct Detail: Codable, Sendable, Equatable, Hashable {
-    /// "Chip and year".
-    public var question: String
-    /// "M2, 2022".
-    public var answer: String
+/// One aspect of an item and its value: "Brand: Apple".
+public struct Aspect: Codable, Sendable, Equatable, Hashable {
+    /// "Brand", "Color", "Memory".
+    public var name: String
+    /// "Apple", "Silver", "16 GB".
+    public var value: String
 
-    public init(question: String, answer: String) {
-        self.question = question
-        self.answer = answer
+    public init(name: String, value: String) {
+        self.name = name
+        self.value = value
     }
 }
 

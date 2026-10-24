@@ -29,7 +29,7 @@ Hutch collects nothing ([non-negotiable 5](AGENTS.md#non-negotiables)), so evide
 - What I want instead: broad but not too broad from the photo ("Apple MacBook Air", "Wooden chair"), then help narrowing to what the photo can't show (chip and year, memory, storage), and for things like chairs, a way to find the exact product.
 - **What changed because of it:**
   - The model is asked for brand plus product line, and never a bare class like "computer".
-  - It also proposes up to three one-tap questions, which are saved with the item.
+  - It also lists the item's aspects (Brand: Apple, Color: Silver, Memory: 16 GB). Those the photo shows come filled in; the rest have a few choices to pick in one tap. They're saved with the item.
   - Identifying online is written up as D26, open, for later.
 
 #### E2 — With Apple Intelligence on: a charger right, a laptop wrong

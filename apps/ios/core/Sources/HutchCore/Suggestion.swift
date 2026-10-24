@@ -5,18 +5,18 @@ import Foundation
 public struct Suggestion: Sendable, Equatable {
     public var name: String
     public var category: String
-    /// Up to three one-tap questions to pin down what the photo can't show (which model, chip,
-    /// memory; which style or material).
-    public var questions: [Question]
+    /// Aspects of what it is, as many as matter: filled in where the photo shows them
+    /// (brand, color), with a few choices where it can't (chip, memory, storage).
+    public var aspects: [SuggestedAspect]
     public var source: SuggestionSource
     /// Why Apple Intelligence wasn't used, when it wasn't: shown under the name, so a poor
     /// guess can be told apart from a model that never ran.
     public var fallbackReason: String?
 
-    public init(name: String, category: String = "", questions: [Question] = [], source: SuggestionSource, fallbackReason: String? = nil) {
+    public init(name: String, category: String = "", aspects: [SuggestedAspect] = [], source: SuggestionSource, fallbackReason: String? = nil) {
         self.name = name
         self.category = category
-        self.questions = questions
+        self.aspects = aspects
         self.source = source
         self.fallbackReason = fallbackReason
     }
@@ -30,32 +30,41 @@ public struct Suggestion: Sendable, Equatable {
     public static let empty = Suggestion(name: "", source: .none)
 }
 
-/// A question with a few likely answers, so narrowing down takes a tap, not typing.
-public struct Question: Sendable, Equatable, Hashable {
-    /// "Chip and year".
-    public var label: String
-    /// "M1, 2020", "M2, 2022", "M3, 2024": most likely first.
+/// One aspect of what it is: a value when the photo shows it, and a few likely choices
+/// when it doesn't, so filling it in takes a tap, not typing.
+public struct SuggestedAspect: Sendable, Equatable, Hashable {
+    /// "Brand", "Color", "Memory".
+    public var name: String
+    /// "Apple", read off the photo; empty when the photo can't show it.
+    public var value: String
+    /// "8 GB", "16 GB", "24 GB": most likely first, the value among them.
     public var choices: [String]
 
-    public init(label: String, choices: [String]) {
-        self.label = label
+    public init(name: String, value: String = "", choices: [String] = []) {
+        self.name = name
+        self.value = value
         self.choices = choices
     }
 
-    /// Questions worth showing: a label and 2 to 5 distinct, non-empty choices; at most three.
-    static func cleaned(_ questions: [Question]) -> [Question] {
-        questions.compactMap { question in
-            let label = question.label.trimmingCharacters(in: .whitespacesAndNewlines)
+    /// Words that mean "no idea", which are no value or choice at all: not choosing says that.
+    static let noAnswer: Set<String> = ["", "unknown", "not sure", "don't know", "n/a", "not visible", "other"]
+
+    /// Aspects worth showing, at most six: a name, and either a value or two distinct choices.
+    /// The value always comes first among the choices, so it shows as picked.
+    static func cleaned(_ aspects: [SuggestedAspect]) -> [SuggestedAspect] {
+        var names = Set<String>()
+        return aspects.compactMap { aspect in
+            let name = aspect.name.trimmingCharacters(in: .whitespacesAndNewlines)
+            var value = aspect.value.trimmingCharacters(in: .whitespacesAndNewlines)
+            if noAnswer.contains(value.lowercased()) { value = "" }
             var seen = Set<String>()
-            let choices = question.choices
+            let choices = ([value] + aspect.choices)
                 .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-                // Not answering is "not sure", so those choices are noise.
-                .filter { !$0.isEmpty && !["unknown", "not sure", "don't know", "other"].contains($0.lowercased()) }
-                .filter { seen.insert($0.lowercased()).inserted }
-            guard !label.isEmpty, choices.count >= 2 else { return nil }
-            return Question(label: label, choices: Array(choices.prefix(5)))
+                .filter { !noAnswer.contains($0.lowercased()) && seen.insert($0.lowercased()).inserted }
+            guard !name.isEmpty, names.insert(name.lowercased()).inserted, !value.isEmpty || choices.count >= 2 else { return nil }
+            return SuggestedAspect(name: name, value: value, choices: Array(choices.prefix(5)))
         }
-        .prefix(3)
+        .prefix(6)
         .map { $0 }
     }
 }
