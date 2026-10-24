@@ -107,7 +107,7 @@ At most two bets and one experiment.
     3. nearest catalog entries
   - **Confirmed by me:** the result is always a suggestion, gated by confidence.
 - **Phases,** each ending with my review:
-  1. **Plan:** sizes, layout, licenses. In [the PR that starts X5](https://github.com/chtitoon/hutch/pulls).
+  1. **Plan:** sizes, layout, licenses. In [#53](https://github.com/chtitoon/hutch/pull/53).
   2. **Prototype and eval** on my own photos: category accuracy, top-5 hit rate, a threshold sweep. **Gate:** 90% right at the category level I'd accept (for example "Laptops", not leaf SKUs), on 20+ of my photos.
   3. **Core ML conversion:** cosine similarity of at least 0.99 against PyTorch; latency on my phone.
   4. **Swift pipeline** behind protocols, with a debug screen showing the evidence.
