@@ -66,8 +66,9 @@ If building Hutch feels like a chore two weeks in a row, the next thing I pick i
 At most two bets and one experiment.
 
 #### <a id="h1"></a>H1 — I'll keep an inventory if Hutch makes it effortless
-**Serves:** [O1](#o1). **Status:** ready, needs the Mac. **Appetite:** 3 weeks to build, then 1 week of use on my phone.
-- **Test:** the first Hutch app. It opens on the camera; one tap, and an on-device model turns the photo into an item ([X4](#x4)); I confirm it, say where it lives (picked from places I've used) and what I'd resell it for. A list shows each item's photo, name, place and price. When time runs short, everything else is cut first.
+**Serves:** [O1](#o1). **Status:** started 2026-10-24; building until 2026-11-14 at the latest. **Appetite:** 3 weeks to build, then 1 week of use on my phone.
+- **Test:** the first Hutch app. It opens on the camera; one tap, and an on-device model turns the photo into an item ([X4](#x4)); I confirm the name and say where it lives: a room from Apple Home or one I've used, plus a spot if I like ([D25](DECISIONS.md#d25--where-it-lives-an-apple-home-room-and-an-optional-spot)). A list shows each item's photo, name and place. When time runs short, everything else is cut first.
+- **Reshaped 2026-10-24, before any use:** no resale price for now, and the model's category is kept but not shown. Both slowed adding an item without serving the signal.
 - **Guardrails,** which no appetite cuts:
   - Encrypted at rest from the first write, with the key in the Keychain ([non-negotiable 1](AGENTS.md#non-negotiables), [D21](DECISIONS.md#d21--recovery-icloud-keychain-plus-a-printable-recovery-kit)).
   - New items are private.
@@ -78,18 +79,18 @@ At most two bets and one experiment.
   - Encrypt with CryptoKit, and be able to explain each choice.
   - The photo models are [X4](#x4).
 - **Prior work:** [#32](https://github.com/chtitoon/hutch/pull/32).
+- **Counted on the phone:** the item list's footer shows the item count, the median time from shutter to Save, how many took under 20 s, and how often I kept the suggested name ([X4](#x4)). None of it is sent anywhere.
 - **Signal:** 20 items in my first week of use, each added in under 20 s (timed on the phone, never sent), with a note each time I stop and each time I look something up.
 - **If yes:** keep building [O1](#o1) (barcode, search), then [H3](#h3). **If no:** my notes say whether it was speed (reshape capture) or motivation (O1 shrinks to what's worth lending, selling or insuring).
-- **Open:** a looked-up resale price would tell a price service what I own, which non-negotiable 1 rules out today ([D23](DECISIONS.md#d23--resale-prices-without-telling-anyone-what-i-own)).
 
 #### <a id="x4"></a>X4 — Photo to item, with on-device models
-**Tried on:** [H1](#h1). **Status:** starts with H1.
+**Tried on:** [H1](#h1). **Status:** started 2026-10-24, with H1.
 - **Learning goals:**
   - Know what Vision recognizes from one photo of a household thing.
-  - Use the Foundation Models framework to turn that into a name and category, and maybe a resale guess.
+  - Use the Foundation Models framework to turn that into a name and category.
   - Know when Core ML is worth it, if neither is enough.
 - **Question going in:** do I accept its suggestion as is for at least 7 items in 10, in under 2 seconds on my phone? Photos never leave the device ([D5](DECISIONS.md#d5--photo-based-ai-capture)).
-- **Verdict decides:** D5, and whether an on-device estimate is good enough for resale prices ([D23](DECISIONS.md#d23--resale-prices-without-telling-anyone-what-i-own)).
+- **Verdict decides:** D5. Resale guesses wait for selling ([D23](DECISIONS.md#d23--resale-prices-without-telling-anyone-what-i-own)).
 
 #### <a id="h2"></a>H2 — When a neighbor asks, I answer from Hutch
 **Serves:** [O2](#o2). **Status:** counting starts now; building needs [H1](#h1)'s items. **Appetite:** 1 week to build, then a month of use.

@@ -1,0 +1,68 @@
+# XcodeGen spec. Run `make setup` after changing it; the .xcodeproj is generated and never committed (D9).
+name: Hutch
+options:
+  bundleIdPrefix: app.myhutch
+  deploymentTarget:
+    iOS: "26.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    SWIFT_TREAT_WARNINGS_AS_ERRORS: YES
+packages:
+  HutchCore:
+    path: core
+  # Snapshot tests only (D11), never linked into the app.
+  SnapshotTesting:
+    url: https://github.com/pointfreeco/swift-snapshot-testing
+    exactVersion: 1.19.7
+targets:
+  Hutch:
+    type: application
+    platform: iOS
+    sources: [Hutch]
+    dependencies:
+      - package: HutchCore
+    # HomeKit only reads my room names for "where it lives"; it never controls accessories.
+    entitlements:
+      path: Hutch/Hutch.entitlements
+      properties:
+        com.apple.developer.homekit: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: app.myhutch.ios
+        PRODUCT_NAME: Hutch
+        MARKETING_VERSION: "0.1.0"
+        CURRENT_PROJECT_VERSION: "1"
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Hutch
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        INFOPLIST_KEY_NSCameraUsageDescription: "Hutch takes a photo of each thing you add. Photos stay on this iPhone, encrypted."
+        INFOPLIST_KEY_NSHomeKitUsageDescription: "Hutch lists your Apple Home rooms so you can say where each thing lives. Room names stay on this iPhone."
+        INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
+  HutchTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: HutchTests
+        excludes: ["**/__Snapshots__/**"]
+    dependencies:
+      - target: Hutch
+      - package: SnapshotTesting
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: "$(BUILT_PRODUCTS_DIR)/Hutch.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Hutch"
+        BUNDLE_LOADER: "$(TEST_HOST)"
+schemes:
+  Hutch:
+    build:
+      targets:
+        Hutch: all
+    test:
+      targets:
+        - HutchTests
+        - package: HutchCore/HutchCoreTests

@@ -19,7 +19,46 @@ Hutch collects nothing ([non-negotiable 5](AGENTS.md#non-negotiables)), so evide
 - what neighbors tell me
 - public research
 
-None yet. [H1](ROADMAP.md#h1) and [H2](ROADMAP.md#h2) write the first.
+#### E3 — My MacBook Air came out as just "Computer"
+
+- **Date:** 2026-10-24
+- **Bears on:** [X4](ROADMAP.md#x4), [D26](DECISIONS.md#d26--identifying-a-product-online-by-choice)
+- **Effect:** weakens on-device naming
+- **Source:** my notes, on my iPhone 17, after the screen-text fix
+- A MacBook Air has no brand text the camera can read, only a logo, and Vision's most specific label is "computer".
+- What I want instead: broad but not too broad from the photo ("Apple MacBook Air", "Wooden chair"), then help narrowing to what the photo can't show (chip and year, memory, storage), and for things like chairs, a way to find the exact product.
+- **What changed because of it:**
+  - The model is asked for brand plus product line, and never a bare class like "computer".
+  - It also lists the item's aspects (Brand: Apple, Color: Silver, Memory: 16 GB). Those the photo shows come filled in; the rest have a few choices to pick in one tap. They're saved with the item.
+  - Identifying online is written up as D26, open, for later.
+
+#### E2 — With Apple Intelligence on: a charger right, a laptop wrong
+
+- **Date:** 2026-10-24
+- **Bears on:** [X4](ROADMAP.md#x4)
+- **Effect:** mixed
+- **Source:** my notes, on my iPhone 17, after the brand change
+- A RAVPower charger was named right.
+- My open laptop, on a wooden table, was named "Wooden Box".
+- Likely causes: the screen's text was passed to the model as if printed on the object, and scene labels ("wood", "table") were passed as if they named it. Not yet known whether the model saw the photo or only Vision's labels: the note under the name says which.
+- **What changed because of it:** only short printed lines count as text on the object, and scene and material labels are passed to the model marked "not the object".
+
+#### E1 — First 3 photos: no suggestion was right
+
+- **Date:** 2026-10-24
+- **Bears on:** [X4](ROADMAP.md#x4)
+- **Effect:** weakens, though the cause isn't known yet
+- **Source:** my notes, on my iPhone 17, first build of [H1](ROADMAP.md#h1)
+- A glasses box was named "Bookshelf".
+- A charger was named "Computer".
+- A laptop got "Unknown".
+- 0 of 3 kept as is, against X4's bar of 7 in 10.
+- The first two are raw Vision labels, so Apple Intelligence probably never ran: off, still downloading, or failing silently. Vision also labeled the whole scene, not the object.
+- **What changed because of it:**
+  - The confirm screen now says which path named the item, and why Apple Intelligence wasn't used.
+  - Vision crops to the main object first.
+  - "Unknown" counts as no suggestion.
+  - The next photos tell whether the model is the problem or just wasn't running.
 
 <!-- Template:
 
