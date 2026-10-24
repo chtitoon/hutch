@@ -19,7 +19,43 @@ Hutch collects nothing ([non-negotiable 5](AGENTS.md#non-negotiables)), so evide
 - what neighbors tell me
 - public research
 
-#### E3 — My MacBook Air came out as just "Computer"
+#### <a id="e5"></a>E5 — 11 of my photos: right in the top 5 once the catalog covers them, but the catalog was tuned to them
+
+- **Date:** 2026-10-24
+- **Bears on:** [X5](ROADMAP.md#x5)
+- **Effect:** supports, with a caveat
+- **Source:** `score.py`, SigLIP 2 base, hand-made catalog, `labels.csv` accepting kind-level names
+- **Before tuning,** with 382 entries: 5 of 10 in the top 5. Every miss was a kind the catalog lacked: rings, boats, desktops.
+- **After adding those kinds,** with 404 entries: 11 of 11 in the top 5, and 8 of 11 first.
+  - The ring on a hand, the inflatable kayak, the hand mixer on dark tiles and a bundle of old phones were all first.
+  - "Dell Inspiron Zino HD" came first from the image alone; its name is also printed on the front.
+  - The desk chair came second, behind "desk".
+  - The frame on a busy wall came third.
+- **Two photos the catalog wasn't tuned for,** a desk and a table lamp: both first.
+- **All 13:** in the top 5 every time, first for 10. The three that weren't first sit in busy scenes, where cropping should help: the chair at a desk, the glass among others, the frame on a wall.
+- **The caveat:** kinds were added after seeing the misses, so 11 of 11 overstates it. The real test is a catalog built independently (the Google Product Taxonomy) on photos it hasn't seen.
+
+#### <a id="e4"></a>E4 — A catalog of names, matched by image embeddings: the right kind for 4 of 4
+
+- **Date:** 2026-10-24
+- **Bears on:** [X5](ROADMAP.md#x5), [D26](DECISIONS.md#d26--identifying-a-product-online-by-choice)
+- **Effect:** supports
+- **Source:** `tools/catalog-index/score.py` on the Mac, SigLIP 2 base, a hand-made catalog of 382 names
+- Two public photos of a MacBook Air, one on a wooden desk: "Apple MacBook Air" first both times.
+- My beer glass: the right kind, all 5 beer or pint glasses. The brewery's logo wasn't known: with decoy breweries added, another one ranked first and Bissell Brothers second.
+- A wooden frame on a busy shop wall:
+  - The whole photo: third, behind "screen print poster" and "framed art print".
+  - Cropped to the frame: first.
+- A hose spray nozzle: "Gardena hose spray nozzle" first. Grey and orange are Gardena's colors.
+- Before the catalog covered a kind, the answers were confident nonsense: "blender" for the glass, "desk" for the frame.
+- **What it says:**
+  - Kinds work.
+  - Famous brands work; small ones don't.
+  - Coverage of the catalog matters most, and cropping helps in busy scenes.
+  - About 15–45 ms per photo on the Mac.
+- Too few photos for a verdict: X5's gate asks for 20+.
+
+#### <a id="e3"></a>E3 — My MacBook Air came out as just "Computer"
 
 - **Date:** 2026-10-24
 - **Bears on:** [X4](ROADMAP.md#x4), [D26](DECISIONS.md#d26--identifying-a-product-online-by-choice)

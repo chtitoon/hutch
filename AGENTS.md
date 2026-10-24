@@ -47,6 +47,7 @@ I often check in from my phone while work runs on my Mac. Keep replies short and
 - `apps/web` — static site for myhutch.app (landing, App Store link, privacy policy, support), built with Astro in static mode (D14). Text pages in Markdown; no client-side JavaScript unless a page truly needs it; no tracking.
 - `DESIGN.md` — the design system both apps follow, in Google's DESIGN.md format (D18): tokens in the front matter (the single source of truth), brand, logo and rules in the prose. Never hard-code a color or size in an app that should come from tokens; the website's `npm test` fails if you do.
 - `design/` — asset files only: the logo in `light/` and `dark/`, and `explorations/` (rejected rounds).
+- `tools/catalog-index/` — [X5](ROADMAP.md#x5)'s Python tools, run on the Mac, which build and score the product catalog. My own photos go in its git-ignored `photos/` and never enter the repo.
 - `ROADMAP.md` (where Hutch is going), `LEARNED.md` (evidence and verdicts), `DECISIONS.md` (what's settled, what's open) and `CONTEXT.md` (research) at the root.
 
 ## Commands: one way to do each thing

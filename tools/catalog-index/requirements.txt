@@ -1,0 +1,7 @@
+# X5's catalog tools. Python 3.9+ (the Mac's own, from Xcode, works). Pinned on purpose.
+torch==2.5.1
+transformers==4.49.0
+pillow
+pillow-heif
+sentencepiece
+protobuf
