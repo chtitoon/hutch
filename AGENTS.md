@@ -2,29 +2,31 @@
 
 My instructions for any coding agent working in this repo.
 
-This repo is the project's only memory. When a conversation produces a decision, a changed plan or a new finding, write it into the docs or `ROADMAP.md` in the same PR; anything left only in a chat is lost.
+This repo is the project's only memory. When a conversation produces a decision, a changed plan or a new finding, write it into the docs, `ROADMAP.md` or `LEARNED.md` in the same PR; anything left only in a chat is lost.
 
 ## What to read
 
 | When | Read |
 |------|------|
-| Every session | `ROADMAP.md` (the plan, and what's next) and `DECISIONS.md` (what's settled, what's open) |
-| Before proposing product changes | Each phase's goal and success test in `ROADMAP.md`, `CONTEXT.md` (research) and D13 in `DECISIONS.md` (what's deliberately out of scope) |
+| Every session | `ROADMAP.md` (where Hutch is going, and what's next) and `DECISIONS.md` (what's settled, what's open) |
+| Before proposing product changes | The outcomes in `ROADMAP.md`, `LEARNED.md` (evidence so far), `CONTEXT.md` (research) and D13 in `DECISIONS.md` (what's deliberately out of scope) |
 | Any UI, visual or web work | `DESIGN.md` (the design system), then the platform's guide: `apps/ios/DESIGN.md` or `apps/web/DESIGN.md` |
 | Work inside an app | That app's own `AGENTS.md`, if it has one (`apps/web/AGENTS.md`) |
 
 ## The work loop
 
-Work is planned in `ROADMAP.md` (D20): each **phase** has a goal and a success test, and each **milestone** (M0, W1…) is one unit of work with a "Why" and a **Definition of Done** (its boxes). Open questions are **Open** or **Proposed** entries in `DECISIONS.md`, not milestones.
+Work is planned in `ROADMAP.md` (D22). **Outcomes** (O1…) say what should change for someone; **bets** (H1…) are what we try in order to move them, each with a test, a signal and an **appetite** (the time it's worth); **experiments** (X1…) are tools or ways of working I want to learn, each tried on a real need of Hutch's. `LEARNED.md` holds the evidence and each finished bet's or experiment's verdict. Open questions are **Open** or **Proposed** entries in `DECISIONS.md`.
 
-1. **Find the work.** In `ROADMAP.md`, take the earliest phase's first milestone that isn't done or in progress. If what it **Requires** isn't there yet (a decision still **Open** or **Proposed**, an account, a test), stop and ask. If I asked for something else, do that instead.
-2. **Check it's unblocked.** When a decision it needs is settled, record the answer in `DECISIONS.md` in the same PR.
-3. **Confirm the slice.** Restate the milestone's Definition of Done in one or two lines and say what you'll do this session. One milestone, or one clear slice of one, per session.
-4. **Build on a branch** named `<milestone-id>-<short-name>` (e.g. `m2-item-store`), with tests.
-5. **Prove it.** Green `make test` for every app you touched, plus snapshot tests for UI work (see Reviewing UI changes).
-6. **Open a PR** that names the milestone, summarizes the change in a few lines, says how to check it, and records any new decision in `DECISIONS.md`. In the same PR, update `ROADMAP.md`: tick the boxes it meets and set the milestone's status: **in progress** with the PR link while boxes remain, **done** with the PR link when all are ticked; when a phase starts or finishes, update its status in the front matter too. Never tick a box the PR doesn't prove; a box that turns out wrong is reworded in the same PR, and the PR says why.
+1. **Find the work.** If I asked for something, do that. Otherwise take the first item in **Now** a session can do, then the first in **Next**. Some bets need only me (H1, H2): then help me run them, or record what I report. If what an item needs isn't there (a decision still **Open** or **Proposed**, an account, the Mac), stop and ask; when a decision it needs is settled, record it in `DECISIONS.md` in the same PR.
+2. **Confirm the slice.** In one or two lines: the bet or experiment, the signal it serves, and what you'll build this session. A bet's outputs are worked out when it starts, not before, and live in its PRs. One clear slice per session.
+3. **Build on a branch** named `<id>-<short-name>` (e.g. `h3-item-store`), with tests.
+4. **Prove it.** Green `make test` for every app you touched, plus snapshot tests for UI work (see Reviewing UI changes). An appetite can shrink a bet's scope, never a non-negotiable.
+5. **Open a PR** that names its bet or experiment (or says `off-roadmap:` and why), summarizes the change in a few lines, says how to check it, and records any new decision in `DECISIONS.md`. In the same PR, keep `ROADMAP.md` true: a bet or experiment that starts moves to **Now** with its start date; one that ends leaves the roadmap, and its verdict (kept, reshaped or killed) goes to `LEARNED.md` with the evidence it rests on; an outcome whose status changes is updated in the front matter. Never claim a signal the evidence doesn't show.
+6. **Record what I observe.** When I report something (items cataloged, a neighbor's reply), add it to the evidence in `LEARNED.md`, dated, with what it bears on.
 7. **Never merge.** I review and merge, usually from my phone.
 8. **Report briefly:** what changed, how to check it, what's next.
+
+**Weekly review.** Once a week, a session opens a PR titled *Weekly review*. It compares what was merged and observed that week with `ROADMAP.md`; closes bets past their appetite (kept, reshaped or killed); reranks **Next**; lists work that named no bet or experiment; and asks me what was fun and what was a slog, recording my answer. It proposes; I merge, edit or close.
 
 ## Talking to me
 
@@ -32,7 +34,7 @@ I often check in from my phone while work runs on my Mac. Keep replies short and
 
 ## Non-negotiables
 
-1. **Zero-knowledge.** Plaintext item data, photos and names never leave the device; keys leave it only end-to-end encrypted, through iCloud Keychain (D21). The server stores and returns opaque ciphertext only. Every sync feature needs a test that asserts the server payload is not readable.
+1. **Zero-knowledge.** Plaintext item data, photos and names never leave the device; keys leave it only end-to-end encrypted, through iCloud Keychain (D21). The server stores and returns opaque ciphertext only. Every sync feature needs a test that asserts the server payload is not readable. On the device, nothing is written to disk unencrypted, with a test that asserts it.
 2. **Private by default.** New items are `private`. Nothing becomes lendable or for-sale without an explicit user action.
 3. **No hand-rolled crypto.** Use CryptoKit on iOS (WebCrypto if the web ever handles data); no custom ciphers or homemade key schedules. Explain any crypto choice in the PR.
 4. **Recovery before sync.** Never ship a way to lose the only key without a recovery path.
@@ -44,7 +46,7 @@ I often check in from my phone while work runs on my Mac. Keep replies short and
 - `apps/web` — static site for myhutch.app (landing, App Store link, privacy policy, support), built with Astro in static mode (D14). Text pages in Markdown; no client-side JavaScript unless a page truly needs it; no tracking.
 - `DESIGN.md` — the design system both apps follow, in Google's DESIGN.md format (D18): tokens in the front matter (the single source of truth), brand, logo and rules in the prose. Never hard-code a color or size in an app that should come from tokens; the website's `npm test` fails if you do.
 - `design/` — asset files only: the logo in `light/` and `dark/`, and `explorations/` (rejected rounds).
-- `ROADMAP.md` (the plan), `DECISIONS.md` (what's settled, what's open) and `CONTEXT.md` (research) at the root.
+- `ROADMAP.md` (where Hutch is going), `LEARNED.md` (evidence and verdicts), `DECISIONS.md` (what's settled, what's open) and `CONTEXT.md` (research) at the root.
 
 ## Commands: one way to do each thing
 
@@ -59,7 +61,7 @@ Each app uses its ecosystem's own task runner, with the same four task names, so
 
 A root `Makefile` delegates, so from the top of the repo `make test` runs both apps, and `make ios-test` or `make web-test` runs one.
 
-Tasks must work from a clean clone, run non-interactively (no prompts), and fail loudly. The iOS Makefile and root Makefile are created in M0; the web `package.json` in W1.
+Tasks must work from a clean clone, run non-interactively (no prompts), and fail loudly. The iOS Makefile and root Makefile come with H3, the first bet with iOS code.
 
 ## Building the iOS app
 
@@ -68,16 +70,16 @@ Work happens on my Mac, in `~/Projects/hutch`, with Xcode installed.
 - Never call work done without a green `make test` in `apps/ios`, and say which simulator it ran on.
 - Keep logic in the Swift package so it's covered by unit tests.
 - CI on a GitHub macOS runner is an optional safety net, not the main loop: macOS minutes are expensive. If added, scope it to `apps/ios/**` and pull requests only.
-- One Linux workflow per area runs on every PR, named for the area, with one job per check: **Design** (`.github/workflows/validate-design.yml`): *Validate DESIGN.md* (`npm run design:lint`); **Web** (`validate-web.yml`): *Validate Web Build* (`npm run web:build`) and *Validate Page Speed* (Lighthouse, only when the PR touches the website). Naming: file `validate-<area>.yml`, workflow *Area*, job *Validate <What>* in title case. The job name is all branch protection shows, so make it clear and unique on its own (*Validate Web Build*, not *Validate Build*). *Validate DESIGN.md* and *Validate Web Build* are required on `main`. A cheap iOS lint (SwiftLint, no build) can join in M0 as **iOS** (`validate-ios.yml`), job *Validate Code*.
+- One Linux workflow per area runs on every PR, named for the area, with one job per check: **Design** (`.github/workflows/validate-design.yml`): *Validate DESIGN.md* (`npm run design:lint`); **Web** (`validate-web.yml`): *Validate Web Build* (`npm run web:build`) and *Validate Page Speed* (Lighthouse, only when the PR touches the website). Naming: file `validate-<area>.yml`, workflow *Area*, job *Validate <What>* in title case. The job name is all branch protection shows, so make it clear and unique on its own (*Validate Web Build*, not *Validate Build*). *Validate DESIGN.md* and *Validate Web Build* are required on `main`. A cheap iOS lint (SwiftLint, no build) can join with H3 as **iOS** (`validate-ios.yml`), job *Validate Code*.
 
 **If the session is not on the Mac** (a cloud session with no link to the laptop), it cannot build Swift. Say so, limit the work to docs or the website, or ask me to open the session from my Mac.
 
 ## Reviewing UI changes
 
 I review UI from my phone, through the PR (D11).
-- **From M2 on (the first screens), every screen has snapshot tests:** it's rendered to reference images, in light and dark mode and at a large Dynamic Type size, stored next to its tests. A change to a screen shows up as before-and-after images in the PR's file changes, and an accidental change fails `make test`.
+- **From the first screens on (H3), every screen has snapshot tests:** it's rendered to reference images, in light and dark mode and at a large Dynamic Type size, stored next to its tests. A change to a screen shows up as before-and-after images in the PR's file changes, and an accidental change fails `make test`.
 - Only update reference images on purpose, and say why in the PR.
-- Until snapshot tests exist (M0), describe any visual change in a line or two in the PR.
+- Until snapshot tests exist, describe any visual change in a line or two in the PR.
 - Never commit throwaway screenshots.
 
 ## Design: iPhone first

@@ -17,9 +17,10 @@ Like the furniture it's named after: closed doors below, a few things on display
 
 ## Where it stands
 
-Hutch is being built one phase at a time.
+Hutch is built one bet at a time, toward outcomes that matter more than features.
 
-- 🗺️ [Roadmap](ROADMAP.md): the road, and where things stand
+- 🗺️ [Roadmap](ROADMAP.md): where it's going, and what's next
+- 📓 [Learned](LEARNED.md): what each bet and experiment taught
 - ⚖️ [Decisions](DECISIONS.md): what's settled, and why
 
 ---
