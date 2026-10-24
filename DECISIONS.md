@@ -48,6 +48,8 @@ Each entry: what, status, and why. Merging the PR that records a decision confir
 ## D5 — Photo-based AI capture
 **Status:** Proposed (Oct 2026): on-device models only, so photos never leave the phone and non-negotiable 1 holds. Confirm with [X4](ROADMAP.md#x4)'s verdict: if on-device suggestions are too poor, the other options come back.
 
+**What H1 builds:** Vision labels the photo and reads any text on it; the Foundation Models system model turns that into a name, category and resale guess, and on iOS 27 it gets the photo itself when the model reports image support. Without Apple Intelligence, Vision's top label alone. The framework's Private Cloud Compute model is never used: it would send the photo off the phone.
+
 **Tension:** sending photos to a cloud model to auto-fill items breaks zero-knowledge. Options: manual entry + barcode only; on-device model; or explicit opt-in per photo with a clear warning. Decide before [H1](ROADMAP.md#h1)'s capture work, which depends on it (ROADMAP.md). Moved from issue #18.
 
 ## D6 — Personal tool vs. product
@@ -76,13 +78,15 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **Why:** issues show up in the GitHub app on my phone, PRs close them automatically, and the history is kept. Milestones are the three phases; issues are the units of work, each with a "Done when." The milestone descriptions hold each phase's goal, order and success test; durable reasoning stays in these docs. There is no separate plan file, because a second copy of the plan would drift.
 
 ## D11 — UI review through snapshot tests
-**Status:** Proposed (Oct 2026). The approach is decided; confirm the library with me in [H1](ROADMAP.md#h1), the first bet with screens.
+**Status:** Decided (Oct 2026). Library confirmed in [H1](ROADMAP.md#h1): Point-Free's [swift-snapshot-testing](https://github.com/pointfreeco/swift-snapshot-testing), pinned to an exact version in `apps/ios/project.yml`, linked into the test target only.
 
 **What:** each screen renders to reference images (light, dark, large Dynamic Type) stored with its tests. GitHub shows changed images side by side in a PR's file changes, so I can review UI from my phone with no extra tooling, and an unintended change fails the tests.
 
 **Why not screenshots posted to the PR** (the earlier plan, on an orphan branch): custom plumbing to build and maintain, images from a private repo may not render in the GitHub mobile app, and screenshots are thrown away after one look. Snapshot tests give the same review plus regression protection.
 
-**Costs:** one third-party test-only library (a well-known open-source snapshot-testing package is the likely choice), and small reference images in the repo, which are real test assets.
+**Costs:** one third-party test-only library, and small reference images in the repo, which are real test assets.
+
+**How it runs:** each screen is rendered as an iPhone 13 Pro–sized view on the iPhone 17 Pro simulator that `make test` uses by default, in light, dark and the accessibility-large text size. `make snapshots` re-records them all, on purpose only.
 
 ## D12 — Agents can't merge
 **Status:** Decided (Oct 2026).
@@ -153,6 +157,8 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 - **Contrast is declared, then checked.** Every text-on-background pair is a `components` entry, with a `-dark` twin when its colors change in dark mode. Pairs ending in `-graphic` are marks and need 3:1.
 - **Enforced on both sides, in `npm test`, which both GitHub (on every PR, as the required checks **Design / Validate DESIGN.md** and **Web / Validate Web Build**) and Cloudflare's build run, so a break can't be merged or deployed:** `design:lint:md` runs the linter and fails on any warning (the CLI only warns on low contrast), plus the `-dark` twin and `-graphic` rules; `design:lint:css` fails on raw colors, undefined variables, type outside the scale, external fonts and off-scale spacing in the website's code, with a reasoned allowlist in `apps/web/DESIGN.md`. iOS gets the equivalent with its first code ([H1](ROADMAP.md#h1)): Swift generated from DESIGN.md and a SwiftLint rule banning raw colors and sizes.
 - Fixing what the linter found: `sage` darkened from `#3E7A62` to `#3D7961` (4.47:1 → 4.53:1 on the background), and a new `marker` role for the status pill's dot, deeper brass in dark mode (1.97:1 → 3.27:1).
+
+**On iOS, as built in [H1](ROADMAP.md#h1):** `make tokens` writes Swift (`Palette`, `Typography`, `Spacing`, `Radius`) rather than asset-catalog colors, and a grep script stands in for the SwiftLint rule. apps/ios/DESIGN.md says why.
 
 **Why:** one file that agents and people both read, values next to the reasons, in a format the tools around agents are starting to understand. A token file alone said what but not why; the reasoning lived in two other files that could drift from it.
 

@@ -1,0 +1,76 @@
+import Foundation
+
+/// One thing I own. Stored only on this device, encrypted (see `ItemStore`).
+public struct Item: Codable, Identifiable, Sendable, Equatable {
+    public let id: UUID
+    public var name: String
+    public var category: String
+    /// Where it lives: "Garage, left shelf".
+    public var place: String
+    /// What I'd resell it for, in `currency`. My own estimate, or the on-device model's guess I kept (D23).
+    public var resalePrice: Decimal?
+    /// ISO 4217 code, e.g. "EUR".
+    public var currency: String
+    /// Who can see it. Always `.private` when created (non-negotiable 2); only an explicit action changes it.
+    public private(set) var visibility: Visibility
+    public let createdAt: Date
+    /// How adding it went, for H1's and X4's signals. Never leaves the device.
+    public var capture: CaptureRecord?
+
+    /// New items are private: there is deliberately no `visibility` parameter.
+    public init(
+        id: UUID = UUID(),
+        name: String,
+        category: String = "",
+        place: String = "",
+        resalePrice: Decimal? = nil,
+        currency: String,
+        createdAt: Date = .now,
+        capture: CaptureRecord? = nil
+    ) {
+        self.id = id
+        self.name = name
+        self.category = category
+        self.place = place
+        self.resalePrice = resalePrice
+        self.currency = currency
+        self.visibility = .private
+        self.createdAt = createdAt
+        self.capture = capture
+    }
+}
+
+public enum Visibility: String, Codable, Sendable {
+    case `private`
+    case lendable
+    case forSale
+}
+
+/// Measured while adding an item, kept with it, never sent anywhere.
+public struct CaptureRecord: Codable, Sendable, Equatable {
+    /// From the shutter to Save.
+    public var seconds: Double
+    /// From the shutter to the suggestion appearing, if one did.
+    public var suggestionSeconds: Double?
+    public var suggestionSource: SuggestionSource
+    /// Whether the saved name is the suggested one, unedited (X4's "accept as is").
+    public var keptSuggestedName: Bool
+
+    public init(seconds: Double, suggestionSeconds: Double?, suggestionSource: SuggestionSource, keptSuggestedName: Bool) {
+        self.seconds = seconds
+        self.suggestionSeconds = suggestionSeconds
+        self.suggestionSource = suggestionSource
+        self.keptSuggestedName = keptSuggestedName
+    }
+}
+
+extension Item {
+    /// Places already used, most recent first, each once (ignoring case and surrounding spaces).
+    public static func places(in items: [Item]) -> [String] {
+        var seen = Set<String>()
+        return items
+            .sorted { $0.createdAt > $1.createdAt }
+            .map { $0.place.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty && seen.insert($0.lowercased()).inserted }
+    }
+}
