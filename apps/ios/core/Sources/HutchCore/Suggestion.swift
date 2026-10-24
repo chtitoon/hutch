@@ -54,12 +54,25 @@ public struct VisionFindings: Sendable, Equatable {
         self.text = text
     }
 
-    /// Labels that describe a scene or material rather than a thing.
+    /// Labels that describe a scene, surface or material rather than a thing.
     static let generic: Set<String> = [
-        "structure", "material", "indoor", "outdoor", "room", "wood_processed", "wood_natural",
+        "structure", "material", "indoor", "outdoor", "room", "wood_processed", "wood_natural", "wood",
         "textile", "machine", "tool", "equipment", "consumer_electronics", "container", "interior_room",
-        "floor", "wall", "garage", "shelf", "table", "object", "furniture", "plastic", "metal",
+        "floor", "wall", "garage", "shelf", "table", "desk", "object", "furniture", "plastic", "metal",
+        "office", "workplace", "hardwood", "wood_grain", "fabric", "paper", "document", "screenshot",
     ]
+
+    /// Labels that may name the object itself, most confident first.
+    public var objectLabels: [String] { labels.filter { !Self.generic.contains($0) } }
+    /// Labels about the scene or material around it.
+    public var sceneLabels: [String] { labels.filter { Self.generic.contains($0) } }
+
+    /// Text that looks printed on the object, like a brand or a spec: short lines only. A
+    /// screen or a page in the photo gives long lines and many of them, which say nothing
+    /// about what the object is.
+    public var printedText: [String] {
+        text.filter { $0.split(separator: " ").count <= 4 }.prefix(6).map { $0 }
+    }
 
     /// A name without a language model: a brand read on the object, then the most confident
     /// specific label, made readable. "power_drill" with "DEWALT" on it becomes "DEWALT Power drill".
@@ -72,7 +85,7 @@ public struct VisionFindings: Sendable, Equatable {
     /// The first word in the text that looks like a brand: letters only, 3 to 14 of them,
     /// with a capital, and not one of the words printed on every label.
     public var brand: String? {
-        text.lazy
+        printedText.lazy
             .flatMap { $0.split(whereSeparator: { !$0.isLetter && !$0.isNumber && $0 != "-" }) }
             .map(String.init)
             .first { word in

@@ -19,6 +19,17 @@ Hutch collects nothing ([non-negotiable 5](AGENTS.md#non-negotiables)), so evide
 - what neighbors tell me
 - public research
 
+#### E2 — With Apple Intelligence on: a charger right, a laptop wrong
+
+- **Date:** 2026-10-24
+- **Bears on:** [X4](ROADMAP.md#x4)
+- **Effect:** mixed
+- **Source:** my notes, on my iPhone 17, after the brand change
+- A RAVPower charger was named right.
+- My open laptop, on a wooden table, was named "Wooden Box".
+- Likely causes: the screen's text was passed to the model as if printed on the object, and scene labels ("wood", "table") were passed as if they named it. Not yet known whether the model saw the photo or only Vision's labels: the note under the name says which.
+- **What changed because of it:** only short printed lines count as text on the object, and scene and material labels are passed to the model marked "not the object".
+
 #### E1 — First 3 photos: no suggestion was right
 
 - **Date:** 2026-10-24

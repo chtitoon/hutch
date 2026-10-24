@@ -80,7 +80,7 @@ public struct OnDeviceSuggester: ItemSuggesting {
         }()
         return VisionFindings(
             labels: await labels.filter { $0.confidence > 0.1 }.prefix(8).map(\.identifier),
-            text: await lines.compactMap { $0.topCandidates(1).first?.string }.prefix(6).map { $0 }
+            text: await lines.compactMap { $0.topCandidates(1).first?.string }.prefix(40).map { $0 }
         )
     }
 
@@ -114,13 +114,17 @@ public struct OnDeviceSuggester: ItemSuggesting {
         For example "RAVPower 61W USB-C charger", "Ray-Ban glasses case", "Bosch PSB 18 drill". \
         Never invent a brand that isn't visible; without one, just say what it is. \
         The labels come from a scene classifier and are often wrong about small objects: \
-        trust the photo and the text on the object over them.
+        trust the photo and the text on the object over them. Scene labels describe what's \
+        around the object, such as the table it sits on; never name the object after them.
         """
 
     static func details(_ findings: VisionFindings) -> String {
-        """
-        Labels from image recognition, most likely first: \(findings.labels.joined(separator: ", ")).
-        Text read on the object: \(findings.text.isEmpty ? "none" : findings.text.joined(separator: " | ")).
+        let more = findings.text.count - findings.printedText.count
+        return """
+        Labels that may name the object, most likely first: \(findings.objectLabels.isEmpty ? "none" : findings.objectLabels.joined(separator: ", ")).
+        Scene and material labels, not the object: \(findings.sceneLabels.isEmpty ? "none" : findings.sceneLabels.joined(separator: ", ")).
+        Short text printed on the object: \(findings.printedText.isEmpty ? "none" : findings.printedText.joined(separator: " | ")).
+        \(more > 3 ? "There is also a lot of longer text, probably a screen or a page on the object: it's a device with a screen, a book or a document." : "")
         \(findings.brand.map { "The brand is probably \($0)." } ?? "")
         """
     }

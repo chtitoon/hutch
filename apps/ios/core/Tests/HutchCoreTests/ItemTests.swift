@@ -108,6 +108,29 @@ import Testing
         #expect(VisionFindings(labels: [], text: ["Anker"]).fallbackName == "Anker")
     }
 
+    /// E2: a laptop on a wooden table, its screen full of text, was named "Wooden Box".
+    @Test func screenTextAndSceneLabelsDontNameTheObject() {
+        let laptop = VisionFindings(
+            labels: ["wood_processed", "table", "computer", "laptop"],
+            text: [
+                "func suggest(for image: CGImage) async -> Suggestion {",
+                "Wooden Box was named by the model on this iPhone today",
+                "let findings = await Self.see(subject) and then more code",
+                "You help someone catalog the things they own at home",
+                "MacBook Pro",
+            ]
+        )
+        #expect(laptop.objectLabels == ["computer", "laptop"])
+        #expect(laptop.sceneLabels == ["wood_processed", "table"])
+        #expect(laptop.printedText == ["MacBook Pro"])
+        #expect(laptop.brand == "MacBook")
+        #expect(laptop.fallbackName == "MacBook Computer")
+        let details = OnDeviceSuggester.details(laptop)
+        #expect(details.contains("not the object: wood_processed, table"))
+        #expect(details.contains("probably a screen"))
+        #expect(!details.contains("Wooden Box"))
+    }
+
     @Test func promptPassesTheBrandOn() {
         #expect(OnDeviceSuggester.details(VisionFindings(labels: ["computer"], text: ["RAVPOWER"])).contains("The brand is probably RAVPOWER."))
     }
