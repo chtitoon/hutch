@@ -12,8 +12,7 @@ import Testing
     static let photo = jpegMagic + Data("pretend photo of a drill".utf8)
 
     func drill(at date: Date = .now) -> Item {
-        Item(name: "DeWalt drill sentinel", category: "Tools", place: "Garage shelf sentinel",
-             resalePrice: 45, currency: "EUR", createdAt: date)
+        Item(name: "DeWalt drill sentinel", category: "Tools", room: "Garage sentinel", spot: "Left shelf sentinel", createdAt: date)
     }
 
     @Test func savedItemsComeBack() async throws {

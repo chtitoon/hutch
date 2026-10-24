@@ -1,7 +1,7 @@
 import HutchCore
 import SwiftUI
 
-/// Everything I've added: photo, name, place and price.
+/// Everything I've added: photo, name and place.
 struct ItemListScreen: View {
     let library: Library
     @Environment(\.dismiss) private var dismiss
@@ -80,14 +80,7 @@ struct ItemRow: View {
                     .foregroundStyle(Palette.inkMuted)
             }
 
-            Spacer(minLength: Spacing.s2)
-
-            if let price = item.resalePrice {
-                Text(price, format: .currency(code: item.currency).precision(.fractionLength(0)))
-                    .font(Typography.labelMd)
-                    .foregroundStyle(Palette.ink)
-                    .monospacedDigit()
-            }
+            Spacer(minLength: 0)
         }
         .accessibilityElement(children: .combine)
     }

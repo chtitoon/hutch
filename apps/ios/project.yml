@@ -24,6 +24,11 @@ targets:
     sources: [Hutch]
     dependencies:
       - package: HutchCore
+    # HomeKit only reads my room names for "where it lives"; it never controls accessories.
+    entitlements:
+      path: Hutch/Hutch.entitlements
+      properties:
+        com.apple.developer.homekit: true
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: app.myhutch.ios
@@ -36,6 +41,7 @@ targets:
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
         INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
         INFOPLIST_KEY_NSCameraUsageDescription: "Hutch takes a photo of each thing you add. Photos stay on this iPhone, encrypted."
+        INFOPLIST_KEY_NSHomeKitUsageDescription: "Hutch lists your Apple Home rooms so you can say where each thing lives. Room names stay on this iPhone."
         INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
   HutchTests:
     type: bundle.unit-test

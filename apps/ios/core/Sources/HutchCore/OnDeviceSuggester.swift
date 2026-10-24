@@ -3,20 +3,20 @@ import Foundation
 import FoundationModels
 import Vision
 
-/// Suggests a name, category and resale guess from a photo, entirely on the phone (D5, X4):
-/// Vision labels the photo and reads any text on it, then Apple's on-device Foundation
-/// Models system model turns that, and the photo itself where the model can see images,
-/// into an item. Only `SystemLanguageModel` is used, never Private Cloud Compute, so the
-/// photo never leaves the device. Without Apple Intelligence, Vision's labels alone.
+/// Suggests a name and category from a photo, entirely on the phone (D5, X4): Vision labels
+/// the photo and reads any text on it, then Apple's on-device Foundation Models system model
+/// turns that, and the photo itself where the model can see images, into an item. Only
+/// `SystemLanguageModel` is used, never Private Cloud Compute, so the photo never leaves the
+/// device. Without Apple Intelligence, Vision's labels alone.
 public struct OnDeviceSuggester: ItemSuggesting {
     public init() {}
 
-    public func suggest(for image: CGImage, currency: String) async -> Suggestion {
+    public func suggest(for image: CGImage) async -> Suggestion {
         let findings = await Self.see(image)
         let model = SystemLanguageModel.default
         guard model.isAvailable else { return findings.fallbackSuggestion }
         do {
-            return try await Self.ask(model, image: image, findings: findings, currency: currency)
+            return try await Self.ask(model, image: image, findings: findings)
         } catch {
             return findings.fallbackSuggestion
         }
@@ -35,9 +35,9 @@ public struct OnDeviceSuggester: ItemSuggesting {
         )
     }
 
-    static func ask(_ model: SystemLanguageModel, image: CGImage, findings: VisionFindings, currency: String) async throws -> Suggestion {
+    static func ask(_ model: SystemLanguageModel, image: CGImage, findings: VisionFindings) async throws -> Suggestion {
         let session = LanguageModelSession(model: model, instructions: instructions)
-        let details = Self.details(findings, currency: currency)
+        let details = Self.details(findings)
         let guess: ItemGuess
         let source: SuggestionSource
         if #available(iOS 27, macOS 27, *), model.capabilities.contains(.vision) {
@@ -52,12 +52,7 @@ public struct OnDeviceSuggester: ItemSuggesting {
         }
         let name = guess.name.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !name.isEmpty else { return findings.fallbackSuggestion }
-        return Suggestion(
-            name: name,
-            category: guess.category.trimmingCharacters(in: .whitespacesAndNewlines),
-            resaleEstimate: guess.resaleEstimate > 0 ? Decimal(guess.resaleEstimate) : nil,
-            source: source
-        )
+        return Suggestion(name: name, category: guess.category.trimmingCharacters(in: .whitespacesAndNewlines), source: source)
     }
 
     static let instructions = """
@@ -66,11 +61,10 @@ public struct OnDeviceSuggester: ItemSuggesting {
         and model when the text on it shows them. Never invent a brand that isn't visible.
         """
 
-    static func details(_ findings: VisionFindings, currency: String) -> String {
+    static func details(_ findings: VisionFindings) -> String {
         """
         Labels from image recognition, most likely first: \(findings.labels.joined(separator: ", ")).
         Text read on the object: \(findings.text.isEmpty ? "none" : findings.text.joined(separator: " | ")).
-        Give its resale estimate in \(currency), for a used one in fair condition.
         """
     }
 }
@@ -81,6 +75,4 @@ struct ItemGuess {
     var name: String
     @Guide(description: "One broad category: Tools, Garden, Sports, Bikes, Camping, Kitchen, Electronics, Furniture, Toys, Car, Household or Other")
     var category: String
-    @Guide(description: "Rough second-hand resale price as a whole number in the requested currency; 0 if unsure")
-    var resaleEstimate: Int
 }

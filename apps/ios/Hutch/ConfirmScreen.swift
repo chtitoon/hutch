@@ -1,7 +1,7 @@
 import HutchCore
 import SwiftUI
 
-/// After the shutter: the phone suggests, I confirm, say where it lives and what I'd resell it for.
+/// After the shutter: the phone suggests a name, I confirm it and say where it lives.
 struct ConfirmScreen: View {
     let capture: Capture
     let library: Library
@@ -19,8 +19,7 @@ struct ConfirmScreen: View {
                 photo: capture.image,
                 draft: $draft,
                 suggesting: suggestion == nil,
-                places: library.places,
-                currency: library.currency,
+                rooms: library.rooms,
                 error: error,
                 canSave: !saving,
                 onSave: save
@@ -34,6 +33,7 @@ struct ConfirmScreen: View {
             .navigationBarTitleDisplayMode(.inline)
         }
         .interactiveDismissDisabled(saving)
+        .onAppear { library.homeRooms.start() }
         .task { await suggest() }
     }
 
@@ -42,13 +42,12 @@ struct ConfirmScreen: View {
             suggestion = .empty
             return
         }
-        let result = await library.suggester.suggest(for: image, currency: library.currency)
+        let result = await library.suggester.suggest(for: image)
         suggestionSeconds = Date.now.timeIntervalSince(capture.takenAt)
         suggestion = result
-        // Fill only what I haven't typed myself.
+        // Fill only what I haven't typed myself. The category isn't shown, but is kept.
         if draft.name.isEmpty { draft.name = result.name }
-        if draft.category.isEmpty { draft.category = result.category }
-        if draft.price == nil { draft.price = result.resaleEstimate }
+        draft.category = result.category
     }
 
     private func save() {
@@ -56,10 +55,9 @@ struct ConfirmScreen: View {
         let source = suggestion?.source ?? .none
         let item = Item(
             name: draft.name.trimmingCharacters(in: .whitespacesAndNewlines),
-            category: draft.category.trimmingCharacters(in: .whitespacesAndNewlines),
-            place: draft.place.trimmingCharacters(in: .whitespacesAndNewlines),
-            resalePrice: draft.price,
-            currency: library.currency,
+            category: draft.category,
+            room: draft.room.trimmingCharacters(in: .whitespacesAndNewlines),
+            spot: draft.spot.trimmingCharacters(in: .whitespacesAndNewlines),
             capture: CaptureRecord(
                 seconds: Date.now.timeIntervalSince(capture.takenAt),
                 suggestionSeconds: suggestionSeconds,
@@ -84,8 +82,8 @@ struct ConfirmScreen: View {
 struct Draft: Equatable {
     var name = ""
     var category = ""
-    var place = ""
-    var price: Decimal?
+    var room = ""
+    var spot = ""
 }
 
 /// The confirm form, free of any logic so snapshot tests can render each state.
@@ -93,8 +91,8 @@ struct ItemForm: View {
     let photo: UIImage
     @Binding var draft: Draft
     let suggesting: Bool
-    let places: [String]
-    let currency: String
+    /// Rooms I've used, then my Apple Home rooms.
+    let rooms: [String]
     var error: String?
     var canSave = true
     let onSave: () -> Void
@@ -113,32 +111,22 @@ struct ItemForm: View {
 
             Section {
                 HStack {
-                    TextField("Name", text: $draft.name, prompt: Text(suggesting ? "Looking at your photo…" : "What is it?"))
+                    TextField("Name", text: $draft.name, prompt: Text(suggesting ? "Looking at your photo…" : "What is it?"), axis: .vertical)
                         .font(Typography.titleMd)
                     if suggesting && draft.name.isEmpty {
                         ProgressView()
                     }
                 }
-                TextField("Category", text: $draft.category, prompt: Text("Category"))
             }
             .listRowBackground(Palette.surface)
 
             Section("Where it lives") {
-                TextField("Place", text: $draft.place, prompt: Text("Garage, left shelf"))
-                if !places.isEmpty {
-                    PlaceChips(places: places, selected: $draft.place)
+                if !rooms.isEmpty {
+                    RoomChips(rooms: rooms, selected: $draft.room)
                         .listRowInsets(EdgeInsets(top: Spacing.s2, leading: Spacing.s4, bottom: Spacing.s2, trailing: Spacing.s4))
                 }
-            }
-            .listRowBackground(Palette.surface)
-
-            Section {
-                TextField("Resale price", value: $draft.price, format: .currency(code: currency), prompt: Text("What you'd sell it for"))
-                    .keyboardType(.decimalPad)
-            } header: {
-                Text("I'd resell it for")
-            } footer: {
-                Text("Your own estimate. Any suggestion comes from this iPhone; nothing about this item leaves it.")
+                TextField("Room", text: $draft.room, prompt: Text(rooms.isEmpty ? "Room: Garage" : "Or another room"))
+                TextField("Spot", text: $draft.spot, prompt: Text("Spot, if you like: left shelf"))
             }
             .listRowBackground(Palette.surface)
 
@@ -146,6 +134,8 @@ struct ItemForm: View {
                 PrivateBadge()
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets())
+            } footer: {
+                Text("The name is suggested on this iPhone. Nothing about this item leaves it.")
             }
 
             if let error {
@@ -172,26 +162,72 @@ struct ItemForm: View {
     }
 }
 
-/// Places I've used before, most recent first: one tap instead of typing.
-private struct PlaceChips: View {
-    let places: [String]
+/// Rooms as one-tap chips, wrapping onto as many lines as they need.
+private struct RoomChips: View {
+    let rooms: [String]
     @Binding var selected: String
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: Spacing.s2) {
-                ForEach(places, id: \.self) { place in
-                    let isSelected = place.caseInsensitiveCompare(selected.trimmingCharacters(in: .whitespaces)) == .orderedSame
-                    Button(place) { selected = place }
-                        .font(Typography.labelSm)
-                        .padding(.horizontal, Spacing.s3)
-                        .padding(.vertical, Spacing.s2)
-                        .foregroundStyle(isSelected ? Palette.onSageTint : Palette.ink)
-                        .background(isSelected ? Palette.sageTint : Palette.surfaceSunken, in: .capsule)
-                        .buttonStyle(.plain)
-                }
+        FlowLayout(spacing: Spacing.s2) {
+            ForEach(rooms, id: \.self) { room in
+                let isSelected = room.caseInsensitiveCompare(selected.trimmingCharacters(in: .whitespaces)) == .orderedSame
+                Button(room) { selected = isSelected ? "" : room }
+                    .font(Typography.labelSm)
+                    .padding(.horizontal, Spacing.s3)
+                    .padding(.vertical, Spacing.s2)
+                    .foregroundStyle(isSelected ? Palette.onSageTint : Palette.ink)
+                    .background(isSelected ? Palette.sageTint : Palette.surfaceSunken, in: .capsule)
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(isSelected ? .isSelected : [])
             }
         }
+    }
+}
+
+/// Lays children out left to right, wrapping to a new line when the row is full.
+private struct FlowLayout: Layout {
+    let spacing: CGFloat
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let rows = rows(for: subviews, width: proposal.width ?? .infinity)
+        let height = rows.map(\.height).reduce(0, +) + spacing * CGFloat(max(0, rows.count - 1))
+        return CGSize(width: proposal.width ?? rows.map(\.width).max() ?? 0, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        var y = bounds.minY
+        for row in rows(for: subviews, width: bounds.width) {
+            var x = bounds.minX
+            for index in row.indices {
+                let size = subviews[index].sizeThatFits(.unspecified)
+                subviews[index].place(at: CGPoint(x: x, y: y), proposal: ProposedViewSize(size))
+                x += size.width + spacing
+            }
+            y += row.height + spacing
+        }
+    }
+
+    private struct Row {
+        var indices: [Int] = []
+        var width: CGFloat = 0
+        var height: CGFloat = 0
+    }
+
+    private func rows(for subviews: Subviews, width: CGFloat) -> [Row] {
+        var rows = [Row()]
+        for index in subviews.indices {
+            let size = subviews[index].sizeThatFits(.unspecified)
+            let needed = rows[rows.count - 1].indices.isEmpty ? size.width : rows[rows.count - 1].width + spacing + size.width
+            if needed > width, !rows[rows.count - 1].indices.isEmpty {
+                rows.append(Row())
+            }
+            var row = rows[rows.count - 1]
+            row.width = row.indices.isEmpty ? size.width : row.width + spacing + size.width
+            row.height = max(row.height, size.height)
+            row.indices.append(index)
+            rows[rows.count - 1] = row
+        }
+        return rows
     }
 }
 

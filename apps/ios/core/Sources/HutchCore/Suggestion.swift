@@ -5,14 +5,11 @@ import Foundation
 public struct Suggestion: Sendable, Equatable {
     public var name: String
     public var category: String
-    /// A rough resale guess in the currency asked for; nil when the model had none (D23, option 4).
-    public var resaleEstimate: Decimal?
     public var source: SuggestionSource
 
-    public init(name: String, category: String = "", resaleEstimate: Decimal? = nil, source: SuggestionSource) {
+    public init(name: String, category: String = "", source: SuggestionSource) {
         self.name = name
         self.category = category
-        self.resaleEstimate = resaleEstimate
         self.source = source
     }
 
@@ -32,7 +29,7 @@ public enum SuggestionSource: String, Codable, Sendable {
 }
 
 public protocol ItemSuggesting: Sendable {
-    func suggest(for image: CGImage, currency: String) async -> Suggestion
+    func suggest(for image: CGImage) async -> Suggestion
 }
 
 /// What Vision found in a photo: classification labels and any text on the thing.

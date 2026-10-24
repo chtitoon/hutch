@@ -48,7 +48,7 @@ Each entry: what, status, and why. Merging the PR that records a decision confir
 ## D5 — Photo-based AI capture
 **Status:** Proposed (Oct 2026): on-device models only, so photos never leave the phone and non-negotiable 1 holds. Confirm with [X4](ROADMAP.md#x4)'s verdict: if on-device suggestions are too poor, the other options come back.
 
-**What H1 builds:** Vision labels the photo and reads any text on it; the Foundation Models system model turns that into a name, category and resale guess, and on iOS 27 it gets the photo itself when the model reports image support. Without Apple Intelligence, Vision's top label alone. The framework's Private Cloud Compute model is never used: it would send the photo off the phone.
+**What H1 builds:** Vision labels the photo and reads any text on it; the Foundation Models system model turns that into a name and category, and on iOS 27 it gets the photo itself when the model reports image support. Without Apple Intelligence, Vision's top label alone. The framework's Private Cloud Compute model is never used: it would send the photo off the phone.
 
 **Tension:** sending photos to a cloud model to auto-fill items breaks zero-knowledge. Options: manual entry + barcode only; on-device model; or explicit opt-in per photo with a clear warning. Decide before [H1](ROADMAP.md#h1)'s capture work, which depends on it (ROADMAP.md). Moved from issue #18.
 
@@ -228,7 +228,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **Status:** Open (Oct 2026). Decide before any price lookup is built; until then a resale price is my own estimate.
 
 **Tension:** [H1](ROADMAP.md#h1) shows what I'd resell each item for. Looking that up (eBay sold listings, a price API) means telling someone else what the item is, and non-negotiable 1 says names and item data never leave the device. Options:
-1. **My own estimate only.** Nothing leaves the phone. What H1 builds.
+1. **My own estimate only.** Nothing leaves the phone. H1 first built this, then dropped resale prices altogether (Oct 2026): they slowed adding items and serve [O3](ROADMAP.md#o3), not O1.
 2. **A lookup I trigger per item,** sending only a short search term I see and can edit first ("DeWalt 20V drill"), never the photo or anything else. Needs non-negotiable 1 reworded, as D21 did for keys.
 3. **Prices only when selling** ([O3](ROADMAP.md#o3)): listing an item publishes it to eBay anyway, so the lookup comes with a choice already made.
 4. **An on-device model's guess,** from what it knows, if [X4](ROADMAP.md#x4) shows it's close enough. Nothing leaves the phone, but the guess may be dated or rough.
@@ -240,3 +240,14 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 1. **Reword non-negotiable 1** to cover what Hutch sends to servers: "...never leave the device, except one item at a time, when I explicitly send it to someone I choose." Hutch's servers still see ciphertext only. The share sheet hands the card to Messages; Hutch keeps no copy elsewhere.
 2. **An encrypted link instead:** the item encrypted on the phone, the key only in the link (after the `#`, which browsers never send), a page on myhutch.app decrypting it with WebCrypto. The server sees ciphertext only and non-negotiable 1 stands; it costs a server, link expiry, and the site's first JavaScript.
 
+
+## D25 — Where it lives: an Apple Home room and an optional spot
+**Status:** Decided (Oct 2026), in [H1](ROADMAP.md#h1).
+
+**What:** "where it lives" is a room picked in one tap, plus an optional spot I type ("left shelf"). The rooms offered are the ones I've used, most recent first, then my Apple Home rooms, read through HomeKit. A room can still be typed if it isn't in Home.
+
+**Why:** typing a place for every item is slow, and Home already knows my rooms. A room alone is too coarse for a garage, so the spot stays, but optional.
+
+**Privacy:** Hutch only reads room names; it never controls accessories. Names stay in memory or inside an encrypted item, so non-negotiable 1 holds. Home access is asked for the first time I confirm an item, and declining just means no Home rooms.
+
+**Costs:** the HomeKit entitlement. Rooms only include what I've set up in the Home app.

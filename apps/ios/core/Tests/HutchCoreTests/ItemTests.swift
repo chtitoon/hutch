@@ -6,23 +6,30 @@ import Testing
 @Suite struct ItemTests {
     /// Non-negotiable 2: new items are private.
     @Test func newItemsArePrivate() {
-        #expect(Item(name: "Ladder", currency: "EUR").visibility == .private)
+        #expect(Item(name: "Ladder").visibility == .private)
     }
 
     @Test func privateSurvivesAStoreRoundTrip() throws {
-        let item = Item(name: "Ladder", currency: "EUR")
+        let item = Item(name: "Ladder")
         let decoded = try JSONDecoder().decode(Item.self, from: JSONEncoder().encode(item))
         #expect(decoded.visibility == .private)
     }
 
-    @Test func placesAreMostRecentFirstAndUnique() {
+    @Test func roomsUsedComeFirstThenHomeRoomsEachOnce() {
         let items = [
-            Item(name: "a", place: "Garage", currency: "EUR", createdAt: .init(timeIntervalSince1970: 1)),
-            Item(name: "b", place: " Attic ", currency: "EUR", createdAt: .init(timeIntervalSince1970: 3)),
-            Item(name: "c", place: "garage", currency: "EUR", createdAt: .init(timeIntervalSince1970: 4)),
-            Item(name: "d", place: "", currency: "EUR", createdAt: .init(timeIntervalSince1970: 5)),
+            Item(name: "a", room: "Garage", createdAt: .init(timeIntervalSince1970: 1)),
+            Item(name: "b", room: " Attic ", createdAt: .init(timeIntervalSince1970: 3)),
+            Item(name: "c", room: "garage", createdAt: .init(timeIntervalSince1970: 4)),
+            Item(name: "d", room: "", createdAt: .init(timeIntervalSince1970: 5)),
         ]
-        #expect(Item.places(in: items) == ["garage", "Attic"])
+        #expect(Item.rooms(used: items, home: ["Kitchen", "Attic", "Garage"]) == ["garage", "Attic", "Kitchen"])
+        #expect(Item.rooms(used: [], home: []).isEmpty)
+    }
+
+    @Test func placeJoinsRoomAndSpot() {
+        #expect(Item(name: "x", room: "Garage", spot: " left shelf").place == "Garage · left shelf")
+        #expect(Item(name: "x", room: "Garage").place == "Garage")
+        #expect(Item(name: "x").place.isEmpty)
     }
 }
 
@@ -54,7 +61,7 @@ import Testing
 
 @Suite struct CaptureStatsTests {
     func item(_ seconds: Double, _ source: SuggestionSource, kept: Bool) -> Item {
-        Item(name: "x", currency: "EUR", capture: CaptureRecord(
+        Item(name: "x", capture: CaptureRecord(
             seconds: seconds, suggestionSeconds: source == .none ? nil : 1.5, suggestionSource: source, keptSuggestedName: kept))
     }
 
@@ -63,7 +70,7 @@ import Testing
             item(12, .modelWithImage, kept: true),
             item(25, .labelsOnly, kept: false),
             item(8, .none, kept: false),
-            Item(name: "typed in", currency: "EUR"),
+            Item(name: "typed in"),
         ])
         #expect(stats.itemCount == 4)
         #expect(stats.timedCount == 3)
@@ -94,11 +101,10 @@ import Testing
         #expect(VisionFindings(labels: [], text: []).fallbackSuggestion == .empty)
     }
 
-    @Test func promptCarriesWhatVisionSawAndTheCurrency() {
-        let details = OnDeviceSuggester.details(VisionFindings(labels: ["ladder"], text: ["Werner"]), currency: "EUR")
+    @Test func promptCarriesWhatVisionSaw() {
+        let details = OnDeviceSuggester.details(VisionFindings(labels: ["ladder"], text: ["Werner"]))
         #expect(details.contains("ladder"))
         #expect(details.contains("Werner"))
-        #expect(details.contains("EUR"))
     }
 }
 

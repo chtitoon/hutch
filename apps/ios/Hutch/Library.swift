@@ -10,13 +10,11 @@ final class Library {
     private(set) var error: String?
     private let store: ItemStore?
     let suggester: any ItemSuggesting
-    /// The currency new items are priced in.
-    let currency: String
+    let homeRooms = HomeRooms()
 
-    init(store: ItemStore?, suggester: any ItemSuggesting, currency: String = Locale.current.currency?.identifier ?? "EUR") {
+    init(store: ItemStore?, suggester: any ItemSuggesting) {
         self.store = store
         self.suggester = suggester
-        self.currency = currency
     }
 
     static func onDevice() -> Library {
@@ -31,7 +29,8 @@ final class Library {
         }
     }
 
-    var places: [String] { Item.places(in: items) }
+    /// Rooms I've used, then the rest of my Apple Home rooms.
+    var rooms: [String] { Item.rooms(used: items, home: homeRooms.names) }
     var stats: CaptureStats { CaptureStats(items: items) }
 
     func load() async {

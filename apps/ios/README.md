@@ -8,7 +8,7 @@ Design: the root [DESIGN.md](../../DESIGN.md) for values and rules, and [DESIGN.
 
 - `Hutch/`: the app's screens.
   - Opens on the camera (`CaptureScreen`).
-  - One tap, then confirm the suggestion (`ConfirmScreen`).
+  - One tap, then confirm the suggested name and pick a room (`ConfirmScreen`). Rooms come from Apple Home (`HomeRooms`, D25).
   - The list of items (`ItemListScreen`).
 - `Hutch/Generated/Tokens.swift`: written by `make tokens` from DESIGN.md. Never edit it by hand.
 - `core/`: the `HutchCore` Swift package, with its tests. It holds:

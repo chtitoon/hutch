@@ -4,13 +4,12 @@ import Foundation
 public struct Item: Codable, Identifiable, Sendable, Equatable {
     public let id: UUID
     public var name: String
+    /// The model's guess, kept but not shown yet: browsing, lending and selling will use it.
     public var category: String
-    /// Where it lives: "Garage, left shelf".
-    public var place: String
-    /// What I'd resell it for, in `currency`. My own estimate, or the on-device model's guess I kept (D23).
-    public var resalePrice: Decimal?
-    /// ISO 4217 code, e.g. "EUR".
-    public var currency: String
+    /// The room it lives in, from Apple Home or one I've used: "Garage".
+    public var room: String
+    /// Where in the room, optional: "left shelf".
+    public var spot: String
     /// Who can see it. Always `.private` when created (non-negotiable 2); only an explicit action changes it.
     public private(set) var visibility: Visibility
     public let createdAt: Date
@@ -22,18 +21,16 @@ public struct Item: Codable, Identifiable, Sendable, Equatable {
         id: UUID = UUID(),
         name: String,
         category: String = "",
-        place: String = "",
-        resalePrice: Decimal? = nil,
-        currency: String,
+        room: String = "",
+        spot: String = "",
         createdAt: Date = .now,
         capture: CaptureRecord? = nil
     ) {
         self.id = id
         self.name = name
         self.category = category
-        self.place = place
-        self.resalePrice = resalePrice
-        self.currency = currency
+        self.room = room
+        self.spot = spot
         self.visibility = .private
         self.createdAt = createdAt
         self.capture = capture
@@ -65,12 +62,21 @@ public struct CaptureRecord: Codable, Sendable, Equatable {
 }
 
 extension Item {
-    /// Places already used, most recent first, each once (ignoring case and surrounding spaces).
-    public static func places(in items: [Item]) -> [String] {
+    /// "Garage · left shelf", "Garage", or empty.
+    public var place: String {
+        [room, spot]
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .filter { !$0.isEmpty }
+            .joined(separator: " · ")
+    }
+
+    /// Rooms to offer: those I've used, most recent first, then my Apple Home rooms; each
+    /// once, ignoring case and surrounding spaces.
+    public static func rooms(used items: [Item], home: [String] = []) -> [String] {
         var seen = Set<String>()
-        return items
-            .sorted { $0.createdAt > $1.createdAt }
-            .map { $0.place.trimmingCharacters(in: .whitespacesAndNewlines) }
+        let used = items.sorted { $0.createdAt > $1.createdAt }.map(\.room)
+        return (used + home)
+            .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
             .filter { !$0.isEmpty && seen.insert($0.lowercased()).inserted }
     }
 }
