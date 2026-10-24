@@ -33,22 +33,26 @@ phases:
 
 # Roadmap
 
-Where Hutch is going and what's next. It only looks forward: what already happened is in [LEARNED.md](LEARNED.md). How it works is [D22](DECISIONS.md#d22--an-outcome-roadmap-bets-and-experiments).
+Where Hutch is going, and what's next. What already happened is in [LEARNED.md](LEARNED.md), and why the roadmap works this way is in [D22](DECISIONS.md#d22--an-outcome-roadmap-bets-and-experiments).
 
 ## Why Hutch exists
 
-1. **The product I wish I had:** I know what I own, borrow instead of buying what I'd use once, and let go of what I don't use, without exposing what's in my home. Mostly for me; if it lands with people around me, even better.
-2. **The way I learn:** new tools and ways of working, tried on a real product instead of a toy.
+I wanted to borrow a lawn mower from a neighbor for a day, and lend my own things in return, without putting a list of everything in my home on someone else's website. One day I'd also like to sell what I no longer use, without typing it all out again.
 
-**Guardrail:** I still want to build it. Two slogs in a row at the weekly review, and the next pick is an experiment or a fun bet.
+So Hutch is first the app I wish I had. I snap a photo of something, and I know what I own, where it is and what it's worth, and nobody else can see it. It's mostly for me. If the people around me find it useful too, even better.
+
+It's also how I learn. I'd rather try new tools on an app I actually use than on a tutorial.
+
+## Keeping it fun
+
+If building Hutch feels like a chore two weeks in a row, the next thing I pick is something I'm excited to try.
 
 ## Outcomes
-
-What someone does differently because of Hutch. Only [O1](#o1) is a gate: nothing for other people gets built until I use Hutch myself.
 
 #### <a id="o1"></a>O1 — I know what I own and where it is
 - **Early signal:** 20 items in my first week; adding one takes under 20 s.
 - **Proof:** 50 items, still accurate two months later, used at least 3 times to find, prove or decide something.
+- **Comes first:** nothing for other people gets built until I'm using Hutch myself, past O1's early signal.
 
 #### <a id="o2"></a>O2 — Neighbors lend to each other
 - **Early signal:** when a neighbor asks for something, I answer from Hutch.
@@ -56,8 +60,6 @@ What someone does differently because of Hutch. Only [O1](#o1) is a gate: nothin
 
 #### <a id="o3"></a>O3 — I let go of things I don't use
 - **Proof:** 5 items sold from Hutch, each listed faster than with the eBay app.
-
-Signals come from my notes, what neighbors tell me and counts on my phone only I see: never telemetry ([non-negotiable 5](AGENTS.md#non-negotiables)).
 
 ## Now
 
