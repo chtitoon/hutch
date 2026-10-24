@@ -20,6 +20,7 @@ struct ConfirmScreen: View {
                 draft: $draft,
                 suggesting: suggestion == nil,
                 suggestionNote: suggestion.flatMap(Self.note(for:)),
+                questions: suggestion?.questions ?? [],
                 rooms: library.rooms,
                 error: error,
                 canSave: !saving,
@@ -69,6 +70,7 @@ struct ConfirmScreen: View {
             category: draft.category,
             room: draft.room.trimmingCharacters(in: .whitespacesAndNewlines),
             spot: draft.spot.trimmingCharacters(in: .whitespacesAndNewlines),
+            details: draft.details(for: suggestion?.questions ?? []),
             capture: CaptureRecord(
                 seconds: Date.now.timeIntervalSince(capture.takenAt),
                 suggestionSeconds: suggestionSeconds,
@@ -95,6 +97,15 @@ struct Draft: Equatable {
     var category = ""
     var room = ""
     var spot = ""
+    /// My answer to each narrowing question, by its label.
+    var answers: [String: String] = [:]
+
+    /// The answered questions, in the order they were asked.
+    func details(for questions: [Question]) -> [Detail] {
+        questions.compactMap { question in
+            answers[question.label].map { Detail(question: question.label, answer: $0) }
+        }
+    }
 }
 
 /// The confirm form, free of any logic so snapshot tests can render each state.
@@ -103,6 +114,8 @@ struct ItemForm: View {
     @Binding var draft: Draft
     let suggesting: Bool
     var suggestionNote: String?
+    /// One-tap questions to narrow it down; skipping one is fine.
+    var questions: [Question] = []
     /// Rooms I've used, then my Apple Home rooms.
     let rooms: [String]
     var error: String?
@@ -136,12 +149,20 @@ struct ItemForm: View {
             }
             .listRowBackground(Palette.surface)
 
+            ForEach(questions, id: \.self) { question in
+                Section(question.label) {
+                    Chips(options: question.choices, selected: answer(to: question))
+                        .listRowInsets(EdgeInsets(top: Spacing.s2, leading: Spacing.s4, bottom: Spacing.s2, trailing: Spacing.s4))
+                }
+                .listRowBackground(Palette.surface)
+            }
+
             Section("Where it lives") {
                 // Typing a room is only for when there's none to pick: no Apple Home rooms, none used yet.
                 if rooms.isEmpty {
                     TextField("Room", text: $draft.room, prompt: Text("Room: Garage"))
                 } else {
-                    RoomChips(rooms: rooms, selected: $draft.room)
+                    Chips(options: rooms, selected: $draft.room)
                         .listRowInsets(EdgeInsets(top: Spacing.s2, leading: Spacing.s4, bottom: Spacing.s2, trailing: Spacing.s4))
                 }
                 TextField("Spot", text: $draft.spot, prompt: Text("Spot, if you like: left shelf"))
@@ -178,18 +199,27 @@ struct ItemForm: View {
             .background(Palette.background)
         }
     }
+
+    /// The answer to one question as a chip selection; "" is no answer.
+    private func answer(to question: Question) -> Binding<String> {
+        Binding(
+            get: { draft.answers[question.label] ?? "" },
+            set: { draft.answers[question.label] = $0.isEmpty ? nil : $0 }
+        )
+    }
 }
 
-/// Rooms as one-tap chips, wrapping onto as many lines as they need.
-private struct RoomChips: View {
-    let rooms: [String]
+/// Options as one-tap chips, wrapping onto as many lines as they need. Tapping the selected
+/// one again clears it.
+private struct Chips: View {
+    let options: [String]
     @Binding var selected: String
 
     var body: some View {
         FlowLayout(spacing: Spacing.s2) {
-            ForEach(rooms, id: \.self) { room in
-                let isSelected = room.caseInsensitiveCompare(selected.trimmingCharacters(in: .whitespaces)) == .orderedSame
-                Button(room) { selected = isSelected ? "" : room }
+            ForEach(options, id: \.self) { option in
+                let isSelected = option.caseInsensitiveCompare(selected.trimmingCharacters(in: .whitespaces)) == .orderedSame
+                Button(option) { selected = isSelected ? "" : option }
                     .font(Typography.labelSm)
                     .padding(.horizontal, Spacing.s3)
                     .padding(.vertical, Spacing.s2)

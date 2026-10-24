@@ -26,6 +26,22 @@ import Testing
         #expect(Item.rooms(used: [], home: []).isEmpty)
     }
 
+    /// Items saved by the first build on my phone had `place` and a resale price, no room.
+    @Test func readsItemsFromEarlierBuilds() throws {
+        let json = #"{"id":"6F9619FF-8B86-D011-B42D-00C04FC964FF","name":"Drill","category":"Tools","place":"Garage","resalePrice":45,"currency":"EUR","visibility":"private","createdAt":0}"#
+        let item = try JSONDecoder().decode(Item.self, from: Data(json.utf8))
+        #expect(item.name == "Drill")
+        #expect(item.room == "Garage")
+        #expect(item.spot.isEmpty)
+        #expect(item.details.isEmpty)
+        #expect(item.visibility == .private)
+    }
+
+    @Test func detailsSurviveARoundTrip() throws {
+        let item = Item(name: "Apple MacBook Air", details: [Detail(question: "Memory", answer: "16 GB")])
+        #expect(try JSONDecoder().decode(Item.self, from: JSONEncoder().encode(item)) == item)
+    }
+
     @Test func placeJoinsRoomAndSpot() {
         #expect(Item(name: "x", room: "Garage", spot: " left shelf").place == "Garage · left shelf")
         #expect(Item(name: "x", room: "Garage").place == "Garage")
@@ -129,6 +145,19 @@ import Testing
         #expect(details.contains("not the object: wood_processed, table"))
         #expect(details.contains("probably a screen"))
         #expect(!details.contains("Wooden Box"))
+    }
+
+    @Test func questionsAreCleanedUp() {
+        let cleaned = Question.cleaned([
+            Question(label: "Chip and year", choices: ["M1, 2020", " M2, 2022 ", "m2, 2022", "Not sure", "", "M3, 2024", "M4, 2025", "M5", "M6"]),
+            Question(label: "Colour", choices: ["Unknown"]),
+            Question(label: " ", choices: ["a", "b"]),
+            Question(label: "Memory", choices: ["8 GB", "16 GB"]),
+            Question(label: "Storage", choices: ["256 GB", "512 GB"]),
+            Question(label: "Charger", choices: ["30 W", "35 W"]),
+        ])
+        #expect(cleaned.map(\.label) == ["Chip and year", "Memory", "Storage"])
+        #expect(cleaned[0].choices == ["M1, 2020", "M2, 2022", "M3, 2024", "M4, 2025", "M5"])
     }
 
     @Test func promptPassesTheBrandOn() {

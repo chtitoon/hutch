@@ -103,16 +103,25 @@ public struct OnDeviceSuggester: ItemSuggesting {
         return Suggestion(
             name: guess.name.trimmingCharacters(in: .whitespacesAndNewlines),
             category: guess.category.trimmingCharacters(in: .whitespacesAndNewlines),
+            questions: Question.cleaned(guess.questions.map { Question(label: $0.label, choices: $0.choices) }),
             source: source
         )
     }
 
     static let instructions = """
         You help someone catalog the things they own at home, one photo at a time. \
-        Name the single main object as they would write it on a label: brand first when the \
-        text on it shows one, then what the thing is, then the model or a key spec if shown. \
+        Name the single main object as specifically as you can be sure of, as they would \
+        write it on a label: brand first when the text on it shows one, or when the product \
+        is unmistakable from its design (an Apple laptop is an "Apple MacBook"); then the \
+        product line or kind; then a key spec if shown. Not too broad: "Apple MacBook Air", \
+        not "computer"; "Wooden dining chair", not "furniture". Not too narrow: never guess a \
+        year, model number or size you can't see. Never invent a brand. \
         For example "RAVPower 61W USB-C charger", "Ray-Ban glasses case", "Bosch PSB 18 drill". \
-        Never invent a brand that isn't visible; without one, just say what it is. \
+        Then ask up to three short questions the owner can answer in one tap, to pin down \
+        what the photo can't show and that matters for owning, lending or selling it: \
+        which brand if you can't tell, then which exact model or generation, then specs like \
+        chip, memory, storage, size or material. Give each two to five short, real choices, \
+        most likely first. \
         The labels come from a scene classifier and are often wrong about small objects: \
         trust the photo and the text on the object over them. Scene labels describe what's \
         around the object, such as the table it sits on; never name the object after them.
@@ -132,8 +141,18 @@ public struct OnDeviceSuggester: ItemSuggesting {
 
 @Generable
 struct ItemGuess {
-    @Guide(description: "Brand (if visible) + what it is + model or key spec (if visible), e.g. 'RAVPower 61W USB-C charger' or 'Aluminium step ladder'")
+    @Guide(description: "Brand + product line or kind + key spec if visible, e.g. 'Apple MacBook Air', 'RAVPower 61W USB-C charger', 'Wooden dining chair'")
     var name: String
     @Guide(description: "One broad category: Tools, Garden, Sports, Bikes, Camping, Kitchen, Electronics, Furniture, Toys, Car, Household or Other")
     var category: String
+    @Guide(description: "Up to three questions that narrow it down, most useful first", .maximumCount(3))
+    var questions: [ItemQuestion]
+}
+
+@Generable
+struct ItemQuestion {
+    @Guide(description: "A short label, e.g. 'Chip and year', 'Memory', 'Storage', 'Material'")
+    var label: String
+    @Guide(description: "Two to five short, real answers, most likely first, e.g. 'M1, 2020', 'M2, 2022', 'M3, 2024'", .count(2...5))
+    var choices: [String]
 }

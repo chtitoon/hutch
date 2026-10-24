@@ -5,14 +5,18 @@ import Foundation
 public struct Suggestion: Sendable, Equatable {
     public var name: String
     public var category: String
+    /// Up to three one-tap questions to pin down what the photo can't show (which model, chip,
+    /// memory; which style or material).
+    public var questions: [Question]
     public var source: SuggestionSource
     /// Why Apple Intelligence wasn't used, when it wasn't: shown under the name, so a poor
     /// guess can be told apart from a model that never ran.
     public var fallbackReason: String?
 
-    public init(name: String, category: String = "", source: SuggestionSource, fallbackReason: String? = nil) {
+    public init(name: String, category: String = "", questions: [Question] = [], source: SuggestionSource, fallbackReason: String? = nil) {
         self.name = name
         self.category = category
+        self.questions = questions
         self.source = source
         self.fallbackReason = fallbackReason
     }
@@ -24,6 +28,36 @@ public struct Suggestion: Sendable, Equatable {
     }
 
     public static let empty = Suggestion(name: "", source: .none)
+}
+
+/// A question with a few likely answers, so narrowing down takes a tap, not typing.
+public struct Question: Sendable, Equatable, Hashable {
+    /// "Chip and year".
+    public var label: String
+    /// "M1, 2020", "M2, 2022", "M3, 2024": most likely first.
+    public var choices: [String]
+
+    public init(label: String, choices: [String]) {
+        self.label = label
+        self.choices = choices
+    }
+
+    /// Questions worth showing: a label and 2 to 5 distinct, non-empty choices; at most three.
+    static func cleaned(_ questions: [Question]) -> [Question] {
+        questions.compactMap { question in
+            let label = question.label.trimmingCharacters(in: .whitespacesAndNewlines)
+            var seen = Set<String>()
+            let choices = question.choices
+                .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
+                // Not answering is "not sure", so those choices are noise.
+                .filter { !$0.isEmpty && !["unknown", "not sure", "don't know", "other"].contains($0.lowercased()) }
+                .filter { seen.insert($0.lowercased()).inserted }
+            guard !label.isEmpty, choices.count >= 2 else { return nil }
+            return Question(label: label, choices: Array(choices.prefix(5)))
+        }
+        .prefix(3)
+        .map { $0 }
+    }
 }
 
 /// Which on-device path made a suggestion, so X4 can compare them. Nothing here leaves the phone.

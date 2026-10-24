@@ -75,6 +75,11 @@ struct ItemRow: View {
                 Text(item.name)
                     .font(Typography.labelLg)
                     .foregroundStyle(Palette.ink)
+                if !item.details.isEmpty {
+                    Text(item.details.map(\.answer).joined(separator: " · "))
+                        .font(Typography.bodySm)
+                        .foregroundStyle(Palette.ink)
+                }
                 Text(item.place.isEmpty ? "No place yet" : item.place)
                     .font(Typography.bodySm)
                     .foregroundStyle(Palette.inkMuted)
