@@ -1,6 +1,9 @@
 import Foundation
 
 /// One thing I own. Nothing can share an item yet, so every item is private (non-negotiable 2).
+///
+/// Its photo and thumbnail are files of their own in ``ItemStore``, with the item's id, so
+/// listing items never decrypts every photo. Like SwiftData's `.externalStorage`.
 public struct Item: Codable, Identifiable, Hashable, Sendable {
   public let id: UUID
   public var name: String
