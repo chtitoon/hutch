@@ -22,7 +22,7 @@ struct CaptureScreen: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Palette.device)
+        .background(Palette.deep)
         .safeAreaInset(edge: .bottom) { bar }
         .overlay(alignment: .top) {
             if let error = library.error {
@@ -112,9 +112,12 @@ private struct NoCamera: View {
     var body: some View {
         ContentUnavailableView {
             Label("No camera here", systemImage: "camera")
+                .font(Typography.headlineMd)
+                .foregroundStyle(Palette.onDeep)
         } description: {
             Text("Choose a photo instead. It stays on this iPhone, encrypted.")
+                .font(Typography.bodyMd)
+                .foregroundStyle(Palette.onDeepMuted)
         }
-        .foregroundStyle(Palette.onDeep)
     }
 }

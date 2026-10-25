@@ -1,7 +1,7 @@
 // Turns the tokens in DESIGN.md's front matter (the repo root) into Swift, the way
 // apps/web/tokens.mjs turns them into CSS. Writes Hutch/Generated/Tokens.swift:
 // - Palette: each color role, its -dark token as the dark appearance.
-// - Typography: each iPhone type level as the Dynamic Type style closest to its size.
+// - Typography: each iPhone type level in its brand font, scaling like the closest Dynamic Type style.
 // - Spacing and Radius: the numbered 4px scale and the corners.
 // `swift tokens.swift` writes it; `--check` fails if it is stale.
 import Foundation
@@ -63,11 +63,27 @@ let styles: [(name: String, size: Double)] = [
 let weights = ["400": "regular", "500": "medium", "600": "semibold", "700": "bold"]
 let levels = (sections["typography"] ?? []).filter { !$0.key.hasSuffix("-wide") && !$0.key.hasPrefix("preview-") }
 if levels.isEmpty { fail("no type levels found") }
+// Font families are YAML anchors (`&display Bricolage…`) reused as aliases (`*display`). The
+// app bundles each family's font file under its plain name: the web's "Variable" and
+// "Fallback" faces and the generic system names are skipped.
+var anchors: [String: String] = [:]
+func family(_ value: String) -> String? {
+    var list = value
+    if list.hasPrefix("&"), let space = list.firstIndex(of: " ") {
+        anchors[String(list[list.index(after: list.startIndex)..<space])] = String(list[list.index(after: space)...])
+        list = String(list[list.index(after: space)...])
+    } else if list.hasPrefix("*") {
+        list = anchors[String(list.dropFirst())] ?? ""
+    }
+    return list.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+        .first { !$0.hasSuffix("Variable") && !$0.hasSuffix("Fallback") && !$0.contains("-") && $0 != "system-ui" }
+}
 let typeLines = levels.map { level, _, props in
     guard let size = props["fontSize"].flatMap({ Double($0.replacingOccurrences(of: "px", with: "")) }) else { fail("\(level) has no fontSize") }
     guard let weight = props["fontWeight"].flatMap({ weights[$0] }) else { fail("\(level) has an unknown fontWeight") }
+    guard let name = props["fontFamily"].flatMap(family) else { fail("\(level) has no font family") }
     let style = styles.min { abs($0.size - size) < abs($1.size - size) }!.name
-    return "    static let \(camel(level)) = Font.system(.\(style), weight: .\(weight))"
+    return "    static let \(camel(level)) = Font.custom(\"\(name)\", size: \(Int(size)), relativeTo: .\(style)).weight(.\(weight))"
 }
 
 let points = { (value: String) in value.replacingOccurrences(of: "px", with: "") }
@@ -83,7 +99,7 @@ let output = """
     \(paletteLines.joined(separator: "\n"))
     }
 
-    /// Type levels from DESIGN.md, as Dynamic Type styles so they scale with the user's setting.
+    /// Type levels from DESIGN.md in the bundled brand fonts, each scaling with the Dynamic Type style closest to its size.
     enum Typography {
     \(typeLines.joined(separator: "\n"))
     }

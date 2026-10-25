@@ -32,8 +32,12 @@ struct ItemList: View {
         if items.isEmpty {
             ContentUnavailableView {
                 Label("Nothing yet", systemImage: "house")
+                    .font(Typography.headlineMd)
+                    .foregroundStyle(Palette.ink)
             } description: {
                 Text("Take a photo of something you own. It stays private, on this iPhone.")
+                    .font(Typography.bodyMd)
+                    .foregroundStyle(Palette.inkMuted)
             }
             .background(Palette.background)
         } else {

@@ -14,9 +14,16 @@ Why `Palette` and not `Color.ink`: some role names clash with SwiftUI's own (`.b
 
 ## Type and Dynamic Type
 
-Each type level becomes a `Typography` font: the Dynamic Type text style closest to its iPhone size (the base level, not `-wide`), at its weight, so text scales with the user's setting. For example, `headline-md` (26px) becomes `.title`, `body-md` (16px) `.callout`, and `caption` (13px) `.footnote`. `-wide` levels and `preview-*` levels are web-only.
+Each type level becomes a `Typography` font in its brand family, at its iPhone size and weight, scaling with the Dynamic Type text style closest to that size (`relativeTo:`). For example, `headline-md` (26px) scales like `.title`, `body-md` (16px) like `.callout`, and `caption` (13px) like `.footnote`. `-wide` levels and `preview-*` levels are web-only.
 
-For now the app uses the system font. Bundling Bricolage Grotesque and Instrument Sans (scaled with `relativeTo:`) is a later change; the web serves them as subsetted WOFF2, which iOS can't load.
+- **The fonts:** Bricolage Grotesque and Instrument Sans, as Google Fonts' variable TTFs in `Hutch/Fonts/`, each with its OFL license. The web's subsetted WOFF2 files are its own.
+- **Registered at launch** by `BrandFonts`, which also sets navigation titles in them (Bricolage for large titles), since SwiftUI styles those only through UIKit.
+- **Body text** defaults to `body-lg` for a whole screen through `.brand()`, which also sets the sage tint.
+- **Section headers** are an `Eyebrow`: `label-caps`, uppercase, tracked, in `sage`. Footers are `caption` in `ink-subtle`.
+
+## Motion
+
+Calm and slow, like the brand. While the phone looks at a photo, a brass line sweeps down over it with a soft trail (`ScanOverlay`): brass as a fill, never as text. With Reduce Motion, the line stays still and only fades in and out. Snapshot tests turn the motion off so every render matches.
 
 ## Spacing and corners
 

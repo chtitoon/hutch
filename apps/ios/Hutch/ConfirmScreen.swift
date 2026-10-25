@@ -145,6 +145,12 @@ struct ItemForm: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: Spacing.s30 * 2)
                     .clipped()
+                    .overlay {
+                        if suggesting {
+                            ScanOverlay().transition(.opacity)
+                        }
+                    }
+                    .animation(.easeOut, value: suggesting)
                     .listRowInsets(EdgeInsets())
             }
 
@@ -170,13 +176,13 @@ struct ItemForm: View {
                 }
             } footer: {
                 if let suggestionNote {
-                    Text(suggestionNote)
+                    Text(suggestionNote).modifier(Footnote())
                 }
             }
             .listRowBackground(Palette.surface)
 
             if !aspects.isEmpty {
-                Section("About it") {
+                Section {
                     ForEach(aspects, id: \.self) { aspect in
                         let current = draft.values[aspect.name] ?? ""
                         if !current.isEmpty && !editing.contains(aspect.name) {
@@ -203,11 +209,13 @@ struct ItemForm: View {
                             .listRowInsets(EdgeInsets(top: Spacing.s3, leading: Spacing.s4, bottom: Spacing.s3, trailing: Spacing.s4))
                         }
                     }
+                } header: {
+                    Eyebrow("About it")
                 }
                 .listRowBackground(Palette.surface)
             }
 
-            Section("Where it lives") {
+            Section {
                 // Typing a room is only for when there's none to pick: no Apple Home rooms, none used yet.
                 if rooms.isEmpty {
                     TextField("Room", text: $draft.room, prompt: Text("Room: Garage"))
@@ -216,6 +224,8 @@ struct ItemForm: View {
                         .listRowInsets(EdgeInsets(top: Spacing.s2, leading: Spacing.s4, bottom: Spacing.s2, trailing: Spacing.s4))
                 }
                 TextField("Spot", text: $draft.spot, prompt: Text("Spot, if you like: left shelf"))
+            } header: {
+                Eyebrow("Where it lives")
             }
             .listRowBackground(Palette.surface)
 
@@ -224,7 +234,7 @@ struct ItemForm: View {
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets())
             } footer: {
-                Text("The name is suggested on this iPhone. Nothing about this item leaves it.")
+                Text("The name is suggested on this iPhone. Nothing about this item leaves it.").modifier(Footnote())
             }
 
             if let error {
@@ -330,6 +340,15 @@ private struct FlowLayout: Layout {
             rows[rows.count - 1] = row
         }
         return rows
+    }
+}
+
+/// A section's footer: `caption` in `ink-subtle`, as captions are in DESIGN.md.
+struct Footnote: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(Typography.caption)
+            .foregroundStyle(Palette.inkSubtle)
     }
 }
 

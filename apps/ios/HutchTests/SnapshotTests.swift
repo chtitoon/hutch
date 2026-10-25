@@ -19,9 +19,11 @@ import Testing
     ]
 
     func check(_ view: some View, named name: String, fileID: StaticString = #fileID, filePath: StaticString = #filePath, line: UInt = #line, column: UInt = #column) {
+        BrandFonts.register()
         let screen = view
             .environment(\.locale, Locale(identifier: "en_IE"))
-            .tint(Palette.sage)
+            .environment(\.animatesScan, false)
+            .brand()
         for variant in Self.variants {
             assertSnapshot(
                 of: UIHostingController(rootView: screen),
