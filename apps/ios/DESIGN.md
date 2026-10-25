@@ -33,12 +33,14 @@ The spacing scale and `rounded` values become constants (`Spacing.s6`, `Radius.m
 
 ## Generated, never hand-edited
 
-`make tokens` in `apps/ios` reads DESIGN.md's front matter and writes `Hutch/Generated/Tokens.swift` (`Palette`, `Typography`, `Spacing`, `Radius`), the way `npm run tokens` generates CSS for the website. The file is marked as generated; change DESIGN.md and regenerate.
+`make tokens` in `apps/ios` reads DESIGN.md's front matter and writes `Hutch/Generated/Tokens.swift` (`Palette`, `Typography`, `Spacing`, `Radius`), the way `npm run tokens` generates CSS for the website. It also draws the app icon from the logo's mark.
+
+- **Not committed,** like the Xcode project: `make setup`, `test`, `run` and `snapshots` write both fresh before building.
+- **Change DESIGN.md,** never the generated files. Review a design change in DESIGN.md, and in the snapshot images it moves.
 
 ## Enforcement
 
 As on the web, `make test` fails when the app bypasses the tokens:
 
-- **Generated files are current:** `make tokens` in check mode fails if DESIGN.md changed without regenerating.
 - **`lint.sh`** bans raw `Color(...)` and `UIColor(...)` literals and hard-coded sizes in `.font(.system(size:))`, `.padding(<number>)`, `spacing: <number>` and `cornerRadius: <number>`, outside the generated file. It's a grep, so it needs nothing installed; it becomes a SwiftLint rule if it grows.
 - **Snapshot tests** in light, dark and a large Dynamic Type size (D11) catch any visual change.

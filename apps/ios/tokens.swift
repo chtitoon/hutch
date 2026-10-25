@@ -3,7 +3,7 @@
 // - Palette: each color role, its -dark token as the dark appearance.
 // - Typography: each iPhone type level in its brand font, scaling like the closest Dynamic Type style.
 // - Spacing and Radius: the numbered 4px scale and the corners.
-// `swift tokens.swift` writes it; `--check` fails if it is stale.
+// `make tokens` runs it, as does every task that builds; the output is never committed.
 import Foundation
 
 let here = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
@@ -163,16 +163,8 @@ let output = """
 
   """
 
-if CommandLine.arguments.contains("--check") {
-  let current = try? String(contentsOf: target, encoding: .utf8)
-  if current != output {
-    fail("Hutch/Generated/Tokens.swift is out of date with DESIGN.md. Run: make tokens")
-  }
-} else {
-  try FileManager.default.createDirectory(
-    at: target.deletingLastPathComponent(),
-    withIntermediateDirectories: true
-  )
-  try output.write(to: target, atomically: true, encoding: .utf8)
-  print("Wrote \(target.path(percentEncoded: false))")
-}
+try FileManager.default.createDirectory(
+  at: target.deletingLastPathComponent(),
+  withIntermediateDirectories: true
+)
+try output.write(to: target, atomically: true, encoding: .utf8)

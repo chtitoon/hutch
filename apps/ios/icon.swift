@@ -87,4 +87,3 @@ let contents = """
 
   """
 try contents.write(to: target.appending(path: "Contents.json"), atomically: true, encoding: .utf8)
-print("Wrote \(target.path)")

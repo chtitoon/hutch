@@ -18,7 +18,7 @@ Design: the root [DESIGN.md](../../DESIGN.md) for values and rules, and [DESIGN.
   - `Services/`: the camera, and Apple Home rooms (`HomeRooms`).
   - `PreviewContent/`: sample data for previews and snapshot tests, debug builds only.
   - `Assets.xcassets`: the app icon and the logo's house-and-keyhole mark.
-  - `Generated/Tokens.swift`: written by `make tokens` from DESIGN.md. Never edit it by hand.
+  - `Generated/Tokens.swift` and the app icon: written from DESIGN.md by `make setup` (and every task that builds), never committed or edited by hand.
 - `core/`: the `HutchCore` Swift package, with its tests. It holds:
   - the item: a name and a room
   - encryption (`Vault`, `KeychainKeyStore`)
@@ -29,8 +29,8 @@ Design: the root [DESIGN.md](../../DESIGN.md) for values and rules, and [DESIGN.
 
 Run them in this folder.
 
-- `make setup`: checks Xcode and XcodeGen, then generates the project.
-- `make test`: checks the tokens and lint, then runs every test on the iPhone 17 Pro simulator. Pick another with `SIMULATOR="iPhone 17"`, but reference images are recorded on the 17 Pro.
+- `make setup`: checks Xcode and XcodeGen, then generates the tokens, app icon and project.
+- `make test`: regenerates the project, lints, then runs every test on the iPhone 17 Pro simulator. Pick another with `SIMULATOR="iPhone 17"`, but reference images are recorded on the 17 Pro.
 - `make run`: builds the app and launches it in the simulator.
 - `make tokens`: regenerates `Tokens.swift` from DESIGN.md, and the app icon from the logo's mark (`icon.swift`).
 - `make snapshots`: re-records every reference image. Only do this on purpose, and say why in the PR.

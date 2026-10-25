@@ -18,8 +18,9 @@ setup:
 	@xcodebuild -version | head -1
 	@$(MAKE) --no-print-directory project
 
-# Regenerates the project when project.yml or the source tree changes (XcodeGen's cache decides).
-project:
+# Writes the Swift tokens and app icon from DESIGN.md, then the project. None of it is committed,
+# so every task that builds starts here and nothing can fall behind DESIGN.md.
+project: tokens
 	@xcodegen generate --use-cache --quiet
 
 # Swift formatted Google-style, and app code using tokens, never raw colors or sizes.
@@ -32,7 +33,6 @@ format:
 		| xargs -0 xcrun swift format format --in-place --configuration .swift-format
 
 test: project lint
-	@swift tokens.swift --check
 	@set -euo pipefail; \
 	sim=$$(./simulator.sh "$(SIMULATOR)"); udid=$${sim%% *}; name=$${sim#* }; \
 	echo "Testing on $$name ($$udid)"; \
