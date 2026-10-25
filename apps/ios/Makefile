@@ -10,7 +10,7 @@ DERIVED := build
 APP := $(DERIVED)/Build/Products/Debug-iphonesimulator/Hutch.app
 SIMULATOR ?= iPhone 17 Pro
 
-.PHONY: setup test run tokens snapshots project lint
+.PHONY: setup test run tokens snapshots project lint format
 
 setup:
 	@xcode-select -p >/dev/null || { echo "Xcode not found. Install it from the App Store, then run: sudo xcode-select -s /Applications/Xcode.app" >&2; exit 1; }
@@ -22,9 +22,14 @@ setup:
 project:
 	@xcodegen generate --use-cache --quiet
 
-# App code uses tokens, never raw colors or sizes (apps/ios/DESIGN.md).
+# Swift formatted Google-style, and app code using tokens, never raw colors or sizes.
 lint:
 	@./lint.sh
+
+# Formats every Swift file Google-style (.swift-format), the way `make lint` checks it.
+format:
+	@find Hutch HutchTests core tokens.swift icon.swift -name '*.swift' -not -path '*/Generated/*' -not -path '*/.build/*' -print0 \
+		| xargs -0 xcrun swift format format --in-place --configuration .swift-format
 
 test: project lint
 	@swift tokens.swift --check

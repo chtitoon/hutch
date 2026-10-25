@@ -9,7 +9,7 @@ This repo is the project's only memory. When a conversation produces a decision,
 - **Every session:** `ROADMAP.md` (where Hutch is going, and what's next) and `DECISIONS.md` (what's settled, what's open).
 - **Before proposing product changes:** the outcomes in `ROADMAP.md`, `LEARNED.md` (evidence so far), `CONTEXT.md` (research) and D13 in `DECISIONS.md` (what's deliberately out of scope).
 - **Any UI, visual or web work:** `DESIGN.md` (the design system), then the platform's guide: `apps/ios/DESIGN.md` or `apps/web/DESIGN.md`.
-- **Work inside an app:** that app's own `AGENTS.md`, if it has one (`apps/web/AGENTS.md`).
+- **Work inside an app:** that app's own `AGENTS.md`: [apps/ios/AGENTS.md](apps/ios/AGENTS.md) (Swift style, naming, comments) or [apps/web/AGENTS.md](apps/web/AGENTS.md).
 
 ## The work loop
 

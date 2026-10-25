@@ -6,12 +6,19 @@ Design: the root [DESIGN.md](../../DESIGN.md) for values and rules, and [DESIGN.
 
 ## Layout
 
-- `Hutch/`: the app's screens, laid out after the Hutch iPhone app canvas in the brand's fonts and colors.
-  - Opens on Home (`HomeScreen`): search, rooms with their counts, what was added lately, and a + at the bottom. A room lists its things by spot; an item shows its photo and place.
-  - + opens the camera (`CaptureScreen`). After the shutter, type its name and pick a room (`AddScreen`); Save goes back to Home. Rooms come from Apple Home (`HomeRooms`, D25).
-  - `BrandFonts`: the bundled fonts and section eyebrows.
-  - `Assets.xcassets`: the app icon and the logo's house-and-keyhole mark, traced from the website's.
-- `Hutch/Generated/Tokens.swift`: written by `make tokens` from DESIGN.md. Never edit it by hand.
+- `Hutch/`: the app, laid out after the Hutch iPhone app canvas in the brand's fonts and colors.
+  - `App/`: the app's entry point, and `Library`, the inventory the screens share through the environment.
+  - `Screens/`:
+    - Home (`HomeScreen`) has search, rooms with their counts, what was added lately, and a + at the bottom.
+    - `RoomScreen` lists a room's things by spot.
+    - `ItemScreen` shows an item's photo and place.
+    - + opens the camera (`CaptureScreen`). After the shutter, `AddItemScreen` takes the name and a room from Apple Home (D25), then goes back to Home.
+  - `Components/`: the shared pieces, such as chips, button styles and the item list.
+  - `Brand/`: the bundled fonts and the `brand()` modifier.
+  - `Services/`: the camera, and Apple Home rooms (`HomeRooms`).
+  - `PreviewContent/`: sample data for previews and snapshot tests, debug builds only.
+  - `Assets.xcassets`: the app icon and the logo's house-and-keyhole mark.
+  - `Generated/Tokens.swift`: written by `make tokens` from DESIGN.md. Never edit it by hand.
 - `core/`: the `HutchCore` Swift package, with its tests. It holds:
   - the item: a name, a room and an optional spot
   - encryption (`Vault`, `KeychainKeyStore`)
@@ -27,6 +34,7 @@ Run them in this folder.
 - `make run`: builds the app and launches it in the simulator.
 - `make tokens`: regenerates `Tokens.swift` from DESIGN.md, and the app icon from the logo's mark (`icon.swift`).
 - `make snapshots`: re-records every reference image. Only do this on purpose, and say why in the PR.
+- `make format`: formats every Swift file Google-style; `make test` fails on anything it would change (AGENTS.md).
 
 ## On my phone
 
