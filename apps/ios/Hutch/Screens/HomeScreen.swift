@@ -31,8 +31,10 @@ struct HomeScreen: View {
       .toolbarVisibility(.hidden, for: .navigationBar)
       .navigationDestination(for: Route.self) { route in
         switch route {
-        case .room(let room): RoomScreen(room: room)
-        case .item(let item): ItemScreen(item: item)
+        case .room(let room):
+          RoomScreen(room: room)
+        case .item(let item):
+          ItemScreen(item: item)
         }
       }
       .safeAreaInset(edge: .bottom) {

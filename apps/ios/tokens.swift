@@ -35,13 +35,16 @@ for raw in front.split(separator: "\n", omittingEmptySubsequences: true) {
     in: CharacterSet(charactersIn: "\" ")
   )
   switch indent {
-  case 0: section = key
-  case 2: sections[section, default: []].append((key, value, [:]))
+  case 0:
+    section = key
+  case 2:
+    sections[section, default: []].append((key, value, [:]))
   case 4:
     if !(sections[section]?.isEmpty ?? true) {
       sections[section]![sections[section]!.count - 1].props[key] = value
     }
-  default: continue
+  default:
+    continue
   }
 }
 

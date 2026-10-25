@@ -9,6 +9,7 @@ Read the root [AGENTS.md](../../AGENTS.md) first. This page covers how Swift in 
   - It's what `swift-format`, which ships with Xcode, does by default: 2-space indents, 100-character lines.
   - The settings are in `.swift-format`.
   - `make format` fixes the layout. `make lint`, part of `make test`, fails on anything left.
+  - **Not covered by the formatter:** a `case` or `default` body goes on the lines after its label, never on the same line. `make lint` checks this too.
 
 ## Naming
 

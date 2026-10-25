@@ -7,6 +7,13 @@ cd "$(dirname "$0")"
 find Hutch HutchTests core tokens.swift icon.swift -name '*.swift' -not -path '*/Generated/*' -not -path '*/.build/*' -print0 \
   | xargs -0 xcrun swift format lint --strict --configuration .swift-format
 
+# Google style puts a case's body on its own lines; swift-format keeps it where it was written.
+if matches=$(grep -rnE '^\s*(case [^=]*|default):\s*\S' --include='*.swift' --exclude-dir=Generated --exclude-dir=.build Hutch HutchTests core tokens.swift icon.swift); then
+  echo "$matches"
+  echo "Put each case's body on the line after its label (Google Swift style)." >&2
+  exit 1
+fi
+
 patterns=(
   'Color\((red|hue|white|\.sRGB|#)'
   'UIColor\((red|hue|white|named)'
