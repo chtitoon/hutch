@@ -25,7 +25,7 @@ Each type level becomes a `Typography` font in its brand family, at its iPhone s
 
 - **Chips** pick one option, such as a room: an `ink` pill with `background` text when picked (the `pill` pair), outlined in `border` when not.
 - **The primary action** (add an item, save) is `deep` forest with `on-deep` text, the website's band colors.
-- **The privacy badge** carries the logo's house-and-keyhole mark, never a padlock.
+- **The privacy badge** ("On this phone only") appears once, on Home, with the logo's house-and-keyhole mark, never a padlock. Repeating it on every screen is noise.
 
 ## Spacing and corners
 

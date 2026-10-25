@@ -57,7 +57,6 @@ struct AddItemScreen: View {
           ChipPicker(options: library.rooms, selection: $draft.room)
         }
       }
-      PrivateBadge()
       if let error {
         Text(error)
           .foregroundStyle(Palette.ink)

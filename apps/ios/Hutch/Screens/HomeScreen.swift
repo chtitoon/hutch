@@ -58,7 +58,7 @@ struct HomeScreen: View {
         Text("hutch")
           .font(Typography.headlineSm)
         Spacer()
-        PrivateBadge("On this phone only")
+        PrivateBadge()
       }
       VStack(alignment: .leading, spacing: Spacing.s2) {
         Text("Everything you own, kept quietly.")

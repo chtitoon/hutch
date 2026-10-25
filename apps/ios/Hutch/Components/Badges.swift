@@ -16,17 +16,11 @@ struct Eyebrow: View {
   }
 }
 
-/// Uses the logo's mark, never a padlock (DESIGN.md).
+/// Said once, on Home (non-negotiable 2). Uses the logo's mark, never a padlock (DESIGN.md).
 struct PrivateBadge: View {
-  let text: String
-
-  init(_ text: String = "Private. Only you can see it.") {
-    self.text = text
-  }
-
   var body: some View {
     Label {
-      Text(text)
+      Text("On this phone only")
     } icon: {
       Image(.mark)
         .resizable()

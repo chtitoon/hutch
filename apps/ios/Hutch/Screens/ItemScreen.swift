@@ -22,7 +22,6 @@ struct ItemScreen: View {
               .font(Typography.headlineLg)
               .foregroundStyle(Palette.ink)
           }
-          PrivateBadge()
           Button("Remove from Hutch") { isConfirmingDelete = true }
             .buttonStyle(.outlined)
             .padding(.top, Spacing.s4)
