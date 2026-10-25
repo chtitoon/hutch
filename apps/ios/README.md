@@ -6,10 +6,11 @@ Design: the root [DESIGN.md](../../DESIGN.md) for values and rules, and [DESIGN.
 
 ## Layout
 
-- `Hutch/`: the app's screens.
-  - Opens on the camera (`CaptureScreen`).
-  - One tap, then confirm the suggested name and pick a room (`ConfirmScreen`). Rooms come from Apple Home (`HomeRooms`, D25).
-  - The list of items (`ItemListScreen`).
+- `Hutch/`: the app's screens, laid out after the Hutch iPhone app canvas in the brand's fonts and colors.
+  - Opens on Home (`HomeScreen`): search, rooms with their counts, what was added lately, and a + at the bottom. A room lists its things by spot; an item shows its photo, place and aspects.
+  - + opens the camera (`CaptureScreen`). After the shutter, confirm the suggested name and pick a room (`ConfirmScreen`); Save goes back to Home. Rooms come from Apple Home (`HomeRooms`, D25).
+  - `BrandFonts`: the bundled fonts, section eyebrows and the scanner.
+  - `Assets.xcassets`: the logo's house-and-keyhole mark, traced from the website's.
 - `Hutch/Generated/Tokens.swift`: written by `make tokens` from DESIGN.md. Never edit it by hand.
 - `core/`: the `HutchCore` Swift package, with its tests. It holds:
   - the item model

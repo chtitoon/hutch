@@ -11,7 +11,7 @@ struct HutchApp: App {
 
     var body: some Scene {
         WindowGroup {
-            CaptureScreen(library: library)
+            HomeScreen(library: library)
                 .brand()
         }
     }

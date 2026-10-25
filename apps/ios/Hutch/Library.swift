@@ -59,6 +59,12 @@ final class Library {
         thumbnails[item.id] = UIImage(data: thumb)
     }
 
+    /// The full photo, decrypted only for as long as a screen shows it.
+    func photo(of id: UUID) async -> UIImage? {
+        guard let data = try? await store?.photo(of: id) else { return nil }
+        return UIImage(data: data)
+    }
+
     func delete(_ id: UUID) async {
         try? await store?.delete(id)
         items.removeAll { $0.id == id }

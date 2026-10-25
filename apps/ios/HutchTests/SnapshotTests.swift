@@ -100,14 +100,29 @@ import Testing
         #expect(ConfirmScreen.note(for: Suggestion(name: "", source: .none, fallbackReason: "Off.")) == "Off.")
     }
 
-    @Test func emptyList() {
-        check(NavigationStack { ItemList(items: [], thumbnails: [:], stats: CaptureStats(items: [])).navigationTitle("Items") }, named: "list-empty")
+    @Test func homeEmpty() {
+        check(home(items: []), named: "home-empty")
     }
 
-    @Test func listWithItems() {
-        let items = Fixtures.items
-        let thumbnails = Dictionary(uniqueKeysWithValues: items.enumerated().map { ($1.id, Fixtures.photo(Fixtures.symbols[$0])) })
-        check(NavigationStack { ItemList(items: items, thumbnails: thumbnails, stats: CaptureStats(items: items)).navigationTitle("Items") }, named: "list")
+    @Test func homeWithItems() {
+        check(home(items: Fixtures.items), named: "home")
+    }
+
+    @Test func room() {
+        let garage = Fixtures.items.filter { $0.room == "Garage" }
+        check(NavigationStack { RoomView(room: "Garage", items: garage, thumbnails: Fixtures.thumbnails) }, named: "room")
+    }
+
+    @Test func itemDetail() {
+        let item = Fixtures.items[0]
+        check(NavigationStack { ItemDetailView(item: item, photo: Fixtures.photo(Fixtures.symbols[0])) }, named: "item")
+    }
+
+    private func home(items: [Item]) -> some View {
+        NavigationStack {
+            HomeView(items: items, thumbnails: Fixtures.thumbnails, stats: CaptureStats(items: items))
+                .safeAreaInset(edge: .bottom) { AddButton {} }
+        }
     }
 
     private func form(_ draft: Draft, suggesting: Bool, note: String? = nil, aspects: [SuggestedAspect] = [], rooms: [String]) -> some View {
@@ -124,6 +139,10 @@ enum Fixtures {
     }
 
     static let symbols = ["wrench.and.screwdriver", "hammer", "tent", "bicycle"]
+
+    static var thumbnails: [UUID: UIImage] {
+        Dictionary(uniqueKeysWithValues: items.enumerated().map { ($1.id, photo(symbols[$0])) })
+    }
 
     static let items: [Item] = [
         Item(name: "DeWalt 18V cordless drill", category: "Tools", room: "Garage", spot: "Left shelf",

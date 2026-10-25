@@ -67,8 +67,12 @@ At most two bets and one experiment.
 
 #### <a id="h1"></a>H1 — I'll keep an inventory if Hutch makes it effortless
 **Serves:** [O1](#o1). **Status:** started 2026-10-24; building until 2026-11-14 at the latest. **Appetite:** 3 weeks to build, then 1 week of use on my phone.
-- **Test:** the first Hutch app. It opens on the camera; one tap, and an on-device model turns the photo into an item ([X4](#x4)); I confirm the name and say where it lives: a room from Apple Home or one I've used, plus a spot if I like ([D25](DECISIONS.md#d25--where-it-lives-an-apple-home-room-and-an-optional-spot)). A list shows each item's photo, name and place. When time runs short, everything else is cut first.
+- **Test:** the first Hutch app. It opens on Home, with + one tap from the camera; one tap more, and an on-device model turns the photo into an item ([X4](#x4)); I confirm the name and say where it lives: a room from Apple Home or one I've used, plus a spot if I like ([D25](DECISIONS.md#d25--where-it-lives-an-apple-home-room-and-an-optional-spot)). A list shows each item's photo, name and place. When time runs short, everything else is cut first.
 - **Reshaped 2026-10-24, before any use:** no resale price for now, and the model's category is kept but not shown. Both slowed adding an item without serving the signal.
+- **Reshaped again 2026-10-24, after my first tries:**
+  - Opening on the camera was annoying. Hutch now opens on Home (rooms, search, recent items), with a + at the bottom that opens the camera.
+  - For adding in one quick go, a widget (Home Screen, Lock Screen or Control Center) will open straight on the camera. That's next.
+  - The timer still starts at the shutter, so the 20 s signal is unchanged.
 - **Guardrails,** which no appetite cuts:
   - Encrypted at rest from the first write, with the key in the Keychain ([non-negotiable 1](AGENTS.md#non-negotiables), [D21](DECISIONS.md#d21--recovery-icloud-keychain-plus-a-printable-recovery-kit)).
   - New items are private.
