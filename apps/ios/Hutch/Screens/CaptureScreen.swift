@@ -1,3 +1,4 @@
+import HutchCore
 import PhotosUI
 import SwiftUI
 
@@ -8,13 +9,20 @@ struct CaptureScreen: View {
   @State private var shutter = CameraShutter()
   @State private var capture: Capture?
   @State private var pickedPhoto: PhotosPickerItem?
+  @State private var cameraFrame = CGRect.zero
+  @State private var viewfinderFrame = CGRect.zero
 
   var body: some View {
     ZStack {
       if isCameraAvailable {
-        CameraView(shutter: shutter) { capture = Capture(image: $0) }
+        CameraView(shutter: shutter) { capture = Capture(image: framed($0)) }
           .ignoresSafeArea()
-        Viewfinder()
+          .onGeometryChange(for: CGRect.self) {
+            $0.frame(in: .global)
+          } action: {
+            cameraFrame = $0
+          }
+        Viewfinder { viewfinderFrame = $0 }
       } else {
         NoCameraView()
       }
@@ -60,6 +68,20 @@ struct CaptureScreen: View {
     .padding(.bottom, Spacing.s4)
   }
 
+  // Only what was inside the frame: the hint asks for the item there, so the rest is clutter.
+  private func framed(_ photo: UIImage) -> UIImage {
+    // Twice the stored size, so the crop keeps the stored photo's full detail.
+    let maxPixels = CGFloat(PhotoEncoder.photoMaxPixels) * 2
+    guard !viewfinderFrame.isEmpty, let upright = photo.uprightImage(maxPixels: maxPixels) else {
+      return photo
+    }
+    let frame = viewfinderFrame.offsetBy(dx: -cameraFrame.minX, dy: -cameraFrame.minY)
+    let size = CGSize(width: upright.width, height: upright.height)
+    let crop = PhotoCrop.rect(inside: frame, screen: cameraFrame.size, photo: size)
+    guard let cropped = upright.cropping(to: crop) else { return photo }
+    return UIImage(cgImage: cropped)
+  }
+
   private func loadPickedPhoto() async {
     guard let pickedPhoto else { return }
     defer { self.pickedPhoto = nil }
@@ -88,11 +110,19 @@ private struct ShutterButtonStyle: ButtonStyle {
 }
 
 struct Viewfinder: View {
+  // Where the frame sits on screen, so the photo can be cropped to it.
+  var onFrameChange: (CGRect) -> Void = { _ in }
+
   var body: some View {
     VStack(spacing: Spacing.s6) {
       ViewfinderCorners()
         .stroke(Palette.onDeep, style: StrokeStyle(lineWidth: 4, lineCap: .round))
         .aspectRatio(1, contentMode: .fit)
+        .onGeometryChange(for: CGRect.self) {
+          $0.frame(in: .global)
+        } action: {
+          onFrameChange($0)
+        }
         .padding(.horizontal, Spacing.s8)
       // A capsule keeps the hint readable over any scene the camera sees.
       Text("Fit the whole item in the frame")
