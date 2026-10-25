@@ -61,6 +61,7 @@ run: project
 
 tokens:
 	@swift tokens.swift
+	@swift icon.swift
 
 # Builds the product catalog and its Core ML image encoder into Hutch/Catalog/ (X5), then
 # regenerates the project so the app bundles them. Not committed: about 100 MB, and the first

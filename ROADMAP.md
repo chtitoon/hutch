@@ -152,5 +152,5 @@ No order, no detail.
 - **Organize:** locations, categories, value, receipts, warranties. If [H1](#h1) shows lookups are what I use it for.
 - **Lending:** shaped by [H2](#h2): loans, return reminders, and maybe a shared vault neighbors add to (every member would hold its key, removing one re-keys it for all, and CloudKit sharing only reaches Apple users, [D3](DECISIONS.md#d3--platform-native-iphone-app--static-website-in-one-monorepo)).
 - **Selling:** eBay connect, listing, price estimates from sold listings ([D23](DECISIONS.md#d23--resale-prices-without-telling-anyone-what-i-own)). After [O1](#o1): an empty inventory has nothing to sell.
-- **App icon and final logo:** the icon comes with [H1](#h1)'s first build on my phone.
+- **Final logo:** a clean vector master of the mark. The app icon and favicon are drawn from it.
 - **App Store release:** needs [D6](DECISIONS.md#d6--personal-tool-vs-product) and the name revisited ([D1](DECISIONS.md#d1--name-and-domain-hutch-myhutchapp)).

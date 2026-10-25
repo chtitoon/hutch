@@ -350,7 +350,7 @@ Hutch is a private home inventory that opens, by choice, to people you trust. Th
 - **Mark:** a rounded, line-drawn house with a keyhole in the middle, in `sage`. Home first; the keyhole says it's yours to open.
 - **Wordmark:** lowercase **hutch** in a bold, geometric, contemporary sans-serif, in `ink`, to the right of the mark.
 - **Files:** [`design/light/logo.svg`](design/light/logo.svg) (on the warm off-white), [`design/dark/logo.svg`](design/dark/logo.svg) and [`design/dark/logo-transparent.svg`](design/dark/logo-transparent.svg) (on night forest), and the mark alone in [`design/light/icon.svg`](design/light/icon.svg). The website draws the logo inline from tokens (mark `sage`, wordmark `ink`), so one shape serves both modes. On forest, the mark is `sage-on-deep` and the wordmark `on-deep`.
-- **App icon:** the house-and-keyhole mark alone, not yet drawn. Next: draw it, then a clean vector master of the logo (the current files are AI-traced, with uneven curves).
+- **App icon:** the house-and-keyhole mark alone, in `sage` on `background` (in `sage-dark` on clear in dark mode), drawn from `icon.svg` by the iPhone app's `make tokens`, like the favicon. Next: a clean vector master of the logo (the current files are AI-traced, with uneven curves); the icon and favicon follow it.
 
 This replaced an earlier direction, a door left ajar carved into the "h" of the wordmark (#9), which was never drawn to a finished state.
 
