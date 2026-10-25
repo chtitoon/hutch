@@ -7,6 +7,13 @@ cd "$(dirname "$0")"
 find Hutch HutchTests core tokens.swift icon.swift -name '*.swift' -not -path '*/Generated/*' -not -path '*/.build/*' -print0 \
   | xargs -0 xcrun swift format lint --strict --configuration .swift-format
 
+# A doc comment is one short paragraph; anything longer is a // note in the code (AGENTS.md).
+if matches=$(grep -rnE '^\s*///\s*$' --include='*.swift' --exclude-dir=Generated --exclude-dir=.build Hutch HutchTests core tokens.swift icon.swift); then
+  echo "$matches"
+  echo "Keep doc comments to one paragraph, with no empty /// line; move the rest to a // note." >&2
+  exit 1
+fi
+
 # Google style puts a case's body on its own lines; swift-format keeps it where it was written.
 if matches=$(grep -rnE '^\s*(case [^=]*|default):\s*\S' --include='*.swift' --exclude-dir=Generated --exclude-dir=.build Hutch HutchTests core tokens.swift icon.swift); then
   echo "$matches"

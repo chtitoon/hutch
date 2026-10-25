@@ -2,10 +2,9 @@ import CryptoKit
 import Foundation
 
 /// Seals and opens bytes with AES-256-GCM from CryptoKit (non-negotiable 3).
-///
-/// GCM is authenticated, so a changed byte fails to open. The `context` is authenticated too,
-/// so one item's file can't be swapped in for another's.
 public struct Vault: Sendable {
+  // GCM is authenticated, so a changed byte fails to open. The context is authenticated too,
+  // so one item's file can't be swapped in for another's.
   private let key: SymmetricKey
 
   public init(key: SymmetricKey) {

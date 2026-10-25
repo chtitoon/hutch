@@ -2,8 +2,6 @@ import CoreGraphics
 import Foundation
 
 /// The inventory on disk, every file sealed by a ``Vault`` (non-negotiable 1).
-///
-/// Photos are files of their own, so listing items never decrypts them.
 public actor ItemStore {
   private let directory: URL
   private let vault: Vault

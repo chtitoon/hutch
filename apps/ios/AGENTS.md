@@ -28,6 +28,7 @@ Few and short.
 - **Comment only what the code can't say:** why something is done, a constraint, or a decision (with its D-number).
 - **Never restate a name:** no `/// The item's name.`
 - **One line where possible.** A `///` doc comment goes on a type or a public API only when its role isn't obvious from the name.
+- **A doc comment is one short paragraph, with no empty `///` line.** A longer explanation is a `//` note inside the type, next to the code it explains. `make lint` checks this.
 - **Use `//`** for a note inside code.
 
 ## Swift

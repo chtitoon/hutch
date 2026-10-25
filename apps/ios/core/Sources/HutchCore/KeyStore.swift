@@ -7,10 +7,9 @@ public protocol KeyStore: Sendable {
 }
 
 /// The inventory key in the Keychain, on this device only.
-///
-/// `ThisDeviceOnly` until sync and recovery land together in H3 (D21). `AfterFirstUnlock` so a
-/// save never fails if the screen locks mid-save.
 public struct KeychainKeyStore: KeyStore {
+  // `ThisDeviceOnly` until sync and recovery land together in H3 (D21). `AfterFirstUnlock` so a
+  // save never fails if the screen locks mid-save.
   private let service: String
   private let account = "inventory-key"
 
