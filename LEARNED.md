@@ -19,7 +19,74 @@ Hutch collects nothing ([non-negotiable 5](AGENTS.md#non-negotiables)), so evide
 - what neighbors tell me
 - public research
 
-#### E3 — My MacBook Air came out as just "Computer"
+#### <a id="e7"></a>E7 — On my phone, the catalog sometimes gave random names
+
+- **Date:** 2026-10-24
+- **Bears on:** [X5](ROADMAP.md#x5)
+- **Effect:** weakens how the catalog was trusted, not the catalog itself
+- **Source:** my notes, on my iPhone 17, first build with the catalog
+- Not yet known which photos, or which path named them.
+- Likely cause: the catalog always has a nearest name, even for things it doesn't know, and a weak match could still name the item:
+  - on its own, when Apple Intelligence didn't answer;
+  - through the prompt, which told Apple Intelligence to use the first match.
+- **What changed because of it:**
+  - Only a sure match (0.3 and up) names an item.
+  - Weaker ones are only "Or is it…" chips.
+  - Apple Intelligence is told they're often wrong.
+
+#### <a id="e6"></a>E6 — SigLIP 2 in Core ML: 99 MB, exact on the GPU, drifting elsewhere
+
+- **Date:** 2026-10-24
+- **Bears on:** [X5](ROADMAP.md#x5) phase 3, [D27](DECISIONS.md#d27--a-product-catalog-on-the-phone-siglip-2-open-data-licenses-first)
+- **Effect:** supports, with a constraint on compute units
+- **Source:** `tools/catalog-index/build.py --check` on my 13 photos, plus a CC0 fixture in the simulator
+- **Compression,** compared with PyTorch by cosine similarity:
+  - fp16 alone: 0.9999.
+  - int8 with one scale per channel: as low as 0.93.
+  - int8 with one scale per block of 32 weights: 0.9998, at 99 MB.
+- **Compute units,** with those weights:
+  - CPU and GPU: 0.9998.
+  - Neural Engine or CPU alone: about 0.97, enough to reorder close calls. On a laptop photo, "desk" overtook "Apple MacBook Air".
+  - So the app uses CPU and GPU on the phone.
+- **The simulator's GPU path returned all zeros:** every catalog entry tied, and the first in the list looked like a correct answer. The simulator now runs on the CPU, and a test fails if an embedding isn't unit length.
+
+#### <a id="e5"></a>E5 — 11 of my photos: right in the top 5 once the catalog covers them, but the catalog was tuned to them
+
+- **Date:** 2026-10-24
+- **Bears on:** [X5](ROADMAP.md#x5)
+- **Effect:** supports, with a caveat
+- **Source:** `score.py`, SigLIP 2 base, hand-made catalog, `labels.csv` accepting kind-level names
+- **Before tuning,** with 382 entries: 5 of 10 in the top 5. Every miss was a kind the catalog lacked: rings, boats, desktops.
+- **After adding those kinds,** with 404 entries: 11 of 11 in the top 5, and 8 of 11 first.
+  - The ring on a hand, the inflatable kayak, the hand mixer on dark tiles and a bundle of old phones were all first.
+  - "Dell Inspiron Zino HD" came first from the image alone; its name is also printed on the front.
+  - The desk chair came second, behind "desk".
+  - The frame on a busy wall came third.
+- **Two photos the catalog wasn't tuned for,** a desk and a table lamp: both first.
+- **All 13:** in the top 5 every time, first for 10. The three that weren't first sit in busy scenes, where cropping should help: the chair at a desk, the glass among others, the frame on a wall.
+- **The caveat:** kinds were added after seeing the misses, so 11 of 11 overstates it. The real test is a catalog built independently (the Google Product Taxonomy) on photos it hasn't seen.
+
+#### <a id="e4"></a>E4 — A catalog of names, matched by image embeddings: the right kind for 4 of 4
+
+- **Date:** 2026-10-24
+- **Bears on:** [X5](ROADMAP.md#x5), [D26](DECISIONS.md#d26--identifying-a-product-online-by-choice)
+- **Effect:** supports
+- **Source:** `tools/catalog-index/score.py` on the Mac, SigLIP 2 base, a hand-made catalog of 382 names
+- Two public photos of a MacBook Air, one on a wooden desk: "Apple MacBook Air" first both times.
+- My beer glass: the right kind, all 5 beer or pint glasses. The brewery's logo wasn't known: with decoy breweries added, another one ranked first and Bissell Brothers second.
+- A wooden frame on a busy shop wall:
+  - The whole photo: third, behind "screen print poster" and "framed art print".
+  - Cropped to the frame: first.
+- A hose spray nozzle: "Gardena hose spray nozzle" first. Grey and orange are Gardena's colors.
+- Before the catalog covered a kind, the answers were confident nonsense: "blender" for the glass, "desk" for the frame.
+- **What it says:**
+  - Kinds work.
+  - Famous brands work; small ones don't.
+  - Coverage of the catalog matters most, and cropping helps in busy scenes.
+  - About 15–45 ms per photo on the Mac.
+- Too few photos for a verdict: X5's gate asks for 20+.
+
+#### <a id="e3"></a>E3 — My MacBook Air came out as just "Computer"
 
 - **Date:** 2026-10-24
 - **Bears on:** [X4](ROADMAP.md#x4), [D26](DECISIONS.md#d26--identifying-a-product-online-by-choice)

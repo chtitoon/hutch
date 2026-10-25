@@ -43,6 +43,8 @@ targets:
         INFOPLIST_KEY_NSCameraUsageDescription: "Hutch takes a photo of each thing you add. Photos stay on this iPhone, encrypted."
         INFOPLIST_KEY_NSHomeKitUsageDescription: "Hutch lists your Apple Home rooms so you can say where each thing lives. Room names stay on this iPhone."
         INFOPLIST_KEY_ITSAppUsesNonExemptEncryption: NO
+        # Drawn from the logo's mark by `make tokens` (icon.swift).
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
   HutchTests:
     type: bundle.unit-test
     platform: iOS

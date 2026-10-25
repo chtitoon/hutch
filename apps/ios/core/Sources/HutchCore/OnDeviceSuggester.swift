@@ -4,43 +4,85 @@ import FoundationModels
 import OSLog
 import Vision
 
-/// Suggests a name and category from a photo, entirely on the phone (D5, X4):
+/// Suggests a name and aspects from a photo, entirely on the phone (D5, X4, X5):
 /// 1. Vision finds the main object and crops to it, so a box on a shelf isn't read as "bookshelf".
-/// 2. Vision labels the crop and reads any text on it.
-/// 3. Apple's on-device Foundation Models system model turns that, and the crop itself where
-///    the model can see images, into a name.
+/// 2. In parallel: Vision labels the crop and reads any text on it, and the crop's image
+///    embedding is matched against the product catalog, when the app has one.
+/// 3. Apple's on-device Foundation Models system model turns all that, and the crop itself
+///    where the model can see images, into a name and aspects.
+/// 4. A sure catalog match names it; a likely one is offered (`combine`).
 ///
-/// Only `SystemLanguageModel` is used, never Private Cloud Compute, so the photo never leaves
-/// the device. Without Apple Intelligence, Vision's labels alone, with the reason why.
+/// Only `SystemLanguageModel` is used, never Private Cloud Compute, and the catalog is a file
+/// on the phone, so the photo never leaves the device. Without Apple Intelligence, the
+/// catalog or Vision's labels, with the reason why.
 public struct OnDeviceSuggester: ItemSuggesting {
     /// The device's own log (Xcode's console, Console.app), never sent anywhere. Names and
     /// labels are marked private, so they're redacted outside a debugging session.
     static let log = Logger(subsystem: "app.myhutch.ios", category: "suggestions")
 
-    public init() {}
+    private let catalog: Catalog?
+    private let embedder: (any ImageEmbedding)?
+
+    /// Without a catalog and embedder, Apple Intelligence and Vision alone.
+    public init(catalog: Catalog? = nil, embedder: (any ImageEmbedding)? = nil) {
+        self.catalog = catalog
+        self.embedder = embedder
+    }
 
     public func suggest(for image: CGImage) async -> Suggestion {
         let subject = await Self.mainObject(in: image)
-        let findings = await Self.see(subject)
+        async let seen = Self.see(subject)
+        async let matched = matches(for: subject)
+        let (findings, matches) = await (seen, matched)
         Self.log.info("Vision labels: \(findings.labels.joined(separator: ", "), privacy: .private); text: \(findings.text.joined(separator: " | "), privacy: .private)")
+        Self.log.info("Catalog: \(matches.map { "\($0.name) \(String(format: "%.2f", $0.score))" }.joined(separator: ", "), privacy: .private)")
 
         let model = SystemLanguageModel.default
         if case .unavailable(let reason) = model.availability {
             let why = Self.explain(reason)
             Self.log.notice("Apple Intelligence unavailable: \(why, privacy: .public)")
-            return findings.fallbackSuggestion(because: why)
+            return Self.combine(matches: matches, model: nil, fallback: findings.fallbackSuggestion(because: why))
         }
         do {
-            let suggestion = try await Self.ask(model, image: subject, findings: findings)
+            let suggestion = try await Self.ask(model, image: subject, findings: findings, matches: matches)
             if Suggestion.isPlaceholder(suggestion.name) {
                 Self.log.notice("The model couldn't name it (\(suggestion.name, privacy: .private))")
-                return findings.fallbackSuggestion(because: "Apple Intelligence couldn't tell what this is.")
+                return Self.combine(matches: matches, model: nil, fallback: findings.fallbackSuggestion(because: "Apple Intelligence couldn't tell what this is."))
             }
-            return suggestion
+            return Self.combine(matches: matches, model: suggestion, fallback: suggestion)
         } catch {
             Self.log.error("The model failed: \(String(describing: error), privacy: .public)")
-            return findings.fallbackSuggestion(because: "Apple Intelligence failed on this photo.")
+            return Self.combine(matches: matches, model: nil, fallback: findings.fallbackSuggestion(because: "Apple Intelligence failed on this photo."))
         }
+    }
+
+    private func matches(for image: CGImage) async -> [CatalogMatch] {
+        guard let catalog, let embedder else { return [] }
+        do {
+            return catalog.matches(for: try await embedder.embed(image))
+        } catch {
+            Self.log.error("The catalog lookup failed: \(String(describing: error), privacy: .public)")
+            return []
+        }
+    }
+
+    /// Strongest evidence first:
+    /// - A sure catalog match names it. Apple Intelligence's aspects and category stay.
+    /// - Otherwise Apple Intelligence's name, then Vision's. A likely match never names it:
+    ///   the catalog always has a nearest name, even for things it doesn't know.
+    /// - Likely catalog matches that aren't the name become one-tap alternatives.
+    static func combine(matches: [CatalogMatch], model: Suggestion?, fallback: Suggestion) -> Suggestion {
+        let usable = matches.filter { $0.confidence != .low }
+        var suggestion = model ?? fallback
+        if let best = usable.first {
+            suggestion.catalogScore = best.score
+            if best.confidence == .high {
+                suggestion.name = best.name
+                suggestion.source = .catalog
+            }
+        }
+        suggestion.alternatives = usable.map(\.name).filter { $0.caseInsensitiveCompare(suggestion.name) != .orderedSame }.prefix(3).map { $0 }
+        return suggestion
     }
 
     static func explain(_ reason: SystemLanguageModel.Availability.UnavailableReason) -> String {
@@ -84,9 +126,9 @@ public struct OnDeviceSuggester: ItemSuggesting {
         )
     }
 
-    static func ask(_ model: SystemLanguageModel, image: CGImage, findings: VisionFindings) async throws -> Suggestion {
+    static func ask(_ model: SystemLanguageModel, image: CGImage, findings: VisionFindings, matches: [CatalogMatch] = []) async throws -> Suggestion {
         let session = LanguageModelSession(model: model, instructions: instructions)
-        let details = Self.details(findings)
+        let details = Self.details(findings, matches: matches)
         let guess: ItemGuess
         let source: SuggestionSource
         if #available(iOS 27, macOS 27, *), model.capabilities.contains(.vision) {
@@ -128,9 +170,14 @@ public struct OnDeviceSuggester: ItemSuggesting {
         around the object, such as the table it sits on; never name the object after them.
         """
 
-    static func details(_ findings: VisionFindings) -> String {
+    static func details(_ findings: VisionFindings, matches: [CatalogMatch] = []) -> String {
         let more = findings.text.count - findings.printedText.count
+        let likely = matches.filter { $0.confidence != .low }
+        let sure = likely.first?.confidence == .high
         return """
+        \(likely.isEmpty ? "" : sure
+            ? "A product catalog on this phone is sure the photo shows: \(likely[0].name). Name it that, and fill in its aspects, including the brand in that name."
+            : "A product catalog on this phone wasn't sure, and guessed, best first: \(likely.map(\.name).joined(separator: ", ")). Its guesses are often wrong: use one only if the photo or the text on it agrees.")
         Labels that may name the object, most likely first: \(findings.objectLabels.isEmpty ? "none" : findings.objectLabels.joined(separator: ", ")).
         Scene and material labels, not the object: \(findings.sceneLabels.isEmpty ? "none" : findings.sceneLabels.joined(separator: ", ")).
         Short text printed on the object: \(findings.printedText.isEmpty ? "none" : findings.printedText.joined(separator: " | ")).

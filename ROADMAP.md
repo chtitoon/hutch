@@ -67,8 +67,12 @@ At most two bets and one experiment.
 
 #### <a id="h1"></a>H1 — I'll keep an inventory if Hutch makes it effortless
 **Serves:** [O1](#o1). **Status:** started 2026-10-24; building until 2026-11-14 at the latest. **Appetite:** 3 weeks to build, then 1 week of use on my phone.
-- **Test:** the first Hutch app. It opens on the camera; one tap, and an on-device model turns the photo into an item ([X4](#x4)); I confirm the name and say where it lives: a room from Apple Home or one I've used, plus a spot if I like ([D25](DECISIONS.md#d25--where-it-lives-an-apple-home-room-and-an-optional-spot)). A list shows each item's photo, name and place. When time runs short, everything else is cut first.
+- **Test:** the first Hutch app. It opens on Home, with + one tap from the camera; one tap more, and an on-device model turns the photo into an item ([X4](#x4)); I confirm the name and say where it lives: a room from Apple Home or one I've used, plus a spot if I like ([D25](DECISIONS.md#d25--where-it-lives-an-apple-home-room-and-an-optional-spot)). A list shows each item's photo, name and place. When time runs short, everything else is cut first.
 - **Reshaped 2026-10-24, before any use:** no resale price for now, and the model's category is kept but not shown. Both slowed adding an item without serving the signal.
+- **Reshaped again 2026-10-24, after my first tries:**
+  - Opening on the camera was annoying. Hutch now opens on Home (rooms, search, recent items), with a + at the bottom that opens the camera.
+  - For adding in one quick go, a widget (Home Screen, Lock Screen or Control Center) will open straight on the camera. That's next.
+  - The timer still starts at the shutter, so the 20 s signal is unchanged.
 - **Guardrails,** which no appetite cuts:
   - Encrypted at rest from the first write, with the key in the Keychain ([non-negotiable 1](AGENTS.md#non-negotiables), [D21](DECISIONS.md#d21--recovery-icloud-keychain-plus-a-printable-recovery-kit)).
   - New items are private.
@@ -91,6 +95,39 @@ At most two bets and one experiment.
   - Know when Core ML is worth it, if neither is enough.
 - **Question going in:** do I accept its suggestion as is for at least 7 items in 10, in under 2 seconds on my phone? Photos never leave the device ([D5](DECISIONS.md#d5--photo-based-ai-capture)).
 - **Verdict decides:** D5. Resale guesses wait for selling ([D23](DECISIONS.md#d23--resale-prices-without-telling-anyone-what-i-own)).
+
+#### <a id="x5"></a>X5 — Photo to product, with a catalog on the phone
+**Tried on:** [H1](#h1). **Status:** started 2026-10-24. It's X4's third learning goal ("when Core ML is worth it"), split out because it's big; it shares X4's lane in Now. **Appetite:** 2 weeks, gated after phase 2.
+- **Where it stands (2026-10-24):**
+  - At my request, the hand-made catalog went onto the phone before phase 2's gate, so I can try it now.
+  - Phase 3 is done: Core ML matches PyTorch at 0.9998 on CPU and GPU ([E6](LEARNED.md#e6)).
+  - Phases 4 and 5 are in the app in a first form:
+    - a sure catalog match names the item, likely ones become "Or is it…" chips, and Apple Intelligence fills in the aspects;
+    - `make catalog` builds it all.
+  - Phase 2's gate (kinds from Wikidata, D27; 20+ unseen photos) still decides whether this stays.
+- **Why:** Apple's on-device models named my MacBook Air "Computer" ([E3](LEARNED.md#e3)). Image embeddings matched against a catalog of names got the right kind for 4 of 4 of my photos ([E4](LEARNED.md#e4)), with nothing sent.
+- **Learning goals:**
+  - Build a product catalog from open data and embed it with SigLIP 2.
+  - Convert an image encoder to Core ML and prove it matches PyTorch.
+  - Know how far the right kind, brand and model can go without a network.
+- **How it works:**
+  - **On the Mac:** an index builder embeds catalog names, and later product images, with SigLIP 2.
+  - **On the phone:** only the image half runs (Core ML). It looks up, strongest evidence first:
+    1. barcode (rarely matches: Wikidata has few, and Icecat is out, [D27](DECISIONS.md#d27--a-product-catalog-on-the-phone-siglip-2-open-data-licenses-first))
+    2. model number read on the item
+    3. nearest catalog entries
+  - **Confirmed by me:** the result is always a suggestion, gated by confidence.
+- **Phases,** each ending with my review:
+  1. **Plan:** sizes, layout, licenses. In [#53](https://github.com/chtitoon/hutch/pull/53).
+  2. **Prototype and eval** on my own photos: category accuracy, top-5 hit rate, a threshold sweep. **Gate:** 90% right at the category level I'd accept (for example "Laptops", not leaf SKUs), on 20+ of my photos.
+  3. **Core ML conversion:** cosine similarity of at least 0.99 against PyTorch; latency on my phone.
+  4. **Swift pipeline** behind protocols, with a debug screen showing the evidence.
+  5. **Integration** into adding an item, and `make catalog` to rebuild the index.
+- **Guardrails:**
+  - No network call in the lookup, with a test that fails if one is made.
+  - My photos never enter the repo.
+  - Nothing bundled whose license is unclear ([D27](DECISIONS.md#d27--a-product-catalog-on-the-phone-siglip-2-open-data-licenses-first)).
+- **Verdict decides:** whether the catalog ships with H1's successor, and [D26](DECISIONS.md#d26--identifying-a-product-online-by-choice) (online identification), which a good result makes unnecessary.
 
 #### <a id="h2"></a>H2 — When a neighbor asks, I answer from Hutch
 **Serves:** [O2](#o2). **Status:** counting starts now; building needs [H1](#h1)'s items. **Appetite:** 1 week to build, then a month of use.
@@ -115,5 +152,5 @@ No order, no detail.
 - **Organize:** locations, categories, value, receipts, warranties. If [H1](#h1) shows lookups are what I use it for.
 - **Lending:** shaped by [H2](#h2): loans, return reminders, and maybe a shared vault neighbors add to (every member would hold its key, removing one re-keys it for all, and CloudKit sharing only reaches Apple users, [D3](DECISIONS.md#d3--platform-native-iphone-app--static-website-in-one-monorepo)).
 - **Selling:** eBay connect, listing, price estimates from sold listings ([D23](DECISIONS.md#d23--resale-prices-without-telling-anyone-what-i-own)). After [O1](#o1): an empty inventory has nothing to sell.
-- **App icon and final logo:** the icon comes with [H1](#h1)'s first build on my phone.
+- **Final logo:** a clean vector master of the mark. The app icon and favicon are drawn from it.
 - **App Store release:** needs [D6](DECISIONS.md#d6--personal-tool-vs-product) and the name revisited ([D1](DECISIONS.md#d1--name-and-domain-hutch-myhutchapp)).

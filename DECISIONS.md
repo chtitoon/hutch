@@ -270,3 +270,44 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 4. **A Core ML model** trained for household products, on the phone. Nothing leaves, but it's a project of its own, and it never knows products newer than its training.
 
 **To decide:** whether option 2's privacy cost is worth it for the items where on-device stays broad. X4's count of names kept as is, with and without narrowing, is the evidence.
+
+**Option 5, added Oct 2026:** a catalog on the phone, matched by image embeddings ([X5](ROADMAP.md#x5), [D27](#d27--a-product-catalog-on-the-phone-siglip-2-open-data-licenses-first)). Nothing leaves, and early results are good for kinds and famous brands (E4).
+
+## D27 — A product catalog on the phone: SigLIP 2, open data, licenses first
+**Status:** Proposed (Oct 2026). Confirm with [X5](ROADMAP.md#x5)'s phase 2 gate.
+
+**What:**
+- The phone embeds the photo with SigLIP 2's image encoder, converted to Core ML. It finds the nearest entries in a catalog built on the Mac. Only the image half ships, and nothing is sent.
+- The catalog comes from open data: the Google Product Taxonomy for kinds, and Wikidata (CC0) for product models.
+
+**The model: SigLIP 2, not MobileCLIP.**
+- MobileCLIP is smaller and faster, but in Aug 2025 Apple moved its weights to a research-only license that excludes "product development or use in any commercial product". It's unclear whether the 2024 sample-code license still covers the older files.
+- SigLIP 2 (`google/siglip2-base-patch16-224`) is Apache 2.0.
+
+**Icecat: not used (decided Oct 2026).** Its Open Content License:
+- requires derived works that include its content to be "licensed as a whole at no charge to all third parties";
+- allows its data only if it is "NOT … utilized for machine learning training";
+- voids the license for commercial generative-AI use.
+
+Embedding with an already-trained model isn't training, and a free catalog file may be fine, but both are open to dispute, and I'd rather not build on a license I'd have to argue about. No Icecat identifiers, specs, images or embeddings, in the app or the build. Revisit only if Icecat confirms in writing that this use is fine.
+
+**Kinds of things come from Wikidata, not a shopping taxonomy (decided Oct 2026).** For the same reason:
+- Google's product taxonomy is published under Google's terms, not an open license.
+- GS1's product classification (GPC) states no reuse rights for its data.
+- Wikidata is CC0, and its tree of kinds is large: about 20,000 under "tool" and 30,000 under "device" with labels in 3+ languages. Many are industrial or off-topic, so the build filters them.
+
+**What that costs:**
+- Product models come from Wikidata alone: strong for phones, laptops, cameras and consoles, thin for tools and appliances.
+- Barcode lookups mostly won't find a match, since few Wikidata products carry a barcode number (GTIN, P3962).
+- Model numbers read on an item, and the nearest catalog names, carry the rest.
+
+**On the phone, as built:**
+- int8 weights in blocks of 32: 99 MB.
+- The model runs on CPU and GPU, not the Neural Engine, where it drifts (E6).
+- The catalog names lead when SigLIP's score is at least 0.3; from 0.05 they're offered as alternatives. Both thresholds come from 11 photos and are provisional.
+
+**Size, projected:**
+- Image encoder: about 90 MB at int8, about 170 MB at fp16.
+- Vectors: 50,000 entries at 256 dimensions in int8, about 13 MB.
+- Catalog metadata: 10–30 MB.
+- Default packs (electronics, appliances, tools): roughly 115–150 MB in total.

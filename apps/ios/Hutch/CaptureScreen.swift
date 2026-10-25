@@ -2,14 +2,14 @@ import HutchCore
 import PhotosUI
 import SwiftUI
 
-/// Where Hutch opens: the camera, one tap from an item (H1).
+/// Adding an item: the camera, opened from Home's + (H1). Saving goes straight back to Home.
 struct CaptureScreen: View {
     let library: Library
     var cameraAvailable = CameraView.isAvailable
 
+    @Environment(\.dismiss) private var dismiss
     @State private var shutter = CameraShutter()
     @State private var capture: Capture?
-    @State private var showingItems = false
     @State private var pickedPhoto: PhotosPickerItem?
 
     var body: some View {
@@ -17,28 +17,27 @@ struct CaptureScreen: View {
             if cameraAvailable {
                 CameraView(shutter: shutter) { capture = Capture($0) }
                     .ignoresSafeArea()
+                ViewfinderFrame(hint: "Fit the whole item inside the frame")
             } else {
                 NoCamera()
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Palette.device)
+        .background(Palette.deep)
         .safeAreaInset(edge: .bottom) { bar }
-        .overlay(alignment: .top) {
-            if let error = library.error {
-                Text(error)
-                    .font(Typography.bodySm)
-                    .foregroundStyle(Palette.ink)
-                    .padding(Spacing.s3)
-                    .background(Palette.surface, in: .rect(cornerRadius: Radius.sm))
-                    .padding(Spacing.s4)
+        .overlay(alignment: .topLeading) {
+            Button { dismiss() } label: {
+                Image(systemName: "xmark")
+                    .font(Typography.labelLg)
+                    .frame(width: Spacing.s12, height: Spacing.s12)
             }
+            .buttonStyle(.glass)
+            .accessibilityLabel("Close")
+            .padding(Spacing.s4)
         }
         .sheet(item: $capture) { capture in
-            ConfirmScreen(capture: capture, library: library)
-        }
-        .sheet(isPresented: $showingItems) {
-            ItemListScreen(library: library)
+            ConfirmScreen(capture: capture, library: library) { dismiss() }
+                .brand()
         }
         .onChange(of: pickedPhoto) { _, item in
             guard let item else { return }
@@ -54,23 +53,7 @@ struct CaptureScreen: View {
     /// Primary actions along the bottom, within one-handed reach.
     private var bar: some View {
         HStack {
-            Button { showingItems = true } label: {
-                Label("Items", systemImage: "square.grid.2x2")
-                    .labelStyle(.iconOnly)
-                    .font(Typography.titleMd)
-                    .frame(width: Spacing.s14, height: Spacing.s14)
-                    .overlay(alignment: .topTrailing) {
-                        if !library.items.isEmpty {
-                            Text(library.items.count, format: .number)
-                                .font(Typography.labelSm)
-                                .foregroundStyle(Palette.background)
-                                .padding(.horizontal, Spacing.s2)
-                                .background(Palette.ink, in: .capsule)
-                        }
-                    }
-            }
-            .buttonStyle(.glass)
-            .accessibilityLabel("Items, \(library.items.count)")
+            Color.clear.frame(width: Spacing.s14, height: Spacing.s14)
 
             Spacer()
 
@@ -98,6 +81,39 @@ struct CaptureScreen: View {
     }
 }
 
+/// Four corners marking where the item goes, and a hint under them.
+private struct ViewfinderFrame: View {
+    let hint: String
+
+    var body: some View {
+        VStack(spacing: Spacing.s4) {
+            Corners()
+                .stroke(Palette.onDeep, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                .frame(width: Spacing.s30 * 2.2, height: Spacing.s30 * 2.2)
+            Text(hint)
+                .font(Typography.bodyMd)
+                .foregroundStyle(Palette.onDeep)
+                .shadow(color: Palette.device, radius: Spacing.s2)
+        }
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+}
+
+private struct Corners: Shape {
+    func path(in rect: CGRect) -> Path {
+        let arm = rect.width * 0.18
+        var path = Path()
+        for (corner, dx, dy) in [(CGPoint(x: rect.minX, y: rect.minY), 1.0, 1.0), (CGPoint(x: rect.maxX, y: rect.minY), -1.0, 1.0),
+                                 (CGPoint(x: rect.maxX, y: rect.maxY), -1.0, -1.0), (CGPoint(x: rect.minX, y: rect.maxY), 1.0, -1.0)] {
+            path.move(to: CGPoint(x: corner.x, y: corner.y + dy * arm))
+            path.addLine(to: corner)
+            path.addLine(to: CGPoint(x: corner.x + dx * arm, y: corner.y))
+        }
+        return path
+    }
+}
+
 /// A photo just taken, waiting to become an item.
 struct Capture: Identifiable {
     let id = UUID()
@@ -112,9 +128,12 @@ private struct NoCamera: View {
     var body: some View {
         ContentUnavailableView {
             Label("No camera here", systemImage: "camera")
+                .font(Typography.headlineMd)
+                .foregroundStyle(Palette.onDeep)
         } description: {
             Text("Choose a photo instead. It stays on this iPhone, encrypted.")
+                .font(Typography.bodyMd)
+                .foregroundStyle(Palette.onDeepMuted)
         }
-        .foregroundStyle(Palette.onDeep)
     }
 }

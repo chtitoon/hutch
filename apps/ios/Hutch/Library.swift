@@ -18,12 +18,15 @@ final class Library {
     }
 
     static func onDevice() -> Library {
+        // The product catalog, when `make catalog` built it into the app (X5).
+        let catalog = CatalogEmbedder.fromBundle()
+        let suggester = OnDeviceSuggester(catalog: catalog?.0, embedder: catalog?.1)
         do {
-            let library = Library(store: try ItemStore.onDevice(), suggester: OnDeviceSuggester())
+            let library = Library(store: try ItemStore.onDevice(), suggester: suggester)
             Task { await library.load() }
             return library
         } catch {
-            let library = Library(store: nil, suggester: OnDeviceSuggester())
+            let library = Library(store: nil, suggester: suggester)
             library.error = "Hutch couldn't open its encrypted storage, so nothing can be saved. (\(error.localizedDescription))"
             return library
         }
@@ -54,6 +57,12 @@ final class Library {
         try await store.save(item, photo: jpeg, thumbnail: thumb)
         items.insert(item, at: 0)
         thumbnails[item.id] = UIImage(data: thumb)
+    }
+
+    /// The full photo, decrypted only for as long as a screen shows it.
+    func photo(of id: UUID) async -> UIImage? {
+        guard let data = try? await store?.photo(of: id) else { return nil }
+        return UIImage(data: data)
     }
 
     func delete(_ id: UUID) async {

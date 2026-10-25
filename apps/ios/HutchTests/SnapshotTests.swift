@@ -19,9 +19,11 @@ import Testing
     ]
 
     func check(_ view: some View, named name: String, fileID: StaticString = #fileID, filePath: StaticString = #filePath, line: UInt = #line, column: UInt = #column) {
+        BrandFonts.register()
         let screen = view
             .environment(\.locale, Locale(identifier: "en_IE"))
-            .tint(Palette.sage)
+            .environment(\.animatesScan, false)
+            .brand()
         for variant in Self.variants {
             assertSnapshot(
                 of: UIHostingController(rootView: screen),
@@ -67,6 +69,24 @@ import Testing
         ])
     }
 
+    /// The catalog was sure: its name, how sure, and the runners-up one tap away.
+    @Test func confirmFromTheCatalog() {
+        let suggestion = Suggestion(name: "Dell Inspiron Zino HD", alternatives: ["Dell Inspiron desktop", "mini PC"], catalogScore: 0.94, source: .catalog)
+        let draft = Draft(name: suggestion.name, room: "Office", values: ["Brand": "Dell", "Color": "Black"])
+        let aspects = [
+            SuggestedAspect(name: "Brand", value: "Dell", choices: ["Dell"]),
+            SuggestedAspect(name: "Color", value: "Black", choices: ["Black", "White", "Red"]),
+            SuggestedAspect(name: "Memory", choices: ["2 GB", "4 GB", "8 GB"]),
+        ]
+        let view = NavigationStack {
+            ItemForm(photo: Fixtures.photo("desktopcomputer"), draft: .constant(draft), suggesting: false,
+                     suggestionNote: ConfirmScreen.note(for: suggestion), alternatives: suggestion.alternatives,
+                     aspects: aspects, rooms: ["Office", "Garage"], onSave: {})
+        }
+        check(view, named: "confirm-catalog")
+        #expect(ConfirmScreen.note(for: suggestion) == "Matched on this iPhone against Hutch's catalog, 94% sure.")
+    }
+
     /// Apple Intelligence off: Vision's label, and why.
     @Test func confirmWithFallback() {
         let suggestion = VisionFindings(labels: ["bookshelf"], text: []).fallbackSuggestion(because: "Apple Intelligence is off. Turn it on in Settings.")
@@ -80,14 +100,29 @@ import Testing
         #expect(ConfirmScreen.note(for: Suggestion(name: "", source: .none, fallbackReason: "Off.")) == "Off.")
     }
 
-    @Test func emptyList() {
-        check(NavigationStack { ItemList(items: [], thumbnails: [:], stats: CaptureStats(items: [])).navigationTitle("Items") }, named: "list-empty")
+    @Test func homeEmpty() {
+        check(home(items: []), named: "home-empty")
     }
 
-    @Test func listWithItems() {
-        let items = Fixtures.items
-        let thumbnails = Dictionary(uniqueKeysWithValues: items.enumerated().map { ($1.id, Fixtures.photo(Fixtures.symbols[$0])) })
-        check(NavigationStack { ItemList(items: items, thumbnails: thumbnails, stats: CaptureStats(items: items)).navigationTitle("Items") }, named: "list")
+    @Test func homeWithItems() {
+        check(home(items: Fixtures.items), named: "home")
+    }
+
+    @Test func room() {
+        let garage = Fixtures.items.filter { $0.room == "Garage" }
+        check(NavigationStack { RoomView(room: "Garage", items: garage, thumbnails: Fixtures.thumbnails) }, named: "room")
+    }
+
+    @Test func itemDetail() {
+        let item = Fixtures.items[0]
+        check(NavigationStack { ItemDetailView(item: item, photo: Fixtures.photo(Fixtures.symbols[0])) }, named: "item")
+    }
+
+    private func home(items: [Item]) -> some View {
+        NavigationStack {
+            HomeView(items: items, thumbnails: Fixtures.thumbnails, stats: CaptureStats(items: items))
+                .safeAreaInset(edge: .bottom) { AddButton {} }
+        }
     }
 
     private func form(_ draft: Draft, suggesting: Bool, note: String? = nil, aspects: [SuggestedAspect] = [], rooms: [String]) -> some View {
@@ -104,6 +139,10 @@ enum Fixtures {
     }
 
     static let symbols = ["wrench.and.screwdriver", "hammer", "tent", "bicycle"]
+
+    static var thumbnails: [UUID: UIImage] {
+        Dictionary(uniqueKeysWithValues: items.enumerated().map { ($1.id, photo(symbols[$0])) })
+    }
 
     static let items: [Item] = [
         Item(name: "DeWalt 18V cordless drill", category: "Tools", room: "Garage", spot: "Left shelf",

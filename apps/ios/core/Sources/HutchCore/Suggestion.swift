@@ -8,15 +8,29 @@ public struct Suggestion: Sendable, Equatable {
     /// Aspects of what it is, as many as matter: filled in where the photo shows them
     /// (brand, color), with a few choices where it can't (chip, memory, storage).
     public var aspects: [SuggestedAspect]
+    /// Other likely names from the catalog, offered as one-tap "Is it…?" chips.
+    public var alternatives: [String]
+    /// The catalog's score for its best match, when it had one worth considering.
+    public var catalogScore: Float?
     public var source: SuggestionSource
     /// Why Apple Intelligence wasn't used, when it wasn't: shown under the name, so a poor
     /// guess can be told apart from a model that never ran.
     public var fallbackReason: String?
 
-    public init(name: String, category: String = "", aspects: [SuggestedAspect] = [], source: SuggestionSource, fallbackReason: String? = nil) {
+    public init(
+        name: String,
+        category: String = "",
+        aspects: [SuggestedAspect] = [],
+        alternatives: [String] = [],
+        catalogScore: Float? = nil,
+        source: SuggestionSource,
+        fallbackReason: String? = nil
+    ) {
         self.name = name
         self.category = category
         self.aspects = aspects
+        self.alternatives = alternatives
+        self.catalogScore = catalogScore
         self.source = source
         self.fallbackReason = fallbackReason
     }
@@ -71,6 +85,8 @@ public struct SuggestedAspect: Sendable, Equatable, Hashable {
 
 /// Which on-device path made a suggestion, so X4 can compare them. Nothing here leaves the phone.
 public enum SuggestionSource: String, Codable, Sendable {
+    /// The product catalog on the phone, matched by image embedding (X5), sure enough to name it.
+    case catalog
     /// The Foundation Models system model, given the photo itself (iOS 27, on capable phones).
     case modelWithImage
     /// The Foundation Models system model, given what Vision saw and read.

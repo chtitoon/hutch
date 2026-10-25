@@ -1,4 +1,4 @@
-# iOS tasks (AGENTS.md): setup, test, run, tokens, plus snapshots. Each runs non-interactively and fails loudly.
+# iOS tasks (AGENTS.md): setup, test, run, tokens, plus snapshots and catalog. Each runs non-interactively and fails loudly.
 # Tests run on one simulator by name, so snapshot images stay comparable: SIMULATOR="iPhone 17" picks another.
 # The simulator window is DeviceHub from Xcode 27 on (Simulator before).
 # Recipes start with `set -euo pipefail`: macOS ships GNU make 3.81, which ignores .SHELLFLAGS.
@@ -10,7 +10,9 @@ DERIVED := build
 APP := $(DERIVED)/Build/Products/Debug-iphonesimulator/Hutch.app
 SIMULATOR ?= iPhone 17 Pro
 
-.PHONY: setup test run tokens snapshots project lint
+CATALOG_TOOLS := ../../tools/catalog-index
+
+.PHONY: setup test run tokens snapshots catalog project lint
 
 setup:
 	@xcode-select -p >/dev/null || { echo "Xcode not found. Install it from the App Store, then run: sudo xcode-select -s /Applications/Xcode.app" >&2; exit 1; }
@@ -59,3 +61,14 @@ run: project
 
 tokens:
 	@swift tokens.swift
+	@swift icon.swift
+
+# Builds the product catalog and its Core ML image encoder into Hutch/Catalog/ (X5), then
+# regenerates the project so the app bundles them. Not committed: about 100 MB, and the first
+# run downloads SigLIP 2 (1.5 GB). Without it, the app works with Apple Intelligence alone.
+catalog:
+	@set -euo pipefail; \
+	cd $(CATALOG_TOOLS); \
+	[[ -x .venv/bin/python ]] || { python3 -m venv .venv && .venv/bin/python -m pip install -q -r requirements.txt; }; \
+	TOKENIZERS_PARALLELISM=false .venv/bin/python -I build.py
+	@xcodegen generate --quiet

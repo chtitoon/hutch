@@ -24,21 +24,21 @@ enum Palette {
     static let device = Color(light: 0x1B2420, dark: 0x0A120D)
 }
 
-/// Type levels from DESIGN.md, as Dynamic Type styles so they scale with the user's setting.
+/// Type levels from DESIGN.md in the bundled brand fonts, each scaling with the Dynamic Type style closest to its size.
 enum Typography {
-    static let headlineDisplay = Font.system(.largeTitle, weight: .bold)
-    static let headlineLg = Font.system(.largeTitle, weight: .bold)
-    static let headlineMd = Font.system(.title, weight: .bold)
-    static let headlineSm = Font.system(.body, weight: .bold)
-    static let titleMd = Font.system(.title3, weight: .semibold)
-    static let bodyLg = Font.system(.body, weight: .regular)
-    static let bodyMd = Font.system(.callout, weight: .regular)
-    static let bodySm = Font.system(.subheadline, weight: .regular)
-    static let caption = Font.system(.footnote, weight: .regular)
-    static let labelLg = Font.system(.callout, weight: .semibold)
-    static let labelMd = Font.system(.subheadline, weight: .semibold)
-    static let labelSm = Font.system(.footnote, weight: .semibold)
-    static let labelCaps = Font.system(.subheadline, weight: .semibold)
+    static let headlineDisplay = Font.custom("Bricolage Grotesque", size: 48, relativeTo: .largeTitle).weight(.bold)
+    static let headlineLg = Font.custom("Bricolage Grotesque", size: 36, relativeTo: .largeTitle).weight(.bold)
+    static let headlineMd = Font.custom("Bricolage Grotesque", size: 26, relativeTo: .title).weight(.bold)
+    static let headlineSm = Font.custom("Bricolage Grotesque", size: 18, relativeTo: .body).weight(.bold)
+    static let titleMd = Font.custom("Instrument Sans", size: 20, relativeTo: .title3).weight(.semibold)
+    static let bodyLg = Font.custom("Instrument Sans", size: 18, relativeTo: .body).weight(.regular)
+    static let bodyMd = Font.custom("Instrument Sans", size: 16, relativeTo: .callout).weight(.regular)
+    static let bodySm = Font.custom("Instrument Sans", size: 14, relativeTo: .subheadline).weight(.regular)
+    static let caption = Font.custom("Instrument Sans", size: 13, relativeTo: .footnote).weight(.regular)
+    static let labelLg = Font.custom("Instrument Sans", size: 16, relativeTo: .callout).weight(.semibold)
+    static let labelMd = Font.custom("Instrument Sans", size: 14, relativeTo: .subheadline).weight(.semibold)
+    static let labelSm = Font.custom("Instrument Sans", size: 13, relativeTo: .footnote).weight(.semibold)
+    static let labelCaps = Font.custom("Instrument Sans", size: 14, relativeTo: .subheadline).weight(.semibold)
 }
 
 /// The 4px spacing scale from DESIGN.md: `s6` is 24 points.
