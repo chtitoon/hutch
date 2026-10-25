@@ -73,11 +73,12 @@ import Testing
         #expect(result.alternatives == ["office chair"])
     }
 
-    @Test func withoutAModelALikelyMatchBeatsVisionsLabel() {
+    @Test func withoutAModelALikelyMatchIsOnlyOffered() {
         let matches = [CatalogMatch(name: "hand mixer", score: 0.12)]
         let result = OnDeviceSuggester.combine(matches: matches, model: nil, fallback: vision)
-        #expect(result.name == "hand mixer")
-        #expect(result.source == .catalog)
+        #expect(result.name == "Computer")
+        #expect(result.source == .labelsOnly)
+        #expect(result.alternatives == ["hand mixer"])
         #expect(result.fallbackReason == "Off.")
     }
 
@@ -92,7 +93,13 @@ import Testing
 
     @Test func theModelIsToldWhatTheCatalogMatched() {
         let details = OnDeviceSuggester.details(VisionFindings(labels: [], text: []), matches: [CatalogMatch(name: "hand mixer", score: 0.9), CatalogMatch(name: "rake", score: 0.01)])
-        #expect(details.contains("matched the photo to, best first: hand mixer."))
+        #expect(details.contains("is sure the photo shows: hand mixer."))
         #expect(!details.contains("rake"))
+    }
+
+    @Test func theModelIsWarnedWhenTheCatalogIsUnsure() {
+        let details = OnDeviceSuggester.details(VisionFindings(labels: [], text: []), matches: [CatalogMatch(name: "hand mixer", score: 0.1), CatalogMatch(name: "whisk", score: 0.06)])
+        #expect(details.contains("guessed, best first: hand mixer, whisk."))
+        #expect(details.contains("often wrong"))
     }
 }

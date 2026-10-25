@@ -19,6 +19,21 @@ Hutch collects nothing ([non-negotiable 5](AGENTS.md#non-negotiables)), so evide
 - what neighbors tell me
 - public research
 
+#### <a id="e7"></a>E7 — On my phone, the catalog sometimes gave random names
+
+- **Date:** 2026-10-24
+- **Bears on:** [X5](ROADMAP.md#x5)
+- **Effect:** weakens how the catalog was trusted, not the catalog itself
+- **Source:** my notes, on my iPhone 17, first build with the catalog
+- Not yet known which photos, or which path named them.
+- Likely cause: the catalog always has a nearest name, even for things it doesn't know, and a weak match could still name the item:
+  - on its own, when Apple Intelligence didn't answer;
+  - through the prompt, which told Apple Intelligence to use the first match.
+- **What changed because of it:**
+  - Only a sure match (0.3 and up) names an item.
+  - Weaker ones are only "Or is it…" chips.
+  - Apple Intelligence is told they're often wrong.
+
 #### <a id="e6"></a>E6 — SigLIP 2 in Core ML: 99 MB, exact on the GPU, drifting elsewhere
 
 - **Date:** 2026-10-24

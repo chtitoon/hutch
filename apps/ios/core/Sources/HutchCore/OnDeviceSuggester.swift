@@ -68,7 +68,8 @@ public struct OnDeviceSuggester: ItemSuggesting {
 
     /// Strongest evidence first:
     /// - A sure catalog match names it. Apple Intelligence's aspects and category stay.
-    /// - Otherwise Apple Intelligence's name, then Vision's.
+    /// - Otherwise Apple Intelligence's name, then Vision's. A likely match never names it:
+    ///   the catalog always has a nearest name, even for things it doesn't know.
     /// - Likely catalog matches that aren't the name become one-tap alternatives.
     static func combine(matches: [CatalogMatch], model: Suggestion?, fallback: Suggestion) -> Suggestion {
         let usable = matches.filter { $0.confidence != .low }
@@ -76,10 +77,6 @@ public struct OnDeviceSuggester: ItemSuggesting {
         if let best = usable.first {
             suggestion.catalogScore = best.score
             if best.confidence == .high {
-                suggestion.name = best.name
-                suggestion.source = .catalog
-            } else if model == nil {
-                // No model to name it: a likely catalog match beats Vision's broad label.
                 suggestion.name = best.name
                 suggestion.source = .catalog
             }
@@ -176,8 +173,11 @@ public struct OnDeviceSuggester: ItemSuggesting {
     static func details(_ findings: VisionFindings, matches: [CatalogMatch] = []) -> String {
         let more = findings.text.count - findings.printedText.count
         let likely = matches.filter { $0.confidence != .low }
+        let sure = likely.first?.confidence == .high
         return """
-        \(likely.isEmpty ? "" : "A product catalog on this phone matched the photo to, best first: \(likely.map(\.name).joined(separator: ", ")). It's usually right about what kind of thing it is: name it after the first match unless the photo or the text on it clearly says otherwise, and fill in its aspects, including the brand in that name.")
+        \(likely.isEmpty ? "" : sure
+            ? "A product catalog on this phone is sure the photo shows: \(likely[0].name). Name it that, and fill in its aspects, including the brand in that name."
+            : "A product catalog on this phone wasn't sure, and guessed, best first: \(likely.map(\.name).joined(separator: ", ")). Its guesses are often wrong: use one only if the photo or the text on it agrees.")
         Labels that may name the object, most likely first: \(findings.objectLabels.isEmpty ? "none" : findings.objectLabels.joined(separator: ", ")).
         Scene and material labels, not the object: \(findings.sceneLabels.isEmpty ? "none" : findings.sceneLabels.joined(separator: ", ")).
         Short text printed on the object: \(findings.printedText.isEmpty ? "none" : findings.printedText.joined(separator: " | ")).
