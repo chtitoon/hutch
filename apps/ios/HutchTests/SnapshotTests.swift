@@ -36,6 +36,15 @@ import Testing
     check(NavigationStack { ItemScreen(item: Item.samples[0]) }, library: .sample, named: "item")
   }
 
+  // The simulator has no camera, so the viewfinder is drawn over the screen's forest.
+  @Test func viewfinder() {
+    check(
+      Viewfinder().frame(maxWidth: .infinity, maxHeight: .infinity).background(Palette.deep),
+      library: .sample,
+      named: "viewfinder"
+    )
+  }
+
   @Test func captureWithoutCamera() {
     check(CaptureScreen(isCameraAvailable: false), library: .sample, named: "capture")
   }

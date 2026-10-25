@@ -87,18 +87,23 @@ private struct ShutterButtonStyle: ButtonStyle {
   }
 }
 
-private struct Viewfinder: View {
-  private static let size = Spacing.s30 * 2.2
-
+struct Viewfinder: View {
   var body: some View {
-    VStack(spacing: Spacing.s4) {
+    VStack(spacing: Spacing.s6) {
       ViewfinderCorners()
-        .stroke(Palette.onDeep, style: StrokeStyle(lineWidth: 3, lineCap: .round))
-        .frame(width: Self.size, height: Self.size)
-      Text("Fit the whole item inside the frame")
-        .font(Typography.bodyMd)
+        .stroke(Palette.onDeep, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+        .aspectRatio(1, contentMode: .fit)
+        .padding(.horizontal, Spacing.s8)
+      // A capsule keeps the hint readable over any scene the camera sees.
+      Text("Fit the whole item in the frame")
+        .font(Typography.titleMd)
         .foregroundStyle(Palette.onDeep)
-        .shadow(color: Palette.device, radius: Spacing.s2)
+        .multilineTextAlignment(.center)
+        .padding(.horizontal, Spacing.s5)
+        .padding(.vertical, Spacing.s3)
+        .background(.ultraThinMaterial, in: .capsule)
+        .environment(\.colorScheme, .dark)
+        .padding(.horizontal, Spacing.s6)
     }
     .allowsHitTesting(false)
     .accessibilityHidden(true)
