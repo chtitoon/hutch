@@ -25,6 +25,21 @@ import Testing
     #expect(Item.roomSuggestions(from: [], homeRooms: []).isEmpty)
   }
 
+  @Test func namesStartWithACapital() {
+    #expect(Item(name: " cordless drill ").name == "Cordless drill")
+    #expect(Item(name: "DeWalt 18V drill").name == "DeWalt 18V drill")
+    #expect(Item(name: "iPhone case").name == "iPhone case")
+    #expect(Item(name: "eBay box").name == "eBay box")
+    #expect(Item(name: "18V battery").name == "18V battery")
+    #expect(Item(name: "élan skis").name == "Élan skis")
+  }
+
+  @Test func renamedItemsStartWithACapital() {
+    var item = Item(name: "Ladder")
+    item.name = "step ladder"
+    #expect(item.name == "Step ladder")
+  }
+
   @Test func placeJoinsRoomAndSpot() {
     #expect(Item(name: "x", room: "Garage", spot: " left shelf").place == "Garage · left shelf")
     #expect(Item(name: "x", room: "Garage").place == "Garage")

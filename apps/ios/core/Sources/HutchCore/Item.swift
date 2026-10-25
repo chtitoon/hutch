@@ -6,7 +6,9 @@ import Foundation
 /// listing items never decrypts every photo. Like SwiftData's `.externalStorage`.
 public struct Item: Codable, Identifiable, Hashable, Sendable {
   public let id: UUID
-  public var name: String
+  public var name: String {
+    didSet { name = Item.sentenceCased(name) }
+  }
   public var room: String
   public var spot: String
   public let createdAt: Date
@@ -19,7 +21,7 @@ public struct Item: Codable, Identifiable, Hashable, Sendable {
     createdAt: Date = .now
   ) {
     self.id = id
-    self.name = name
+    self.name = Item.sentenceCased(name)
     self.room = room
     self.spot = spot
     self.createdAt = createdAt
@@ -42,5 +44,14 @@ extension Item {
     return (used + home)
       .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
       .filter { !$0.isEmpty && seen.insert($0.lowercased()).inserted }
+  }
+
+  /// "cordless drill" becomes "Cordless drill". The rest stays as typed, and names like
+  /// "iPhone case" keep their brand's casing.
+  static func sentenceCased(_ name: String) -> String {
+    let name = name.trimmingCharacters(in: .whitespacesAndNewlines)
+    guard let first = name.first, first.isLowercase else { return name }
+    if let second = name.dropFirst().first, second.isUppercase { return name }
+    return first.uppercased() + name.dropFirst()
   }
 }

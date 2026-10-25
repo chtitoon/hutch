@@ -46,6 +46,7 @@ struct AddItemScreen: View {
       FormSection("What is it") {
         CardTextField("Name", text: $draft.name, prompt: "Cordless drill")
           .font(Typography.titleMd)
+          .textInputAutocapitalization(.sentences)
           .submitLabel(.done)
       }
       FormSection("Where it lives") {
