@@ -101,6 +101,11 @@ I review UI from my phone, through the PR (D11).
 
 - Swift: Swift 6, strict concurrency, Swift Testing. Web: Astro with its version pinned; upgrade deliberately, in its own PR.
 - Tests alongside code.
+- **Few, short comments,** in every language:
+  - Comment only what the code can't say: why, a constraint, or a decision (with its D-number).
+  - Never restate a name.
+  - One line where possible.
+  - `apps/ios/AGENTS.md` has the Swift details.
 - Small PRs. Commit messages say *why*, not just what.
 - **No tables in any Markdown file,** ever: I read docs on my phone, where tables don't fit. Use short headings and one fact per bullet, with nothing packed into one long line.
 - Secrets (Cloudflare tokens, eBay keys, App Store Connect keys) live in GitHub/Cloudflare secrets, never in the repo.
