@@ -28,6 +28,10 @@ Run them in this folder.
 - `make run`: builds the app and launches it in the simulator.
 - `make tokens`: regenerates `Tokens.swift` from DESIGN.md.
 - `make snapshots`: re-records every reference image. Only do this on purpose, and say why in the PR.
+- `make catalog`: builds the product catalog and its Core ML model into `Hutch/Catalog/` ([X5](../../ROADMAP.md#x5)).
+  - The first run downloads SigLIP 2 (1.5 GB) and takes a few minutes.
+  - The result is about 100 MB and never committed.
+  - Without it, the app names things with Apple Intelligence and Vision alone.
 
 ## On my phone
 

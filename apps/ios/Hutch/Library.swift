@@ -18,12 +18,15 @@ final class Library {
     }
 
     static func onDevice() -> Library {
+        // The product catalog, when `make catalog` built it into the app (X5).
+        let catalog = CatalogEmbedder.fromBundle()
+        let suggester = OnDeviceSuggester(catalog: catalog?.0, embedder: catalog?.1)
         do {
-            let library = Library(store: try ItemStore.onDevice(), suggester: OnDeviceSuggester())
+            let library = Library(store: try ItemStore.onDevice(), suggester: suggester)
             Task { await library.load() }
             return library
         } catch {
-            let library = Library(store: nil, suggester: OnDeviceSuggester())
+            let library = Library(store: nil, suggester: suggester)
             library.error = "Hutch couldn't open its encrypted storage, so nothing can be saved. (\(error.localizedDescription))"
             return library
         }

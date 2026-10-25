@@ -67,6 +67,24 @@ import Testing
         ])
     }
 
+    /// The catalog was sure: its name, how sure, and the runners-up one tap away.
+    @Test func confirmFromTheCatalog() {
+        let suggestion = Suggestion(name: "Dell Inspiron Zino HD", alternatives: ["Dell Inspiron desktop", "mini PC"], catalogScore: 0.94, source: .catalog)
+        let draft = Draft(name: suggestion.name, room: "Office", values: ["Brand": "Dell", "Color": "Black"])
+        let aspects = [
+            SuggestedAspect(name: "Brand", value: "Dell", choices: ["Dell"]),
+            SuggestedAspect(name: "Color", value: "Black", choices: ["Black", "White", "Red"]),
+            SuggestedAspect(name: "Memory", choices: ["2 GB", "4 GB", "8 GB"]),
+        ]
+        let view = NavigationStack {
+            ItemForm(photo: Fixtures.photo("desktopcomputer"), draft: .constant(draft), suggesting: false,
+                     suggestionNote: ConfirmScreen.note(for: suggestion), alternatives: suggestion.alternatives,
+                     aspects: aspects, rooms: ["Office", "Garage"], onSave: {})
+        }
+        check(view, named: "confirm-catalog")
+        #expect(ConfirmScreen.note(for: suggestion) == "Matched on this iPhone against Hutch's catalog, 94% sure.")
+    }
+
     /// Apple Intelligence off: Vision's label, and why.
     @Test func confirmWithFallback() {
         let suggestion = VisionFindings(labels: ["bookshelf"], text: []).fallbackSuggestion(because: "Apple Intelligence is off. Turn it on in Settings.")

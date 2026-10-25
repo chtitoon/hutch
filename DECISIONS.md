@@ -296,6 +296,11 @@ Embedding with an already-trained model isn't training, and a free catalog file 
 - Barcode lookups mostly won't find a match, since few Wikidata products carry a barcode number (GTIN, P3962).
 - Model numbers read on an item, and the nearest catalog names, carry the rest.
 
+**On the phone, as built:**
+- int8 weights in blocks of 32: 99 MB.
+- The model runs on CPU and GPU, not the Neural Engine, where it drifts (E6).
+- The catalog names lead when SigLIP's score is at least 0.3; from 0.05 they're offered as alternatives. Both thresholds come from 11 photos and are provisional.
+
 **Size, projected:**
 - Image encoder: about 90 MB at int8, about 170 MB at fp16.
 - Vectors: 50,000 entries at 256 dimensions in int8, about 13 MB.

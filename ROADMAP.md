@@ -94,6 +94,13 @@ At most two bets and one experiment.
 
 #### <a id="x5"></a>X5 — Photo to product, with a catalog on the phone
 **Tried on:** [H1](#h1). **Status:** started 2026-10-24. It's X4's third learning goal ("when Core ML is worth it"), split out because it's big; it shares X4's lane in Now. **Appetite:** 2 weeks, gated after phase 2.
+- **Where it stands (2026-10-24):**
+  - At my request, the hand-made catalog went onto the phone before phase 2's gate, so I can try it now.
+  - Phase 3 is done: Core ML matches PyTorch at 0.9998 on CPU and GPU ([E6](LEARNED.md#e6)).
+  - Phases 4 and 5 are in the app in a first form:
+    - a sure catalog match names the item, likely ones become "Or is it…" chips, and Apple Intelligence fills in the aspects;
+    - `make catalog` builds it all.
+  - Phase 2's gate (taxonomy, 20+ unseen photos) still decides whether this stays.
 - **Why:** Apple's on-device models named my MacBook Air "Computer" ([E3](LEARNED.md#e3)). Image embeddings matched against a catalog of names got the right kind for 4 of 4 of my photos ([E4](LEARNED.md#e4)), with nothing sent.
 - **Learning goals:**
   - Build a product catalog from open data and embed it with SigLIP 2.

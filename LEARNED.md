@@ -19,6 +19,22 @@ Hutch collects nothing ([non-negotiable 5](AGENTS.md#non-negotiables)), so evide
 - what neighbors tell me
 - public research
 
+#### <a id="e6"></a>E6 — SigLIP 2 in Core ML: 99 MB, exact on the GPU, drifting elsewhere
+
+- **Date:** 2026-10-24
+- **Bears on:** [X5](ROADMAP.md#x5) phase 3, [D27](DECISIONS.md#d27--a-product-catalog-on-the-phone-siglip-2-open-data-licenses-first)
+- **Effect:** supports, with a constraint on compute units
+- **Source:** `tools/catalog-index/build.py --check` on my 13 photos, plus a CC0 fixture in the simulator
+- **Compression,** compared with PyTorch by cosine similarity:
+  - fp16 alone: 0.9999.
+  - int8 with one scale per channel: as low as 0.93.
+  - int8 with one scale per block of 32 weights: 0.9998, at 99 MB.
+- **Compute units,** with those weights:
+  - CPU and GPU: 0.9998.
+  - Neural Engine or CPU alone: about 0.97, enough to reorder close calls. On a laptop photo, "desk" overtook "Apple MacBook Air".
+  - So the app uses CPU and GPU on the phone.
+- **The simulator's GPU path returned all zeros:** every catalog entry tied, and the first in the list looked like a correct answer. The simulator now runs on the CPU, and a test fails if an embedding isn't unit length.
+
 #### <a id="e5"></a>E5 — 11 of my photos: right in the top 5 once the catalog covers them, but the catalog was tuned to them
 
 - **Date:** 2026-10-24

@@ -5,3 +5,5 @@ pillow
 pillow-heif
 sentencepiece
 protobuf
+coremltools==8.3.0
+numpy<2

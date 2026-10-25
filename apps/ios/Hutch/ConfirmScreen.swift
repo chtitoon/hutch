@@ -20,6 +20,7 @@ struct ConfirmScreen: View {
                 draft: $draft,
                 suggesting: suggestion == nil,
                 suggestionNote: suggestion.flatMap(Self.note(for:)),
+                alternatives: suggestion?.alternatives ?? [],
                 aspects: suggestion?.aspects ?? [],
                 rooms: library.rooms,
                 error: error,
@@ -58,6 +59,11 @@ struct ConfirmScreen: View {
     /// Which path named it, so a poor guess can be told apart from a model that never ran (X4).
     static func note(for suggestion: Suggestion) -> String? {
         switch suggestion.source {
+        case .catalog:
+            [
+                "Matched on this iPhone against Hutch's catalog\(suggestion.catalogScore.map { ", \(Int(($0 * 100).rounded()))% sure" } ?? "").",
+                suggestion.fallbackReason,
+            ].compactMap(\.self).joined(separator: " ")
         case .modelWithImage: "Named by Apple Intelligence on this iPhone, from the photo."
         case .modelWithLabels: "Named by Apple Intelligence on this iPhone, from Vision's labels."
         case .labelsOnly: [suggestion.fallbackReason, "This is Vision's rough label."].compactMap(\.self).joined(separator: " ")
@@ -117,6 +123,8 @@ struct ItemForm: View {
     @Binding var draft: Draft
     let suggesting: Bool
     var suggestionNote: String?
+    /// Other likely names from the catalog: one tap makes one the name.
+    var alternatives: [String] = []
     /// Its aspects: values the photo showed are already picked; the rest take a tap, or none.
     var aspects: [SuggestedAspect] = []
     /// Rooms I've used, then my Apple Home rooms.
@@ -147,6 +155,18 @@ struct ItemForm: View {
                     if suggesting && draft.name.isEmpty {
                         ProgressView()
                     }
+                }
+                if !alternatives.isEmpty {
+                    VStack(alignment: .leading, spacing: Spacing.s2) {
+                        Text("Or is it…")
+                            .font(Typography.labelSm)
+                            .foregroundStyle(Palette.inkSubtle)
+                        Chips(options: alternatives, selected: Binding(
+                            get: { draft.name },
+                            set: { if !$0.isEmpty { draft.name = $0 } }
+                        ))
+                    }
+                    .listRowInsets(EdgeInsets(top: Spacing.s3, leading: Spacing.s4, bottom: Spacing.s3, trailing: Spacing.s4))
                 }
             } footer: {
                 if let suggestionNote {
