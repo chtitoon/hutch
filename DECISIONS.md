@@ -76,13 +76,15 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **Why:** issues show up in the GitHub app on my phone, PRs close them automatically, and the history is kept. Milestones are the three phases; issues are the units of work, each with a "Done when." The milestone descriptions hold each phase's goal, order and success test; durable reasoning stays in these docs. There is no separate plan file, because a second copy of the plan would drift.
 
 ## D11 — UI review through snapshot tests
-**Status:** Proposed (Oct 2026). The approach is decided; confirm the library with me in [H1](ROADMAP.md#h1), the first bet with screens.
+**Status:** Decided (Oct 2026). Library confirmed in [H1](ROADMAP.md#h1): Point-Free's [swift-snapshot-testing](https://github.com/pointfreeco/swift-snapshot-testing), pinned to an exact version in `apps/ios/project.yml`, linked into the test target only.
 
 **What:** each screen renders to reference images (light, dark, large Dynamic Type) stored with its tests. GitHub shows changed images side by side in a PR's file changes, so I can review UI from my phone with no extra tooling, and an unintended change fails the tests.
 
 **Why not screenshots posted to the PR** (the earlier plan, on an orphan branch): custom plumbing to build and maintain, images from a private repo may not render in the GitHub mobile app, and screenshots are thrown away after one look. Snapshot tests give the same review plus regression protection.
 
-**Costs:** one third-party test-only library (a well-known open-source snapshot-testing package is the likely choice), and small reference images in the repo, which are real test assets.
+**Costs:** one third-party test-only library, and small reference images in the repo, which are real test assets.
+
+**How it runs:** each screen is rendered as an iPhone 13 Pro–sized view on the iPhone 17 Pro simulator that `make test` uses by default, in light, dark and the accessibility-large text size. `make snapshots` re-records them all, on purpose only.
 
 ## D12 — Agents can't merge
 **Status:** Decided (Oct 2026).
@@ -154,6 +156,8 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 - **Enforced on both sides, in `npm test`, which both GitHub (on every PR, as the required checks **Design / Validate DESIGN.md** and **Web / Validate Web Build**) and Cloudflare's build run, so a break can't be merged or deployed:** `design:lint:md` runs the linter and fails on any warning (the CLI only warns on low contrast), plus the `-dark` twin and `-graphic` rules; `design:lint:css` fails on raw colors, undefined variables, type outside the scale, external fonts and off-scale spacing in the website's code, with a reasoned allowlist in `apps/web/DESIGN.md`. iOS gets the equivalent with its first code ([H1](ROADMAP.md#h1)): Swift generated from DESIGN.md and a SwiftLint rule banning raw colors and sizes.
 - Fixing what the linter found: `sage` darkened from `#3E7A62` to `#3D7961` (4.47:1 → 4.53:1 on the background), and a new `marker` role for the status pill's dot, deeper brass in dark mode (1.97:1 → 3.27:1).
 
+**On iOS, as built in [H1](ROADMAP.md#h1):** `make tokens` writes Swift (`Palette`, `Typography`, `Spacing`, `Radius`) rather than asset-catalog colors, and a grep script stands in for the SwiftLint rule. apps/ios/DESIGN.md says why.
+
 **Why:** one file that agents and people both read, values next to the reasons, in a format the tools around agents are starting to understand. A token file alone said what but not why; the reasoning lived in two other files that could drift from it.
 
 **Risks and exit plan:** the format is alpha and Google's. If it changes or stalls, `npx @google/design.md export --format dtcg DESIGN.md` writes a W3C design tokens file, the format `tokens.json` used, and the generators move to it. The -dark and -wide suffixes export as ordinary tokens, so nothing is lost. Until then, never keep a second token file by hand; generate one if a tool needs it.
@@ -222,7 +226,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **Status:** Open (Oct 2026). Decide before any price lookup is built; until then a resale price is my own estimate.
 
 **Tension:** [H1](ROADMAP.md#h1) shows what I'd resell each item for. Looking that up (eBay sold listings, a price API) means telling someone else what the item is, and non-negotiable 1 says names and item data never leave the device. Options:
-1. **My own estimate only.** Nothing leaves the phone. What H1 builds.
+1. **My own estimate only.** Nothing leaves the phone. H1 first planned this, then dropped resale prices altogether (Oct 2026): they slowed adding items and serve [O3](ROADMAP.md#o3), not O1.
 2. **A lookup I trigger per item,** sending only a short search term I see and can edit first ("DeWalt 20V drill"), never the photo or anything else. Needs non-negotiable 1 reworded, as D21 did for keys.
 3. **Prices only when selling** ([O3](ROADMAP.md#o3)): listing an item publishes it to eBay anyway, so the lookup comes with a choice already made.
 4. **An on-device model's guess,** from what it knows, if [X4](ROADMAP.md#x4) shows it's close enough. Nothing leaves the phone, but the guess may be dated or rough.
@@ -234,3 +238,14 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 1. **Reword non-negotiable 1** to cover what Hutch sends to servers: "...never leave the device, except one item at a time, when I explicitly send it to someone I choose." Hutch's servers still see ciphertext only. The share sheet hands the card to Messages; Hutch keeps no copy elsewhere.
 2. **An encrypted link instead:** the item encrypted on the phone, the key only in the link (after the `#`, which browsers never send), a page on myhutch.app decrypting it with WebCrypto. The server sees ciphertext only and non-negotiable 1 stands; it costs a server, link expiry, and the site's first JavaScript.
 
+
+## D25 — Where it lives: an Apple Home room and an optional spot
+**Status:** Decided (Oct 2026), in [H1](ROADMAP.md#h1).
+
+**What:** "where it lives" is a room picked in one tap, plus an optional spot I type ("left shelf"). The rooms offered are the ones I've used, most recent first, then my Apple Home rooms, read through HomeKit. A room is typed only when there is none to pick (no Home access or rooms, and none used yet); once rooms exist, it's chips only.
+
+**Why:** typing a place for every item is slow, and Home already knows my rooms. A room alone is too coarse for a garage, so the spot stays, but optional.
+
+**Privacy:** Hutch only reads room names; it never controls accessories. Names stay in memory or inside an encrypted item, so non-negotiable 1 holds. Home access is asked for the first time I add an item, and declining just means no Home rooms.
+
+**Costs:** the HomeKit entitlement. Rooms only include what I've set up in the Home app.
