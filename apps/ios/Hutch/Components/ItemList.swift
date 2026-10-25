@@ -4,8 +4,8 @@ import SwiftUI
 struct ItemList: View {
   let title: String
   let items: [Item]
-  // Off in a room, where the spot's heading already says where.
-  var showsPlace = true
+  // Off in a room's own list, where it would repeat the title.
+  var showsRoom = true
 
   var body: some View {
     VStack(alignment: .leading, spacing: Spacing.s3) {
@@ -13,7 +13,7 @@ struct ItemList: View {
       VStack(spacing: 0) {
         ForEach(items) { item in
           NavigationLink(value: Route.item(item)) {
-            ItemRow(item: item, showsPlace: showsPlace)
+            ItemRow(item: item, showsRoom: showsRoom)
           }
           .buttonStyle(.plain)
           if item.id != items.last?.id {
@@ -30,7 +30,7 @@ struct ItemList: View {
 
 struct ItemRow: View {
   let item: Item
-  var showsPlace = true
+  var showsRoom = true
 
   @Environment(Library.self) private var library
 
@@ -44,8 +44,8 @@ struct ItemRow: View {
         Text(item.name)
           .font(Typography.labelLg)
           .foregroundStyle(Palette.ink)
-        if showsPlace {
-          Text(item.place.isEmpty ? "No place yet" : item.place)
+        if showsRoom {
+          Text(item.room.isEmpty ? "No room yet" : item.room)
             .font(Typography.bodySm)
             .foregroundStyle(Palette.inkMuted)
             .lineLimit(1)

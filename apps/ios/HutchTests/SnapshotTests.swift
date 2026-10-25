@@ -50,7 +50,7 @@ import Testing
   }
 
   @Test func addWithRooms() {
-    let draft = Draft(name: "DeWalt 18V cordless drill", room: "Garage", spot: "Left shelf")
+    let draft = Draft(name: "DeWalt 18V cordless drill", room: "Garage")
     check(
       AddItemScreen(photo: .sample("wrench.and.screwdriver"), draft: draft),
       library: .sample,

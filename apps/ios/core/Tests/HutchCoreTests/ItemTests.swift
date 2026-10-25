@@ -6,7 +6,7 @@ import Testing
 
 @Suite struct ItemTests {
   @Test func survivesARoundTrip() throws {
-    let item = Item(name: "Ladder", room: "Garage", spot: "Back wall")
+    let item = Item(name: "Ladder", room: "Garage")
     #expect(try JSONDecoder().decode(Item.self, from: JSONEncoder().encode(item)) == item)
   }
 
@@ -40,10 +40,8 @@ import Testing
     #expect(item.name == "Step ladder")
   }
 
-  @Test func placeJoinsRoomAndSpot() {
-    #expect(Item(name: "x", room: "Garage", spot: " left shelf").place == "Garage · left shelf")
-    #expect(Item(name: "x", room: "Garage").place == "Garage")
-    #expect(Item(name: "x").place.isEmpty)
+  @Test func roomsAreTrimmed() {
+    #expect(Item(name: "Ladder", room: " Garage ").room == "Garage")
   }
 }
 

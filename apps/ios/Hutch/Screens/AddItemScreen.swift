@@ -52,11 +52,10 @@ struct AddItemScreen: View {
       FormSection("Where it lives") {
         // A room is typed only when there's none to pick (D25).
         if library.rooms.isEmpty {
-          CardTextField("Room", text: $draft.room, prompt: "Room: Garage")
+          CardTextField("Room", text: $draft.room, prompt: "Garage")
         } else {
           ChipPicker(options: library.rooms, selection: $draft.room)
         }
-        CardTextField("Spot", text: $draft.spot, prompt: "Spot, if you like: left shelf")
       }
       PrivateBadge()
       if let error {
@@ -96,14 +95,13 @@ struct AddItemScreen: View {
 struct Draft: Equatable {
   var name = ""
   var room = ""
-  var spot = ""
 
   var canSave: Bool {
     !name.trimmed.isEmpty
   }
 
   var item: Item {
-    Item(name: name.trimmed, room: room.trimmed, spot: spot.trimmed)
+    Item(name: name, room: room)
   }
 }
 

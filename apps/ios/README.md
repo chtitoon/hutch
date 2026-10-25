@@ -10,7 +10,7 @@ Design: the root [DESIGN.md](../../DESIGN.md) for values and rules, and [DESIGN.
   - `App/`: the app's entry point, and `Library`, the inventory the screens share through the environment.
   - `Screens/`:
     - Home (`HomeScreen`) has search, rooms with their counts, what was added lately, and a + at the bottom.
-    - `RoomScreen` lists a room's things by spot.
+    - `RoomScreen` lists a room's things.
     - `ItemScreen` shows an item's photo and place.
     - + opens the camera (`CaptureScreen`). After the shutter, `AddItemScreen` takes the name and a room from Apple Home (D25), then goes back to Home.
   - `Components/`: the shared pieces, such as chips, button styles and the item list.
@@ -20,7 +20,7 @@ Design: the root [DESIGN.md](../../DESIGN.md) for values and rules, and [DESIGN.
   - `Assets.xcassets`: the app icon and the logo's house-and-keyhole mark.
   - `Generated/Tokens.swift`: written by `make tokens` from DESIGN.md. Never edit it by hand.
 - `core/`: the `HutchCore` Swift package, with its tests. It holds:
-  - the item: a name, a room and an optional spot
+  - the item: a name and a room
   - encryption (`Vault`, `KeychainKeyStore`)
   - the encrypted store (`ItemStore`)
 - `HutchTests/`: snapshot tests of every screen, with their reference images in `__Snapshots__/`.

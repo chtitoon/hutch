@@ -29,12 +29,7 @@ import Testing
   }()
 
   func drill(at date: Date = .now) -> Item {
-    Item(
-      name: "DeWalt drill sentinel",
-      room: "Garage sentinel",
-      spot: "Left shelf sentinel",
-      createdAt: date
-    )
+    Item(name: "DeWalt drill sentinel", room: "Garage sentinel", createdAt: date)
   }
 
   @Test func savedItemsComeBack() async throws {

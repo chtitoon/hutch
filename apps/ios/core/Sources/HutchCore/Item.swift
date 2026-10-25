@@ -8,33 +8,19 @@ public struct Item: Codable, Identifiable, Hashable, Sendable {
   public var name: String {
     didSet { name = Item.sentenceCased(name) }
   }
+  // From Apple Home, or a name I typed when there was none to pick (D25). Empty until I say.
   public var room: String
-  public var spot: String
   public let createdAt: Date
 
-  public init(
-    id: UUID = UUID(),
-    name: String,
-    room: String = "",
-    spot: String = "",
-    createdAt: Date = .now
-  ) {
+  public init(id: UUID = UUID(), name: String, room: String = "", createdAt: Date = .now) {
     self.id = id
     self.name = Item.sentenceCased(name)
-    self.room = room
-    self.spot = spot
+    self.room = room.trimmingCharacters(in: .whitespacesAndNewlines)
     self.createdAt = createdAt
   }
 }
 
 extension Item {
-  public var place: String {
-    [room, spot]
-      .map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-      .filter { !$0.isEmpty }
-      .joined(separator: " · ")
-  }
-
   /// Rooms I've used, newest first, then my Apple Home rooms, each once.
   public static func roomSuggestions(from items: [Item], homeRooms home: [String] = []) -> [String]
   {

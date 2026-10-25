@@ -15,13 +15,11 @@
       Item(
         name: "DeWalt 18V cordless drill",
         room: "Garage",
-        spot: "Left shelf",
         createdAt: Date(timeIntervalSince1970: 4)
       ),
       Item(
         name: "Aluminium step ladder",
         room: "Garage",
-        spot: "Back wall",
         createdAt: Date(timeIntervalSince1970: 3)
       ),
       Item(name: "Quechua 2-person tent", room: "Attic", createdAt: Date(timeIntervalSince1970: 2)),

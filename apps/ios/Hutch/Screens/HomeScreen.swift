@@ -118,7 +118,7 @@ struct HomeScreen: View {
   private var matches: [Item] {
     let words = query.lowercased().split(separator: " ")
     return library.items.filter { item in
-      let text = "\(item.name) \(item.place)".lowercased()
+      let text = "\(item.name) \(item.room)".lowercased()
       return words.allSatisfy { text.contains($0) }
     }
   }

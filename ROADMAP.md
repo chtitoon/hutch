@@ -67,9 +67,9 @@ At most two bets and one experiment.
 
 #### <a id="h1"></a>H1 — I'll keep an inventory if Hutch makes it effortless
 **Serves:** [O1](#o1). **Status:** started 2026-10-24; building until 2026-11-14 at the latest. **Appetite:** 3 weeks to build, then 1 week of use on my phone.
-- **Test:** the first Hutch app. It opens on Home: rooms, search and what I added lately. A + opens the camera; I take a photo, name it, and say where it lives: a room from Apple Home or one I've used, plus a spot if I like ([D25](DECISIONS.md#d25--where-it-lives-an-apple-home-room-and-an-optional-spot)). Later, an on-device model suggests the name ([X4](#x4)). When time runs short, everything else is cut first.
+- **Test:** the first Hutch app. It opens on Home: rooms, search and what I added lately. A + opens the camera; I take a photo, name it, and say where it lives: a room from Apple Home or one I've used, or one I type when there's none ([D25](DECISIONS.md#d25--where-it-lives-a-room)). Later, an on-device model suggests the name ([X4](#x4)). When time runs short, everything else is cut first.
 - **Milestones,** one PR each, each usable on my phone:
-  1. **An inventory by hand:** an item is a name, a room and an optional spot, with its photo, encrypted. Home, room and item screens in the brand, and the app icon.
+  1. **An inventory by hand:** an item is a name and a room, with its photo, encrypted. Home, room and item screens in the brand, and the app icon.
   2. **Named on the phone** ([X4](#x4)): Vision and Apple Intelligence suggest the name while a scanner sweeps the photo.
   3. **A product catalog** (X5, its own experiment, coming with that PR): matched on the phone for specific names.
   4. **A widget** that opens straight on the camera, to add in one go.

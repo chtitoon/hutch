@@ -15,7 +15,7 @@ struct ItemScreen: View {
         Photo(image: photo ?? library.thumbnail(of: item))
         VStack(alignment: .leading, spacing: Spacing.s5) {
           VStack(alignment: .leading, spacing: Spacing.s2) {
-            Text(breadcrumb)
+            Text(item.room.isEmpty ? "No room yet" : item.room)
               .font(Typography.labelMd)
               .foregroundStyle(Palette.inkMuted)
             Text(item.name)
@@ -43,11 +43,6 @@ struct ItemScreen: View {
       Text("Its photo and details are deleted from this iPhone.")
     }
     .task { await loadPhoto() }
-  }
-
-  // "Garage › Left shelf".
-  private var breadcrumb: String {
-    item.place.isEmpty ? "No place yet" : item.place.replacing(" · ", with: " › ")
   }
 
   private func loadPhoto() async {
