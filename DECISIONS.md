@@ -291,6 +291,11 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 
 Embedding with an already-trained model isn't training, and a free catalog file may be fine, but both are open to dispute, and I'd rather not build on a license I'd have to argue about. No Icecat identifiers, specs, images or embeddings, in the app or the build. Revisit only if Icecat confirms in writing that this use is fine.
 
+**Kinds of things come from Wikidata, not a shopping taxonomy (decided Oct 2026).** For the same reason:
+- Google's product taxonomy is published under Google's terms, not an open license.
+- GS1's product classification (GPC) states no reuse rights for its data.
+- Wikidata is CC0, and its tree of kinds is large: about 20,000 under "tool" and 30,000 under "device" with labels in 3+ languages. Many are industrial or off-topic, so the build filters them.
+
 **What that costs:**
 - Product models come from Wikidata alone: strong for phones, laptops, cameras and consoles, thin for tools and appliances.
 - Barcode lookups mostly won't find a match, since few Wikidata products carry a barcode number (GTIN, P3962).

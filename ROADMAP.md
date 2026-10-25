@@ -100,7 +100,7 @@ At most two bets and one experiment.
   - Phases 4 and 5 are in the app in a first form:
     - a sure catalog match names the item, likely ones become "Or is it…" chips, and Apple Intelligence fills in the aspects;
     - `make catalog` builds it all.
-  - Phase 2's gate (taxonomy, 20+ unseen photos) still decides whether this stays.
+  - Phase 2's gate (kinds from Wikidata, D27; 20+ unseen photos) still decides whether this stays.
 - **Why:** Apple's on-device models named my MacBook Air "Computer" ([E3](LEARNED.md#e3)). Image embeddings matched against a catalog of names got the right kind for 4 of 4 of my photos ([E4](LEARNED.md#e4)), with nothing sent.
 - **Learning goals:**
   - Build a product catalog from open data and embed it with SigLIP 2.
