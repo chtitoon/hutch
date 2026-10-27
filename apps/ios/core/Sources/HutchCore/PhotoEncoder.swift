@@ -8,13 +8,14 @@ public enum PhotoEncoder {
   // A 56 pt thumbnail at 3x.
   public static let thumbnailMaxPixels = 180
 
-  public static func jpeg(_ image: CGImage, maxPixels: Int, quality: Double = 0.8) throws -> Data {
+  // HEIC rather than JPEG, so a cutout keeps its transparent background.
+  public static func heic(_ image: CGImage, maxPixels: Int, quality: Double = 0.8) throws -> Data {
     let scaled = try downscale(image, maxPixels: maxPixels)
     let data = NSMutableData()
     guard
       let destination = CGImageDestinationCreateWithData(
         data,
-        UTType.jpeg.identifier as CFString,
+        UTType.heic.identifier as CFString,
         1,
         nil
       )
@@ -30,8 +31,20 @@ public enum PhotoEncoder {
     return data as Data
   }
 
-  public static func image(from jpeg: Data) -> CGImage? {
-    guard let source = CGImageSourceCreateWithData(jpeg as CFData, nil) else { return nil }
+  /// A camera or library photo, decoded upright at no more than `maxPixels`, off the main actor.
+  public static func uprightImage(from data: Data, maxPixels: Int) async -> CGImage? {
+    guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
+    // ImageIO decodes straight to the size asked and applies the photo's rotation in one pass.
+    let options: [CFString: Any] = [
+      kCGImageSourceCreateThumbnailFromImageAlways: true,
+      kCGImageSourceCreateThumbnailWithTransform: true,
+      kCGImageSourceThumbnailMaxPixelSize: maxPixels,
+    ]
+    return CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary)
+  }
+
+  public static func image(from data: Data) -> CGImage? {
+    guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
     return CGImageSourceCreateImageAtIndex(source, 0, nil)
   }
 
@@ -49,13 +62,20 @@ public enum PhotoEncoder {
         bitsPerComponent: 8,
         bytesPerRow: 0,
         space: CGColorSpace(name: CGColorSpace.sRGB)!,
-        bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue
+        bitmapInfo: (image.hasAlpha
+          ? CGImageAlphaInfo.premultipliedLast : CGImageAlphaInfo.noneSkipLast).rawValue
       )
     else { throw PhotoEncoderError.encodingFailed }
     context.interpolationQuality = .high
     context.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
     guard let scaled = context.makeImage() else { throw PhotoEncoderError.encodingFailed }
     return scaled
+  }
+}
+
+extension CGImage {
+  var hasAlpha: Bool {
+    ![.none, .noneSkipFirst, .noneSkipLast].contains(alphaInfo)
   }
 }
 

@@ -64,18 +64,19 @@ struct ItemRow: View {
   }
 
   private var thumbnail: some View {
-    Group {
-      if let image = library.thumbnail(of: item) {
-        Image(uiImage: image)
-          .resizable()
-          .scaledToFill()
-      } else {
-        Palette.surfaceSunken
+    // Pale in both modes, so a dark cut-out item stays recognizable (D26).
+    Palette.thumbnailBackdrop
+      .overlay {
+        if let image = library.thumbnail(of: item) {
+          Image(uiImage: image)
+            .resizable()
+            .scaledToFill()
+            .itemShadow(radius: Spacing.s2 / 2)
+        }
       }
-    }
-    .frame(width: Self.thumbnailSize, height: Self.thumbnailSize)
-    .clipShape(.rect(cornerRadius: Radius.sm))
-    .accessibilityHidden(true)
+      .frame(width: Self.thumbnailSize, height: Self.thumbnailSize)
+      .clipShape(.rect(cornerRadius: Radius.sm))
+      .accessibilityHidden(true)
   }
 }
 

@@ -6,6 +6,7 @@
   --color-background: #F3F1EC;
   --color-surface: #FFFFFF;
   --color-surface-sunken: #E8E5DD;
+  --color-thumbnail-backdrop: #E8E5DD;
   --color-border: #DEDAD0;
   --color-border-dashed: #C9C5BA;
   --color-deep: #1F3A31;
@@ -100,6 +101,7 @@
     --color-background: #152319;
     --color-surface: #1D2E24;
     --color-surface-sunken: #0F1A13;
+    --color-thumbnail-backdrop: #C5CFC8;
     --color-border: #2B3D32;
     --color-border-dashed: #3C5144;
     --color-sage: #6AAA86;

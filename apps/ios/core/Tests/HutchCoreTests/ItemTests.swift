@@ -1,6 +1,8 @@
 import CoreGraphics
 import Foundation
+import ImageIO
 import Testing
+import UniformTypeIdentifiers
 
 @testable import HutchCore
 
@@ -116,9 +118,39 @@ import Testing
       space: CGColorSpace(name: CGColorSpace.sRGB)!,
       bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue
     )!
-    let jpeg = try PhotoEncoder.jpeg(context.makeImage()!, maxPixels: 100)
-    let decoded = try #require(PhotoEncoder.image(from: jpeg))
+    let heic = try PhotoEncoder.heic(context.makeImage()!, maxPixels: 100)
+    let decoded = try #require(PhotoEncoder.image(from: heic))
     #expect(decoded.width == 100)
     #expect(decoded.height == 50)
+    #expect(!decoded.hasAlpha)
+  }
+
+  // The camera stores a portrait photo landscape, tagged to be turned a quarter clockwise.
+  @Test func decodesACameraPhotoUprightAndSmaller() async throws {
+    let landscape = try #require(PhotoCutoutTests.opaque(width: 400, height: 200))
+    let data = NSMutableData()
+    let destination = try #require(
+      CGImageDestinationCreateWithData(data, UTType.jpeg.identifier as CFString, 1, nil)
+    )
+    CGImageDestinationAddImage(
+      destination,
+      landscape,
+      [kCGImagePropertyOrientation: CGImagePropertyOrientation.right.rawValue] as CFDictionary
+    )
+    try #require(CGImageDestinationFinalize(destination))
+    let upright = try #require(await PhotoEncoder.uprightImage(from: data as Data, maxPixels: 100))
+    #expect(upright.width == 50)
+    #expect(upright.height == 100)
+  }
+
+  @Test func keepsACutoutsTransparentBackground() throws {
+    let opaque = try #require(PhotoCutoutTests.opaque(width: 400, height: 400))
+    let cutout = try #require(PhotoCutout.square(opaque))
+    let decoded = try #require(
+      PhotoEncoder.image(from: try PhotoEncoder.heic(cutout, maxPixels: 100))
+    )
+    let alpha = try PhotoCutoutTests.alpha(of: decoded)
+    #expect(alpha(0, 0) == 0)
+    #expect(alpha(50, 50) == 255)
   }
 }

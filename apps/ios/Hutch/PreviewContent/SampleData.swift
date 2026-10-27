@@ -28,18 +28,35 @@
 
     static var sampleThumbnails: [Item.ID: UIImage] {
       let symbols = ["wrench.and.screwdriver", "hammer", "tent", "bicycle"]
-      return Dictionary(uniqueKeysWithValues: zip(samples.map(\.id), symbols.map(UIImage.sample)))
+      return Dictionary(
+        uniqueKeysWithValues: zip(samples.map(\.id), symbols.map(UIImage.sampleCutout))
+      )
     }
   }
 
   extension UIImage {
     static func sample(_ symbol: String) -> UIImage {
-      let size = CGSize(width: 600, height: 450)
+      sample(
+        symbol,
+        size: CGSize(width: 600, height: 450),
+        background: UIColor(Palette.surfaceSunken)
+      )
+    }
+
+    // What Vision would lift out of the photo: the symbol alone, on a transparent square.
+    static func sampleCutout(_ symbol: String) -> UIImage {
+      sample(symbol, size: CGSize(width: 600, height: 600), background: nil)
+    }
+
+    private static func sample(_ symbol: String, size: CGSize, background: UIColor?) -> UIImage {
       let format = UIGraphicsImageRendererFormat()
       format.scale = 1
+      format.opaque = background != nil
       return UIGraphicsImageRenderer(size: size, format: format).image { context in
-        UIColor(Palette.surfaceSunken).setFill()
-        context.fill(CGRect(origin: .zero, size: size))
+        if let background {
+          background.setFill()
+          context.fill(CGRect(origin: .zero, size: size))
+        }
         let configuration = UIImage.SymbolConfiguration(pointSize: 200, weight: .regular)
         guard
           let image = UIImage(systemName: symbol, withConfiguration: configuration)?

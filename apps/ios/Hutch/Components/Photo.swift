@@ -17,6 +17,7 @@ struct Photo: View {
           Image(uiImage: image)
             .resizable()
             .scaledToFill()
+            .itemShadow(radius: Spacing.s3)
         }
       }
       .clipped()
@@ -26,6 +27,14 @@ struct Photo: View {
 }
 
 extension View {
+  // A cut-out item rests on the surface instead of looking pasted on (DESIGN.md, Elevation). A
+  // full photo casts it outside its square, where it's clipped away.
+  func itemShadow(radius: CGFloat) -> some View {
+    shadow(color: Palette.device.opacity(0.18), radius: radius, y: radius / 2)
+      // Drawn once into one image: a live shadow is redrawn on every frame, and stalled typing.
+      .drawingGroup()
+  }
+
   func sheetStyle() -> some View {
     padding(.horizontal, Spacing.s5)
       .padding(.vertical, Spacing.s6)

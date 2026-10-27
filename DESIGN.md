@@ -25,6 +25,9 @@ colors:
   # Recessed panels, neutral badges, the closing card.
   surface-sunken: "#E8E5DD"
   surface-sunken-dark: "#0F1A13"
+  # Behind photo thumbnails. Pale in dark mode too, so a dark item stays recognizable in a list.
+  thumbnail-backdrop: "#E8E5DD"
+  thumbnail-backdrop-dark: "#C5CFC8"
   # Hairlines, dividers, card edges.
   border: "#DEDAD0"
   border-dark: "#2B3D32"
@@ -330,6 +333,12 @@ components:
     backgroundColor: "{colors.device}"
   phone-frame-dark:
     backgroundColor: "{colors.device-dark}"
+  item-thumbnail:
+    backgroundColor: "{colors.thumbnail-backdrop}"
+    rounded: "{rounded.sm}"
+  item-thumbnail-dark:
+    backgroundColor: "{colors.thumbnail-backdrop-dark}"
+    rounded: "{rounded.sm}"
 ---
 
 # Hutch design system
@@ -377,6 +386,7 @@ Each token is a role, not a swatch. Use the role that describes the job (`ink-mu
 - **Sage (`sage`)** carries small labels and eyebrows, link hover and the focus ring; `sage-tint` with `on-sage-tint` makes positive badges.
 - **`marker`** is the brass dot on the status pill. It's brass on the dark pill, and a deeper brass in dark mode, where the pill turns light and plain brass would fade (D18).
 - **`device`** is hardware drawn on the page (the phone frame and its shadow); it stays dark in both modes.
+- **`thumbnail-backdrop`** sits behind photo thumbnails: the warm sunken tone in light mode, a pale sage-grey in dark mode, so a dark item cut out of its photo stays recognizable in a list (D26).
 
 ### Light and dark follow the system
 
@@ -405,7 +415,7 @@ Design for iPhone first. The website is a centered column (`page-width`, 1200px)
 
 ## Elevation & Depth
 
-Depth comes from tone, not shadow: `surface` cards on the `background`, `surface-sunken` panels recessed below it, and the forest band for the boldest break. The launch card gets a one-pixel `border` shadow at its foot. The only real shadow is the drawn phone's, in `device` at 18%, because it is an object on the page.
+Depth comes from tone, not shadow: `surface` cards on the `background`, `surface-sunken` panels recessed below it, and the forest band for the boldest break. The launch card gets a one-pixel `border` shadow at its foot. The only real shadows are on objects: the drawn phone's, and under an item cut out of its photo, both in `device` at 18%.
 
 ## Shapes
 

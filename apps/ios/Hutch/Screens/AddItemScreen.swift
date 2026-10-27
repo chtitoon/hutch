@@ -9,20 +9,39 @@ struct AddItemScreen: View {
   @Environment(Library.self) private var library
   @Environment(\.dismiss) private var dismiss
   @State private var draft: Draft
+  @State private var cutout: Cutout
+  @State private var keepsBackground = false
+  // Temporary: a long press on the cutout flips to Vision's edge, to compare on real items (D26).
+  @State private var edge = PhotoCutout.Edge.smoothed
   @State private var isSaving = false
   @State private var error: String?
 
-  init(photo: UIImage, draft: Draft = Draft(), onSave: @escaping () -> Void = {}) {
+  init(
+    photo: UIImage,
+    cutout: Cutout = .pending,
+    draft: Draft = Draft(),
+    onSave: @escaping () -> Void = {}
+  ) {
     self.photo = photo
     self.onSave = onSave
+    self._cutout = State(initialValue: cutout)
     self._draft = State(initialValue: draft)
+  }
+
+  // Saving with the cutout shown is what confirms it.
+  private var shownPhoto: UIImage {
+    guard !keepsBackground, case .lifted(let image) = cutout else { return photo }
+    return image
   }
 
   var body: some View {
     NavigationStack {
       ScrollView {
         VStack(spacing: 0) {
-          Photo(image: photo)
+          Photo(image: shownPhoto)
+            .overlay(alignment: .bottom) { cutoutButton }
+            .onLongPressGesture(perform: compareEdges)
+            .sensoryFeedback(.selection, trigger: edge)
           form.sheetStyle()
         }
       }
@@ -39,6 +58,35 @@ struct AddItemScreen: View {
     }
     .interactiveDismissDisabled(isSaving)
     .onAppear { library.homeRooms.start() }
+    .task(id: edge) { await liftItem() }
+  }
+
+  @ViewBuilder private var cutoutButton: some View {
+    Group {
+      switch cutout {
+      case .lifting:
+        Label {
+          Text("Removing background…")
+        } icon: {
+          ProgressView()
+        }
+        .foregroundStyle(Palette.inkMuted)
+      case .lifted:
+        Button(
+          keepsBackground
+            ? "Remove background"
+            : edge == .vision ? "Vision's edge · Undo" : "Background removed · Undo",
+          systemImage: keepsBackground ? "wand.and.sparkles" : "arrow.uturn.backward"
+        ) {
+          withAnimation { keepsBackground.toggle() }
+        }
+        .buttonStyle(.glass)
+      case .pending, .none:
+        EmptyView()
+      }
+    }
+    .font(Typography.labelMd)
+    .padding(.bottom, Photo.sheetOverlap + Spacing.s3)
   }
 
   private var form: some View {
@@ -65,19 +113,48 @@ struct AddItemScreen: View {
   }
 
   private var saveButton: some View {
-    Button(draft.room.trimmed.isEmpty ? "Save" : "Save to \(draft.room.trimmed)", action: save)
-      .buttonStyle(.primary)
-      .disabled(!draft.canSave || isSaving)
-      .padding(.horizontal, Spacing.s5)
-      .padding(.vertical, Spacing.s2)
-      .background(Palette.background)
+    Button(action: save) {
+      if isSaving {
+        ProgressView()
+          .tint(Palette.onDeep)
+      } else {
+        Text(draft.room.trimmed.isEmpty ? "Save" : "Save to \(draft.room.trimmed)")
+      }
+    }
+    .buttonStyle(.primary)
+    .disabled(!draft.canSave || isSaving)
+    .padding(.horizontal, Spacing.s5)
+    .padding(.vertical, Spacing.s2)
+    .background(Palette.background)
+  }
+
+  private func compareEdges() {
+    guard case .lifted = cutout else { return }
+    keepsBackground = false
+    cutout = .pending
+    edge = edge == .smoothed ? .vision : .smoothed
+  }
+
+  private func liftItem() async {
+    guard case .pending = cutout, let image = photo.cgImage else { return }
+    cutout = .lifting
+    // Not worth an error: when Vision finds nothing, or can't run (the simulator), the photo stays.
+    let edge = edge
+    // Background priority, so the keyboard stays responsive while it runs.
+    let lifted = try? await Task.detached(priority: .utility) {
+      try await PhotoCutout.cutout(of: image, edge: edge)
+    }.value
+    withAnimation {
+      cutout = lifted.map { .lifted(UIImage(cgImage: $0)) } ?? .none
+    }
   }
 
   private func save() {
     isSaving = true
     Task {
       do {
-        guard let image = photo.uprightImage(maxPixels: CGFloat(PhotoEncoder.photoMaxPixels)) else {
+        // Upright already; the store scales it down as it encodes, off the main actor.
+        guard let image = shownPhoto.cgImage else {
           throw PhotoEncoderError.encodingFailed
         }
         try await library.add(draft.item, photo: image)
@@ -89,6 +166,15 @@ struct AddItemScreen: View {
       }
     }
   }
+}
+
+// Only `pending` runs Vision, so previews and snapshots can show any other state as is.
+enum Cutout {
+  case pending
+  case lifting
+  case lifted(UIImage)
+  // Vision found nothing, or can't run here.
+  case none
 }
 
 struct Draft: Equatable {
@@ -113,6 +199,16 @@ private extension String {
 #Preview("With rooms") {
   AddItemScreen(
     photo: .sample("wrench.and.screwdriver"),
+    draft: Draft(name: "DeWalt 18V cordless drill", room: "Garage")
+  )
+  .environment(Library.sample)
+  .brand()
+}
+
+#Preview("Background removed") {
+  AddItemScreen(
+    photo: .sample("wrench.and.screwdriver"),
+    cutout: .lifted(.sampleCutout("wrench.and.screwdriver")),
     draft: Draft(name: "DeWalt 18V cordless drill", room: "Garage")
   )
   .environment(Library.sample)

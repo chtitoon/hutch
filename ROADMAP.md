@@ -71,6 +71,7 @@ At most two bets and one experiment.
 - **Milestones,** one PR each, each usable on my phone:
   1. **An inventory by hand:** an item is a name and a room, with its photo, encrypted. Home, room and item screens in the brand, and the app icon.
   2. **Named on the phone** ([X4](#x4)): Vision and Apple Intelligence suggest the name while a scanner sweeps the photo.
+     - First, the photo is cleaned up: Vision cuts the item out, with an Undo ([D26](DECISIONS.md#d26--photos-are-cut-out-on-the-phone-and-stored-as-heic)), so naming starts from the item alone.
   3. **A product catalog** (X5, its own experiment, coming with that PR): matched on the phone for specific names.
   4. **A widget** that opens straight on the camera, to add in one go.
 - **Reshaped 2026-10-24, after my first tries:**
@@ -96,6 +97,7 @@ At most two bets and one experiment.
   - Use the Foundation Models framework to turn that into a name and category, and maybe a resale guess.
   - Know when Core ML is worth it, if neither is enough.
 - **Question going in:** do I accept its suggestion as is for at least 7 items in 10, in under 2 seconds on my phone? Photos never leave the device ([D5](DECISIONS.md#d5--photo-based-ai-capture)).
+- **Also counted:** how often I undo the cutout, and why (wrong object, edges cut).
 - **Verdict decides:** D5, and whether an on-device estimate is good enough for resale prices ([D23](DECISIONS.md#d23--resale-prices-without-telling-anyone-what-i-own)).
 
 #### <a id="h2"></a>H2 — When a neighbor asks, I answer from Hutch
