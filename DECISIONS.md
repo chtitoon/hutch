@@ -260,6 +260,9 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **What:**
 - Vision lifts the item out of its photo, on the phone: the object under the frame's centre, else the largest one.
 - The cutout is centred on a transparent square with a 10% margin, so it sits the same in a thumbnail and on the item screen.
+- Its edge is pulled in slightly and feathered, so it looks photographed rather than cut, and it casts a soft shadow on screen.
+- Photos sit on a light backdrop in both modes: on the dark-mode surfaces, dark items disappeared, even at full size.
+- Thumbnails are on white (`thumbnail-backdrop`). A full-size photo is on `photo-backdrop`, a warm grey in dark mode, because a full-width white square glared.
 - New item shows the cutout straight away, with an Undo. Saving confirms it; there's no extra step.
 - Only what's shown is saved: the cutout, or the original after Undo.
 - Photos are stored as HEIC, not JPEG, so a cutout keeps its transparency.

@@ -10,13 +10,14 @@ struct Photo: View {
 
   var body: some View {
     // The square sets the size; a fill-scaled image would otherwise overflow it.
-    Palette.surfaceSunken
+    Palette.photoBackdrop
       .aspectRatio(1, contentMode: .fit)
       .overlay {
         if let image {
           Image(uiImage: image)
             .resizable()
             .scaledToFill()
+            .itemShadow(radius: Spacing.s3)
         }
       }
       .clipped()
@@ -26,6 +27,12 @@ struct Photo: View {
 }
 
 extension View {
+  // A cut-out item rests on the surface instead of looking pasted on (DESIGN.md, Elevation). A
+  // full photo casts it outside its square, where it's clipped away.
+  func itemShadow(radius: CGFloat) -> some View {
+    shadow(color: Palette.device.opacity(0.18), radius: radius, y: radius / 2)
+  }
+
   func sheetStyle() -> some View {
     padding(.horizontal, Spacing.s5)
       .padding(.vertical, Spacing.s6)

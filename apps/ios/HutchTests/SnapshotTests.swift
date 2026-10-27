@@ -67,7 +67,7 @@ import Testing
     )
   }
 
-  // The cutout Vision lifted, with its undo; the sunken surface shows around it.
+  // The cutout Vision lifted, with its undo; the backdrop shows around it.
   @Test func addWithCutout() {
     let draft = Draft(name: "DeWalt 18V cordless drill", room: "Garage")
     check(

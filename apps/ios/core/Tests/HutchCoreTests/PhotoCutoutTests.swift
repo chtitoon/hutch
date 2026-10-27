@@ -1,4 +1,5 @@
 import CoreGraphics
+import CoreImage
 import Testing
 
 @testable import HutchCore
@@ -30,6 +31,40 @@ import Testing
     #expect(alpha(50, 30) == 255)
     #expect(alpha(50, 69) == 255)
     #expect(alpha(50, 70) == 0)
+  }
+
+  @Test func opaqueBoundsCountRowsFromTheTop() {
+    let alpha: [UInt8] = [
+      0, 0, 0, 0,
+      0, 9, 0, 0,
+      0, 255, 255, 0,
+    ]
+    #expect(
+      PhotoCutout.opaqueBounds(alpha: alpha, width: 4) == CGRect(x: 1, y: 1, width: 2, height: 2)
+    )
+    #expect(PhotoCutout.opaqueBounds(alpha: [0, 0], width: 2) == nil)
+  }
+
+  // A square mask off-center in the photo, as if the item wasn't framed well.
+  @Test func liftedItemHasASoftEdgeAndIsCentered() throws {
+    let photo = try #require(Self.opaque(width: 2000, height: 2000))
+    let mask = CIImage(color: .white)
+      .cropped(to: CGRect(x: 200, y: 600, width: 1000, height: 1000))
+      .composited(over: CIImage(color: .black))
+      .cropped(to: CGRect(x: 0, y: 0, width: 2000, height: 2000))
+    let lifted = try #require(PhotoCutout.lift(photo, mask: mask))
+    #expect(lifted.width == lifted.height)
+    let alpha = try Self.alpha(of: lifted)
+    let middle = lifted.width / 2
+    #expect(alpha(middle, middle) == 255)
+    #expect(alpha(2, middle) == 0)
+    // The edge fades over a few pixels instead of stepping from clear to solid.
+    let row = (0..<lifted.width).map { alpha($0, middle) }
+    #expect(row.filter { $0 > 0 && $0 < 255 }.count >= 6)
+    // Centered: as much clear space on the left as on the right.
+    let left = try #require(row.firstIndex { $0 > 0 })
+    let right = try #require(row.lastIndex { $0 > 0 })
+    #expect(abs(left - (lifted.width - 1 - right)) <= 1)
   }
 
   static func opaque(width: Int, height: Int) -> CGImage? {

@@ -8,20 +8,58 @@ public enum PhotoCutout {
   // Room around the item on each side, as a share of the square's side.
   public static let margin = 0.1
 
+  // Vision's edge keeps a thin fringe of background: it's pulled in, then feathered, so the item
+  // looks photographed rather than cut. Both are shares of the photo's long edge.
+  static let edgeInset = 0.001
+  static let feather = 0.0015
+
   /// Nil when Vision finds nothing to lift: the photo is then kept as it is.
   public static func cutout(of image: CGImage) async throws -> CGImage? {
     let handler = ImageRequestHandler(image)
     guard let observation = try await handler.perform(GenerateForegroundInstanceMaskRequest()),
       let instance = try item(in: observation)
     else { return nil }
-    let masked = try observation.generateMaskedImage(
-      for: [instance],
-      imageFrom: handler,
-      croppedToInstancesExtent: true
+    let mask = try observation.generateScaledMask(for: [instance], scaledToImageFrom: handler)
+    return lift(image, mask: CIImage(cvPixelBuffer: mask))
+  }
+
+  /// The image where `mask` is white, its edge softened, centered on a transparent square.
+  static func lift(_ image: CGImage, mask: CIImage) -> CGImage? {
+    let longEdge = Double(max(image.width, image.height))
+    let softMask =
+      mask
+      .clampedToExtent()
+      .applyingFilter("CIMorphologyMinimum", parameters: [kCIInputRadiusKey: edgeInset * longEdge])
+      .applyingGaussianBlur(sigma: feather * longEdge)
+      .cropped(to: mask.extent)
+    let photo = CIImage(cgImage: image)
+    let lifted = photo.applyingFilter(
+      "CIBlendWithMask",
+      parameters: [kCIInputBackgroundImageKey: CIImage.empty(), kCIInputMaskImageKey: softMask]
     )
-    let lifted = CIImage(cvPixelBuffer: masked)
-    guard let cropped = CIContext().createCGImage(lifted, from: lifted.extent) else { return nil }
+    guard let full = CIContext().createCGImage(lifted, from: photo.extent),
+      let bounds = opaqueBounds(alpha: alpha(of: full), width: full.width),
+      let cropped = full.cropping(to: bounds)
+    else { return nil }
     return square(cropped)
+  }
+
+  /// The smallest rectangle, top-left origin, holding every pixel that isn't fully transparent.
+  static func opaqueBounds(alpha: [UInt8], width: Int) -> CGRect? {
+    var minX = width
+    var minY = Int.max
+    var maxX = -1
+    var maxY = -1
+    for (index, value) in alpha.enumerated() where value > 0 {
+      let x = index % width
+      let y = index / width
+      minX = min(minX, x)
+      maxX = max(maxX, x)
+      minY = min(minY, y)
+      maxY = max(maxY, y)
+    }
+    guard maxX >= 0 else { return nil }
+    return CGRect(x: minX, y: minY, width: maxX - minX + 1, height: maxY - minY + 1)
   }
 
   // The camera's frame and its hint put the item in the middle; failing that, the largest thing.
@@ -64,6 +102,24 @@ public enum PhotoCutout {
       )
     )
     return context.makeImage()
+  }
+
+  // Rows top first, as CGImage.cropping(to:) counts them.
+  static func alpha(of image: CGImage) -> [UInt8] {
+    var pixels = [UInt8](repeating: 0, count: image.width * image.height * 4)
+    pixels.withUnsafeMutableBytes { buffer in
+      let context = CGContext(
+        data: buffer.baseAddress,
+        width: image.width,
+        height: image.height,
+        bitsPerComponent: 8,
+        bytesPerRow: image.width * 4,
+        space: CGColorSpace(name: CGColorSpace.sRGB)!,
+        bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+      )
+      context?.draw(image, in: CGRect(x: 0, y: 0, width: image.width, height: image.height))
+    }
+    return stride(from: 3, to: pixels.count, by: 4).map { pixels[$0] }
   }
 
   // Vision's mask holds one byte per pixel, each its instance's label.
