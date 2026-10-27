@@ -2,17 +2,33 @@ import AVFoundation
 import SwiftUI
 import UIKit
 
-/// The back camera, with a preview that fills the screen and photos cropped to a part of it.
+/// The back camera, with a preview that fills its view and pinch-to-zoom like the Camera app.
 @MainActor
 @Observable
 final class Camera: NSObject {
   static var isAvailable: Bool {
-    AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) != nil
+    AVCaptureDevice.DiscoverySession(
+      deviceTypes: deviceTypes,
+      mediaType: .video,
+      position: .back
+    ).devices.first != nil
   }
 
+  // Lenses Hutch can use, best first. A multi-lens camera reaches 0.5× and switches lenses as it
+  // zooms, like the Camera app.
+  private static let deviceTypes: [AVCaptureDevice.DeviceType] = [
+    .builtInTripleCamera, .builtInDualWideCamera, .builtInDualCamera, .builtInWideAngleCamera,
+  ]
+  private static let maxZoom: CGFloat = 10
+
+  /// As the Camera app shows it: 1 is the main lens, 0.5 the ultra wide.
+  private(set) var zoom: CGFloat = 1
   @ObservationIgnored let previewLayer = AVCaptureVideoPreviewLayer()
   @ObservationIgnored private let session = AVCaptureSession()
   @ObservationIgnored private let output = AVCapturePhotoOutput()
+  @ObservationIgnored private var device: AVCaptureDevice?
+  // The device's zoom factor at which the main lens takes over: 2 on a camera with an ultra wide.
+  @ObservationIgnored private var mainLensFactor: CGFloat = 1
   @ObservationIgnored private var pendingPhoto: CheckedContinuation<Data?, Never>?
 
   func start() async {
@@ -29,24 +45,42 @@ final class Camera: NSObject {
     session.stopRunning()
   }
 
-  /// The photo, cropped to `rect` in the preview's coordinates.
-  func capture(inside rect: CGRect) async -> UIImage? {
+  func setZoom(_ value: CGFloat) {
+    guard let device else { return }
+    let factor = min(
+      max(value * mainLensFactor, device.minAvailableVideoZoomFactor),
+      min(device.maxAvailableVideoZoomFactor, Self.maxZoom * mainLensFactor)
+    )
+    do {
+      try device.lockForConfiguration()
+    } catch {
+      return  // A missed zoom step isn't worth an alert; the next pinch tries again.
+    }
+    device.videoZoomFactor = factor
+    device.unlockForConfiguration()
+    zoom = factor / mainLensFactor
+  }
+
+  /// The whole photo, upright. The preview shows the same field of view, so a part of the
+  /// preview maps onto it with ``PhotoCrop``.
+  func capture() async -> UIImage? {
     guard session.isRunning, pendingPhoto == nil else { return nil }
-    // AVFoundation maps the preview's rect into the photo, so the crop matches what was framed.
-    let crop = previewLayer.metadataOutputRectConverted(fromLayerRect: rect)
     let data = await withCheckedContinuation { continuation in
       pendingPhoto = continuation
       output.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
     }
-    guard let data, let photo = UIImage(data: data) else { return nil }
-    return photo.cropped(toNormalized: crop)
+    return data.flatMap(UIImage.init(data:))
   }
 
   private func configure() {
+    let device = AVCaptureDevice.DiscoverySession(
+      deviceTypes: Self.deviceTypes,
+      mediaType: .video,
+      position: .back
+    ).devices.first
     session.beginConfiguration()
     session.sessionPreset = .photo
-    if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
-      let input = try? AVCaptureDeviceInput(device: device),
+    if let device, let input = try? AVCaptureDeviceInput(device: device),
       session.canAddInput(input), session.canAddOutput(output)
     {
       session.addInput(input)
@@ -61,6 +95,10 @@ final class Camera: NSObject {
         connection.videoRotationAngle = 90
       }
     }
+    self.device = device
+    mainLensFactor =
+      device?.virtualDeviceSwitchOverVideoZoomFactors.first.map { CGFloat(truncating: $0) } ?? 1
+    setZoom(1)
   }
 
   private func finish(with data: Data?) {
@@ -122,18 +160,5 @@ extension UIImage {
     return UIGraphicsImageRenderer(size: target, format: format).image { _ in
       draw(in: CGRect(origin: .zero, size: target))
     }.cgImage
-  }
-
-  /// `rect` is in 0–1 units of the stored pixels, before any rotation, as AVFoundation gives it.
-  func cropped(toNormalized rect: CGRect) -> UIImage {
-    guard let cgImage else { return self }
-    let pixels = CGRect(
-      x: rect.minX * CGFloat(cgImage.width),
-      y: rect.minY * CGFloat(cgImage.height),
-      width: rect.width * CGFloat(cgImage.width),
-      height: rect.height * CGFloat(cgImage.height)
-    ).integral
-    guard let cropped = cgImage.cropping(to: pixels) else { return self }
-    return UIImage(cgImage: cropped, scale: scale, orientation: imageOrientation)
   }
 }

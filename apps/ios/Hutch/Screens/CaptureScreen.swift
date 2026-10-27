@@ -1,3 +1,4 @@
+import HutchCore
 import PhotosUI
 import SwiftUI
 
@@ -10,6 +11,7 @@ struct CaptureScreen: View {
   @State private var pickedPhoto: PhotosPickerItem?
   @State private var previewFrame = CGRect.zero
   @State private var viewfinderFrame = CGRect.zero
+  @State private var zoomAtPinchStart: CGFloat = 1
 
   var body: some View {
     ZStack {
@@ -21,6 +23,7 @@ struct CaptureScreen: View {
           } action: {
             previewFrame = $0
           }
+          .gesture(pinchToZoom)
         Viewfinder { viewfinderFrame = $0 }
       } else {
         NoCameraView()
@@ -72,14 +75,32 @@ struct CaptureScreen: View {
     .padding(.bottom, Spacing.s4)
   }
 
-  // Only what was inside the frame: the hint asks for the item there, so the rest is clutter.
+  private var pinchToZoom: some Gesture {
+    MagnifyGesture()
+      .onChanged { camera.setZoom(zoomAtPinchStart * $0.magnification) }
+      .onEnded { _ in zoomAtPinchStart = camera.zoom }
+  }
+
   private func takePhoto() {
     let frame = viewfinderFrame.offsetBy(dx: -previewFrame.minX, dy: -previewFrame.minY)
+    let screen = previewFrame.size
     Task {
-      if let photo = await camera.capture(inside: frame) {
-        capture = Capture(image: photo)
+      if let photo = await camera.capture() {
+        capture = Capture(image: Self.crop(photo, to: frame, screen: screen))
       }
     }
+  }
+
+  // Only what was inside the frame: the hint asks for the item there, so the rest is clutter.
+  private static func crop(_ photo: UIImage, to frame: CGRect, screen: CGSize) -> UIImage {
+    // Twice the stored size, so the crop keeps the stored photo's full detail.
+    let maxPixels = CGFloat(PhotoEncoder.photoMaxPixels) * 2
+    guard !frame.isEmpty, let upright = photo.uprightImage(maxPixels: maxPixels) else {
+      return photo
+    }
+    let size = CGSize(width: upright.width, height: upright.height)
+    let rect = PhotoCrop.rect(inside: frame, screen: screen, photo: size)
+    return upright.cropping(to: rect).map { UIImage(cgImage: $0) } ?? photo
   }
 
   private func loadPickedPhoto() async {
