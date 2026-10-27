@@ -1,0 +1,67 @@
+# iOS tasks (AGENTS.md): setup, test, run, tokens, plus snapshots. Each runs non-interactively and fails loudly.
+# Tests run on one simulator by name, so snapshot images stay comparable: SIMULATOR="iPhone 17" picks another.
+# The simulator window is DeviceHub from Xcode 27 on (Simulator before).
+# Recipes start with `set -euo pipefail`: macOS ships GNU make 3.81, which ignores .SHELLFLAGS.
+SHELL := /bin/bash
+
+PROJECT := Hutch.xcodeproj
+SCHEME := Hutch
+DERIVED := build
+APP := $(DERIVED)/Build/Products/Debug-iphonesimulator/Hutch.app
+SIMULATOR ?= iPhone 17 Pro
+
+.PHONY: setup test run tokens snapshots project lint format
+
+setup:
+	@xcode-select -p >/dev/null || { echo "Xcode not found. Install it from the App Store, then run: sudo xcode-select -s /Applications/Xcode.app" >&2; exit 1; }
+	@command -v xcodegen >/dev/null || { echo "XcodeGen not found. Install it with: brew install xcodegen" >&2; exit 1; }
+	@xcodebuild -version | head -1
+	@$(MAKE) --no-print-directory project
+
+# Writes the Swift tokens and app icon from DESIGN.md, then the project. None of it is committed,
+# so every task that builds starts here and nothing can fall behind DESIGN.md.
+project: tokens
+	@xcodegen generate --use-cache --quiet
+
+# Swift formatted Google-style, and app code using tokens, never raw colors or sizes.
+lint:
+	@./lint.sh
+
+# Formats every Swift file Google-style (.swift-format), the way `make lint` checks it.
+format:
+	@find Hutch HutchTests core tokens.swift icon.swift -name '*.swift' -not -path '*/Generated/*' -not -path '*/.build/*' -print0 \
+		| xargs -0 xcrun swift format format --in-place --configuration .swift-format
+
+test: project lint
+	@set -euo pipefail; \
+	sim=$$(./simulator.sh "$(SIMULATOR)"); udid=$${sim%% *}; name=$${sim#* }; \
+	echo "Testing on $$name ($$udid)"; \
+	xcodebuild test -quiet -project $(PROJECT) -scheme $(SCHEME) -derivedDataPath $(DERIVED) \
+		-destination "id=$$udid"; \
+	echo "Tests passed on $$name"
+
+# Re-records every snapshot image. Only on purpose, and say why in the PR (AGENTS.md).
+snapshots: project
+	@set -euo pipefail; \
+	sim=$$(./simulator.sh "$(SIMULATOR)"); udid=$${sim%% *}; name=$${sim#* }; \
+	echo "Recording snapshots on $$name ($$udid)"; \
+	xcodebuild build-for-testing -quiet -project $(PROJECT) -scheme $(SCHEME) -derivedDataPath $(DERIVED) -destination "id=$$udid"; \
+	TEST_RUNNER_SNAPSHOT_TESTING_RECORD=all xcodebuild test -quiet -project $(PROJECT) -scheme $(SCHEME) \
+		-derivedDataPath $(DERIVED) -destination "id=$$udid" -only-testing:HutchTests || true; \
+	echo "Recorded. Check the images in HutchTests/__Snapshots__, then run make test."
+
+run: project
+	@set -euo pipefail; \
+	sim=$$(./simulator.sh "$(SIMULATOR)"); udid=$${sim%% *}; name=$${sim#* }; \
+	echo "Running on $$name ($$udid)"; \
+	xcodebuild build -quiet -project $(PROJECT) -scheme $(SCHEME) -derivedDataPath $(DERIVED) \
+		-destination "id=$$udid"; \
+	xcrun simctl boot "$$udid" 2>/dev/null || true; \
+	open "$$(xcode-select -p)/../Applications/DeviceHub.app" 2>/dev/null || open -b com.apple.iphonesimulator 2>/dev/null \
+		|| echo "(Couldn't open DeviceHub or Simulator; the app is running in the simulator anyway.)"; \
+	xcrun simctl install "$$udid" $(APP); \
+	xcrun simctl launch "$$udid" app.myhutch.ios
+
+tokens:
+	@swift tokens.swift
+	@swift icon.swift

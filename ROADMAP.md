@@ -66,8 +66,16 @@ If building Hutch feels like a chore two weeks in a row, the next thing I pick i
 At most two bets and one experiment.
 
 #### <a id="h1"></a>H1 — I'll keep an inventory if Hutch makes it effortless
-**Serves:** [O1](#o1). **Status:** ready, needs the Mac. **Appetite:** 3 weeks to build, then 1 week of use on my phone.
-- **Test:** the first Hutch app. It opens on the camera; one tap, and an on-device model turns the photo into an item ([X4](#x4)); I confirm it, say where it lives (picked from places I've used) and what I'd resell it for. A list shows each item's photo, name, place and price. When time runs short, everything else is cut first.
+**Serves:** [O1](#o1). **Status:** started 2026-10-24; building until 2026-11-14 at the latest. **Appetite:** 3 weeks to build, then 1 week of use on my phone.
+- **Test:** the first Hutch app. It opens on Home: rooms, search and what I added lately. A + opens the camera; I take a photo, name it, and say where it lives: a room from Apple Home or one I've used, or one I type when there's none ([D25](DECISIONS.md#d25--where-it-lives-a-room)). Later, an on-device model suggests the name ([X4](#x4)). When time runs short, everything else is cut first.
+- **Milestones,** one PR each, each usable on my phone:
+  1. **An inventory by hand:** an item is a name and a room, with its photo, encrypted. Home, room and item screens in the brand, and the app icon.
+  2. **Named on the phone** ([X4](#x4)): Vision and Apple Intelligence suggest the name while a scanner sweeps the photo.
+  3. **A product catalog** (X5, its own experiment, coming with that PR): matched on the phone for specific names.
+  4. **A widget** that opens straight on the camera, to add in one go.
+- **Reshaped 2026-10-24, after my first tries:**
+  - No resale price, category or item aspects: they slowed adding an item without serving the signal.
+  - Opening on the camera was annoying, so Hutch opens on Home and adding is one tap away, later one tap from the widget.
 - **Guardrails,** which no appetite cuts:
   - Encrypted at rest from the first write, with the key in the Keychain ([non-negotiable 1](AGENTS.md#non-negotiables), [D21](DECISIONS.md#d21--recovery-icloud-keychain-plus-a-printable-recovery-kit)).
   - New items are private.
@@ -78,9 +86,8 @@ At most two bets and one experiment.
   - Encrypt with CryptoKit, and be able to explain each choice.
   - The photo models are [X4](#x4).
 - **Prior work:** [#32](https://github.com/chtitoon/hutch/pull/32).
-- **Signal:** 20 items in my first week of use, each added in under 20 s (timed on the phone, never sent), with a note each time I stop and each time I look something up.
+- **Signal:** 20 items in my first week of use, each added in under 20 s, with a note each time I stop and each time I look something up. Milestone 1 doesn't time adding an item; I time a few by hand.
 - **If yes:** keep building [O1](#o1) (barcode, search), then [H3](#h3). **If no:** my notes say whether it was speed (reshape capture) or motivation (O1 shrinks to what's worth lending, selling or insuring).
-- **Open:** a looked-up resale price would tell a price service what I own, which non-negotiable 1 rules out today ([D23](DECISIONS.md#d23--resale-prices-without-telling-anyone-what-i-own)).
 
 #### <a id="x4"></a>X4 — Photo to item, with on-device models
 **Tried on:** [H1](#h1). **Status:** starts with H1.
@@ -114,5 +121,5 @@ No order, no detail.
 - **Organize:** locations, categories, value, receipts, warranties. If [H1](#h1) shows lookups are what I use it for.
 - **Lending:** shaped by [H2](#h2): loans, return reminders, and maybe a shared vault neighbors add to (every member would hold its key, removing one re-keys it for all, and CloudKit sharing only reaches Apple users, [D3](DECISIONS.md#d3--platform-native-iphone-app--static-website-in-one-monorepo)).
 - **Selling:** eBay connect, listing, price estimates from sold listings ([D23](DECISIONS.md#d23--resale-prices-without-telling-anyone-what-i-own)). After [O1](#o1): an empty inventory has nothing to sell.
-- **App icon and final logo:** the icon comes with [H1](#h1)'s first build on my phone.
+- **Final logo:** a clean vector master of the mark. The app icon and favicon are drawn from it.
 - **App Store release:** needs [D6](DECISIONS.md#d6--personal-tool-vs-product) and the name revisited ([D1](DECISIONS.md#d1--name-and-domain-hutch-myhutchapp)).
