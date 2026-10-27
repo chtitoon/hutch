@@ -253,3 +253,25 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **Privacy:** Hutch only reads room names; it never controls accessories. Names stay in memory or inside an encrypted item, so non-negotiable 1 holds. Home access is asked for the first time I add an item, and declining just means no Home rooms.
 
 **Costs:** the HomeKit entitlement. Rooms only include what I've set up in the Home app.
+
+## D26 — Photos are cut out on the phone, and stored as HEIC
+**Status:** Decided (Oct 2026), the first step of [H1](ROADMAP.md#h1)'s milestone 2.
+
+**What:**
+- Vision lifts the item out of its photo, on the phone: the object under the frame's centre, else the largest one.
+- The cutout is centred on a transparent square with a 10% margin, so it sits the same in a thumbnail and on the item screen.
+- New item shows the cutout straight away, with an Undo. Saving confirms it; there's no extra step.
+- Only what's shown is saved: the cutout, or the original after Undo.
+- Photos are stored as HEIC, not JPEG, so a cutout keeps its transparency.
+
+**Why:**
+- A clean photo is what the naming step ([X4](ROADMAP.md#x4)) reads best, and it looks better in the inventory.
+- Undo rather than a confirm screen keeps adding an item under [H1](ROADMAP.md#h1)'s 20 s.
+- HEIC over PNG: about ten times smaller for a photo, with transparency either way.
+
+**Privacy:** Vision runs on the device ([D5](#d5--photo-based-ai-capture)); the cutout is encrypted like any photo, so non-negotiable 1 holds.
+
+**Costs:**
+- Vision can't run in the simulator, so tests cover what's around it, and the cutout itself is checked on the phone.
+- Photos saved before this stay JPEG, with no cutout.
+- Tap-to-pick another object waits until my notes show the centre pick is wrong.

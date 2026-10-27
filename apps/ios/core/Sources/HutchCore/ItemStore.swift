@@ -38,8 +38,8 @@ public actor ItemStore {
   }
 
   public func save(_ item: Item, photo: CGImage) throws {
-    let photoData = try PhotoEncoder.jpeg(photo, maxPixels: PhotoEncoder.photoMaxPixels)
-    let thumbnailData = try PhotoEncoder.jpeg(photo, maxPixels: PhotoEncoder.thumbnailMaxPixels)
+    let photoData = try PhotoEncoder.heic(photo, maxPixels: PhotoEncoder.photoMaxPixels)
+    let thumbnailData = try PhotoEncoder.heic(photo, maxPixels: PhotoEncoder.thumbnailMaxPixels)
     try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
     // The record goes last, so an item never appears without its pictures.
     try write(photoData, as: .photo, of: item.id)

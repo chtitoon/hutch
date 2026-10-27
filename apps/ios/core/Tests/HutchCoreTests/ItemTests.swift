@@ -116,9 +116,21 @@ import Testing
       space: CGColorSpace(name: CGColorSpace.sRGB)!,
       bitmapInfo: CGImageAlphaInfo.noneSkipLast.rawValue
     )!
-    let jpeg = try PhotoEncoder.jpeg(context.makeImage()!, maxPixels: 100)
-    let decoded = try #require(PhotoEncoder.image(from: jpeg))
+    let heic = try PhotoEncoder.heic(context.makeImage()!, maxPixels: 100)
+    let decoded = try #require(PhotoEncoder.image(from: heic))
     #expect(decoded.width == 100)
     #expect(decoded.height == 50)
+    #expect(!decoded.hasAlpha)
+  }
+
+  @Test func keepsACutoutsTransparentBackground() throws {
+    let opaque = try #require(PhotoCutoutTests.opaque(width: 400, height: 400))
+    let cutout = try #require(PhotoCutout.square(opaque))
+    let decoded = try #require(
+      PhotoEncoder.image(from: try PhotoEncoder.heic(cutout, maxPixels: 100))
+    )
+    let alpha = try PhotoCutoutTests.alpha(of: decoded)
+    #expect(alpha(0, 0) == 0)
+    #expect(alpha(50, 50) == 255)
   }
 }

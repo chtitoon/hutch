@@ -64,18 +64,18 @@ struct ItemRow: View {
   }
 
   private var thumbnail: some View {
-    Group {
-      if let image = library.thumbnail(of: item) {
-        Image(uiImage: image)
-          .resizable()
-          .scaledToFill()
-      } else {
-        Palette.surfaceSunken
+    // The sunken surface shows around a cutout, as on the item screen.
+    Palette.surfaceSunken
+      .overlay {
+        if let image = library.thumbnail(of: item) {
+          Image(uiImage: image)
+            .resizable()
+            .scaledToFill()
+        }
       }
-    }
-    .frame(width: Self.thumbnailSize, height: Self.thumbnailSize)
-    .clipShape(.rect(cornerRadius: Radius.sm))
-    .accessibilityHidden(true)
+      .frame(width: Self.thumbnailSize, height: Self.thumbnailSize)
+      .clipShape(.rect(cornerRadius: Radius.sm))
+      .accessibilityHidden(true)
   }
 }
 

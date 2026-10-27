@@ -175,7 +175,8 @@ extension UIImage {
     let factor = min(1, maxPixels / longEdge)
     let format = UIGraphicsImageRendererFormat()
     format.scale = 1
-    format.opaque = true
+    // A cutout keeps its transparent background.
+    format.opaque = !(cgImage?.hasAlpha ?? false)
     let target = CGSize(
       width: (size.width * scale * factor).rounded(),
       height: (size.height * scale * factor).rounded()

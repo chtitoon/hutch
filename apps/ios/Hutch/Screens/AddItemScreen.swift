@@ -9,20 +9,34 @@ struct AddItemScreen: View {
   @Environment(Library.self) private var library
   @Environment(\.dismiss) private var dismiss
   @State private var draft: Draft
+  @State private var cutout: UIImage?
+  @State private var keepsBackground = false
   @State private var isSaving = false
   @State private var error: String?
 
-  init(photo: UIImage, draft: Draft = Draft(), onSave: @escaping () -> Void = {}) {
+  init(
+    photo: UIImage,
+    cutout: UIImage? = nil,
+    draft: Draft = Draft(),
+    onSave: @escaping () -> Void = {}
+  ) {
     self.photo = photo
     self.onSave = onSave
+    self._cutout = State(initialValue: cutout)
     self._draft = State(initialValue: draft)
+  }
+
+  // Saving with the cutout shown is what confirms it.
+  private var shownPhoto: UIImage {
+    keepsBackground ? photo : cutout ?? photo
   }
 
   var body: some View {
     NavigationStack {
       ScrollView {
         VStack(spacing: 0) {
-          Photo(image: photo)
+          Photo(image: shownPhoto)
+            .overlay(alignment: .bottom) { cutoutButton }
           form.sheetStyle()
         }
       }
@@ -39,6 +53,21 @@ struct AddItemScreen: View {
     }
     .interactiveDismissDisabled(isSaving)
     .onAppear { library.homeRooms.start() }
+    .task { await liftItem() }
+  }
+
+  @ViewBuilder private var cutoutButton: some View {
+    if cutout != nil {
+      Button(
+        keepsBackground ? "Remove background" : "Background removed · Undo",
+        systemImage: keepsBackground ? "wand.and.sparkles" : "arrow.uturn.backward"
+      ) {
+        withAnimation { keepsBackground.toggle() }
+      }
+      .font(Typography.labelMd)
+      .buttonStyle(.glass)
+      .padding(.bottom, Photo.sheetOverlap + Spacing.s3)
+    }
   }
 
   private var form: some View {
@@ -73,11 +102,21 @@ struct AddItemScreen: View {
       .background(Palette.background)
   }
 
+  private func liftItem() async {
+    guard cutout == nil,
+      let image = photo.uprightImage(maxPixels: CGFloat(PhotoEncoder.photoMaxPixels))
+    else { return }
+    // Not worth an error: when Vision finds nothing, or can't run (the simulator), the photo stays.
+    guard let lifted = try? await PhotoCutout.cutout(of: image) else { return }
+    withAnimation { cutout = UIImage(cgImage: lifted) }
+  }
+
   private func save() {
     isSaving = true
     Task {
       do {
-        guard let image = photo.uprightImage(maxPixels: CGFloat(PhotoEncoder.photoMaxPixels)) else {
+        guard let image = shownPhoto.uprightImage(maxPixels: CGFloat(PhotoEncoder.photoMaxPixels))
+        else {
           throw PhotoEncoderError.encodingFailed
         }
         try await library.add(draft.item, photo: image)
@@ -113,6 +152,16 @@ private extension String {
 #Preview("With rooms") {
   AddItemScreen(
     photo: .sample("wrench.and.screwdriver"),
+    draft: Draft(name: "DeWalt 18V cordless drill", room: "Garage")
+  )
+  .environment(Library.sample)
+  .brand()
+}
+
+#Preview("Background removed") {
+  AddItemScreen(
+    photo: .sample("wrench.and.screwdriver"),
+    cutout: .sampleCutout("wrench.and.screwdriver"),
     draft: Draft(name: "DeWalt 18V cordless drill", room: "Garage")
   )
   .environment(Library.sample)

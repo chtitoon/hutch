@@ -12,7 +12,7 @@ import Testing
   let key = Vault.makeKey()
   var store: ItemStore { ItemStore(directory: directory, vault: Vault(key: key)) }
 
-  static let jpegMagic = Data([0xFF, 0xD8, 0xFF])
+  static let heicMagic = Data("ftypheic".utf8)
   static let photo: CGImage = {
     let context = CGContext(
       data: nil,
@@ -57,7 +57,7 @@ import Testing
         "\(file.lastPathComponent) holds the name or place"
       )
       #expect(bytes.range(of: Data("\"name\"".utf8)) == nil, "\(file.lastPathComponent) holds JSON")
-      #expect(bytes.range(of: Self.jpegMagic) == nil, "\(file.lastPathComponent) holds a JPEG")
+      #expect(bytes.range(of: Self.heicMagic) == nil, "\(file.lastPathComponent) holds a HEIC")
       #expect(!file.lastPathComponent.contains("DeWalt"))
     }
   }

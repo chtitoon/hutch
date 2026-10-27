@@ -67,6 +67,20 @@ import Testing
     )
   }
 
+  // The cutout Vision lifted, with its undo; the sunken surface shows around it.
+  @Test func addWithCutout() {
+    let draft = Draft(name: "DeWalt 18V cordless drill", room: "Garage")
+    check(
+      AddItemScreen(
+        photo: .sample("wrench.and.screwdriver"),
+        cutout: .sampleCutout("wrench.and.screwdriver"),
+        draft: draft
+      ),
+      library: .sample,
+      named: "add-cutout"
+    )
+  }
+
   private func check(
     _ view: some View,
     library: Library,
