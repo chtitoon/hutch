@@ -83,15 +83,17 @@ final class Camera: NSObject {
     zoom = factor / mainLensFactor
   }
 
-  /// The whole photo, upright. The preview shows the same field of view, so a part of the
-  /// preview maps onto it with ``PhotoCrop``.
-  func capture() async -> UIImage? {
+  /// The whole photo, as the camera encoded it. The preview shows the same field of view, so a
+  /// part of the preview maps onto it with ``PhotoCrop``.
+  func capture() async -> Data? {
     guard session.isRunning, pendingPhoto == nil else { return nil }
-    let data = await withCheckedContinuation { continuation in
+    let settings = AVCapturePhotoSettings()
+    // Deep Fusion's extra detail is lost at the stored size, and it delays the shutter.
+    settings.photoQualityPrioritization = .speed
+    return await withCheckedContinuation { continuation in
       pendingPhoto = continuation
-      output.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
+      output.capturePhoto(with: settings, delegate: self)
     }
-    return data.flatMap(UIImage.init(data:))
   }
 
   private func configure() {
@@ -109,6 +111,10 @@ final class Camera: NSObject {
       session.addOutput(output)
     }
     session.commitConfiguration()
+    // Lets the next shot start while the last one is still processing.
+    if output.isResponsiveCaptureSupported {
+      output.isResponsiveCaptureEnabled = true
+    }
     previewLayer.session = session
     previewLayer.videoGravity = .resizeAspectFill
     // Hutch is portrait only.
@@ -165,24 +171,5 @@ struct CameraPreview: UIViewRepresentable {
       super.layoutSubviews()
       previewLayer?.frame = bounds
     }
-  }
-}
-
-extension UIImage {
-  /// Drawn upright, since camera photos are stored rotated.
-  func uprightImage(maxPixels: CGFloat) -> CGImage? {
-    let longEdge = max(size.width * scale, size.height * scale)
-    let factor = min(1, maxPixels / longEdge)
-    let format = UIGraphicsImageRendererFormat()
-    format.scale = 1
-    // A cutout keeps its transparent background.
-    format.opaque = !(cgImage?.hasAlpha ?? false)
-    let target = CGSize(
-      width: (size.width * scale * factor).rounded(),
-      height: (size.height * scale * factor).rounded()
-    )
-    return UIGraphicsImageRenderer(size: target, format: format).image { _ in
-      draw(in: CGRect(origin: .zero, size: target))
-    }.cgImage
   }
 }

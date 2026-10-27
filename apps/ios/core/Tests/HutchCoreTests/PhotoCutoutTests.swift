@@ -61,10 +61,10 @@ import Testing
     // The edge fades over a few pixels instead of stepping from clear to solid.
     let row = (0..<lifted.width).map { alpha($0, middle) }
     #expect(row.filter { $0 > 0 && $0 < 255 }.count >= 6)
-    // Centered: as much clear space on the left as on the right.
+    // Centered: as much clear space on the left as on the right, within a hair.
     let left = try #require(row.firstIndex { $0 > 0 })
     let right = try #require(row.lastIndex { $0 > 0 })
-    #expect(abs(left - (lifted.width - 1 - right)) <= 1)
+    #expect(abs(left - (lifted.width - 1 - right)) <= lifted.width / 100)
   }
 
   static func opaque(width: Int, height: Int) -> CGImage? {

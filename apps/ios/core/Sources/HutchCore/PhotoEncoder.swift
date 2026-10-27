@@ -31,6 +31,18 @@ public enum PhotoEncoder {
     return data as Data
   }
 
+  /// A camera or library photo, decoded upright at no more than `maxPixels`, off the main actor.
+  public static func uprightImage(from data: Data, maxPixels: Int) async -> CGImage? {
+    guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
+    // ImageIO decodes straight to the size asked and applies the photo's rotation in one pass.
+    let options: [CFString: Any] = [
+      kCGImageSourceCreateThumbnailFromImageAlways: true,
+      kCGImageSourceCreateThumbnailWithTransform: true,
+      kCGImageSourceThumbnailMaxPixelSize: maxPixels,
+    ]
+    return CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary)
+  }
+
   public static func image(from data: Data) -> CGImage? {
     guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return nil }
     return CGImageSourceCreateImageAtIndex(source, 0, nil)
@@ -62,7 +74,7 @@ public enum PhotoEncoder {
 }
 
 extension CGImage {
-  public var hasAlpha: Bool {
+  var hasAlpha: Bool {
     ![.none, .noneSkipFirst, .noneSkipLast].contains(alphaInfo)
   }
 }

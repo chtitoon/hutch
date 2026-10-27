@@ -14,7 +14,9 @@ public enum PhotoCutout {
   static let feather = 0.0015
 
   /// Nil when Vision finds nothing to lift: the photo is then kept as it is.
-  public static func cutout(of image: CGImage) async throws -> CGImage? {
+  public static func cutout(of photo: CGImage) async throws -> CGImage? {
+    // At the stored size: a bigger photo only costs time.
+    let image = try PhotoEncoder.downscale(photo, maxPixels: PhotoEncoder.photoMaxPixels)
     let handler = ImageRequestHandler(image)
     guard let observation = try await handler.perform(GenerateForegroundInstanceMaskRequest()),
       let instance = try item(in: observation)
@@ -38,10 +40,32 @@ public enum PhotoCutout {
       parameters: [kCIInputBackgroundImageKey: CIImage.empty(), kCIInputMaskImageKey: softMask]
     )
     guard let full = CIContext().createCGImage(lifted, from: photo.extent),
-      let bounds = opaqueBounds(alpha: alpha(of: full), width: full.width),
+      let bounds = opaqueBounds(of: full),
       let cropped = full.cropping(to: bounds)
     else { return nil }
     return square(cropped)
+  }
+
+  // Found on a small copy, so it's quick; it errs a few pixels wide, never into the item.
+  static func opaqueBounds(of image: CGImage) -> CGRect? {
+    let scale = min(1, 256 / Double(max(image.width, image.height)))
+    let width = max(1, Int((Double(image.width) * scale).rounded(.up)))
+    let height = max(1, Int((Double(image.height) * scale).rounded(.up)))
+    guard
+      let small = opaqueBounds(
+        alpha: alpha(of: image, width: width, height: height),
+        width: width
+      )
+    else { return nil }
+    let cell = Double(image.width) / Double(width)
+    return CGRect(
+      x: (small.minX - 1) * cell,
+      y: (small.minY - 1) * cell,
+      width: (small.width + 2) * cell,
+      height: (small.height + 2) * cell
+    )
+    .integral
+    .intersection(CGRect(x: 0, y: 0, width: image.width, height: image.height))
   }
 
   /// The smallest rectangle, top-left origin, holding every pixel that isn't fully transparent.
@@ -105,19 +129,19 @@ public enum PhotoCutout {
   }
 
   // Rows top first, as CGImage.cropping(to:) counts them.
-  static func alpha(of image: CGImage) -> [UInt8] {
-    var pixels = [UInt8](repeating: 0, count: image.width * image.height * 4)
+  static func alpha(of image: CGImage, width: Int, height: Int) -> [UInt8] {
+    var pixels = [UInt8](repeating: 0, count: width * height * 4)
     pixels.withUnsafeMutableBytes { buffer in
       let context = CGContext(
         data: buffer.baseAddress,
-        width: image.width,
-        height: image.height,
+        width: width,
+        height: height,
         bitsPerComponent: 8,
-        bytesPerRow: image.width * 4,
+        bytesPerRow: width * 4,
         space: CGColorSpace(name: CGColorSpace.sRGB)!,
         bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
       )
-      context?.draw(image, in: CGRect(x: 0, y: 0, width: image.width, height: image.height))
+      context?.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
     }
     return stride(from: 3, to: pixels.count, by: 4).map { pixels[$0] }
   }

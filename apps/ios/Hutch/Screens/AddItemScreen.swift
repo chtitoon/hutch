@@ -103,9 +103,7 @@ struct AddItemScreen: View {
   }
 
   private func liftItem() async {
-    guard cutout == nil,
-      let image = photo.uprightImage(maxPixels: CGFloat(PhotoEncoder.photoMaxPixels))
-    else { return }
+    guard cutout == nil, let image = photo.cgImage else { return }
     // Not worth an error: when Vision finds nothing, or can't run (the simulator), the photo stays.
     guard let lifted = try? await PhotoCutout.cutout(of: image) else { return }
     withAnimation { cutout = UIImage(cgImage: lifted) }
@@ -115,8 +113,8 @@ struct AddItemScreen: View {
     isSaving = true
     Task {
       do {
-        guard let image = shownPhoto.uprightImage(maxPixels: CGFloat(PhotoEncoder.photoMaxPixels))
-        else {
+        // Upright already; the store scales it down as it encodes, off the main actor.
+        guard let image = shownPhoto.cgImage else {
           throw PhotoEncoderError.encodingFailed
         }
         try await library.add(draft.item, photo: image)

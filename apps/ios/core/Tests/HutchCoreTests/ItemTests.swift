@@ -1,6 +1,8 @@
 import CoreGraphics
 import Foundation
+import ImageIO
 import Testing
+import UniformTypeIdentifiers
 
 @testable import HutchCore
 
@@ -121,6 +123,24 @@ import Testing
     #expect(decoded.width == 100)
     #expect(decoded.height == 50)
     #expect(!decoded.hasAlpha)
+  }
+
+  // The camera stores a portrait photo landscape, tagged to be turned a quarter clockwise.
+  @Test func decodesACameraPhotoUprightAndSmaller() async throws {
+    let landscape = try #require(PhotoCutoutTests.opaque(width: 400, height: 200))
+    let data = NSMutableData()
+    let destination = try #require(
+      CGImageDestinationCreateWithData(data, UTType.jpeg.identifier as CFString, 1, nil)
+    )
+    CGImageDestinationAddImage(
+      destination,
+      landscape,
+      [kCGImagePropertyOrientation: CGImagePropertyOrientation.right.rawValue] as CFDictionary
+    )
+    try #require(CGImageDestinationFinalize(destination))
+    let upright = try #require(await PhotoEncoder.uprightImage(from: data as Data, maxPixels: 100))
+    #expect(upright.width == 50)
+    #expect(upright.height == 100)
   }
 
   @Test func keepsACutoutsTransparentBackground() throws {

@@ -10,6 +10,8 @@ struct CaptureScreen: View {
   @State private var capture: Capture?
   @State private var pickedPhoto: PhotosPickerItem?
   @State private var zoomAtPinchStart: CGFloat = 1
+  @State private var shots = 0
+  @State private var isFlashing = false
 
   init(camera: Camera = Camera(), isCameraAvailable: Bool = Camera.isAvailable) {
     self._camera = State(initialValue: camera)
@@ -22,6 +24,11 @@ struct CaptureScreen: View {
         CameraPreview(camera: camera)
           .ignoresSafeArea()
           .gesture(pinchToZoom)
+        // Answers the tap at once, like the Camera app, while the photo is still processing.
+        Palette.deep
+          .ignoresSafeArea()
+          .opacity(isFlashing ? 1 : 0)
+          .allowsHitTesting(false)
         Viewfinder { camera.viewfinderFrame = $0 }
       } else {
         NoCameraView()
@@ -35,6 +42,7 @@ struct CaptureScreen: View {
       AddItemScreen(photo: capture.image) { dismiss() }
         .brand()
     }
+    .sensoryFeedback(.impact, trigger: shots)
     .task(id: pickedPhoto) { await loadPickedPhoto() }
     .task {
       guard isCameraAvailable else { return }
@@ -80,21 +88,26 @@ struct CaptureScreen: View {
   }
 
   private func takePhoto() {
+    shots += 1
+    isFlashing = true
+    withAnimation(.easeOut(duration: 0.25)) { isFlashing = false }
     Task {
-      if let photo = await camera.capture() {
-        capture = crop(photo)
-      }
+      // Twice the stored size, so the crop keeps the stored photo's full detail.
+      guard let data = await camera.capture(),
+        let photo = await PhotoEncoder.uprightImage(
+          from: data,
+          maxPixels: PhotoEncoder.photoMaxPixels * 2
+        )
+      else { return }
+      capture = crop(photo)
     }
   }
 
   // Only what was inside the frame: the hint asks for the item there, so the rest is clutter.
-  private func crop(_ photo: UIImage) -> Capture {
-    // Twice the stored size, so the crop keeps the stored photo's full detail.
-    let maxPixels = CGFloat(PhotoEncoder.photoMaxPixels) * 2
-    guard let upright = photo.uprightImage(maxPixels: maxPixels),
-      let rect = camera.crop(ofPhoto: CGSize(width: upright.width, height: upright.height)),
-      let cropped = upright.cropping(to: rect)
-    else { return Capture(image: photo) }
+  private func crop(_ photo: CGImage) -> Capture {
+    guard let rect = camera.crop(ofPhoto: CGSize(width: photo.width, height: photo.height)),
+      let cropped = photo.cropping(to: rect)
+    else { return Capture(image: UIImage(cgImage: photo)) }
     return Capture(image: UIImage(cgImage: cropped))
   }
 
@@ -102,9 +115,12 @@ struct CaptureScreen: View {
     guard let pickedPhoto else { return }
     defer { self.pickedPhoto = nil }
     if let data = try? await pickedPhoto.loadTransferable(type: Data.self),
-      let image = UIImage(data: data)
+      let image = await PhotoEncoder.uprightImage(
+        from: data,
+        maxPixels: PhotoEncoder.photoMaxPixels
+      )
     {
-      capture = Capture(image: image)
+      capture = Capture(image: UIImage(cgImage: image))
     }
   }
 }
