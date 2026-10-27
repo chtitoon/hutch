@@ -25,6 +25,9 @@ colors:
   # Recessed panels, neutral badges, the closing card.
   surface-sunken: "#E8E5DD"
   surface-sunken-dark: "#0F1A13"
+  # Behind photo thumbnails. Pale in dark mode too, so a dark item stays recognizable in a list.
+  thumbnail-backdrop: "#E8E5DD"
+  thumbnail-backdrop-dark: "#C5CFC8"
   # Hairlines, dividers, card edges.
   border: "#DEDAD0"
   border-dark: "#2B3D32"
@@ -330,6 +333,12 @@ components:
     backgroundColor: "{colors.device}"
   phone-frame-dark:
     backgroundColor: "{colors.device-dark}"
+  item-thumbnail:
+    backgroundColor: "{colors.thumbnail-backdrop}"
+    rounded: "{rounded.sm}"
+  item-thumbnail-dark:
+    backgroundColor: "{colors.thumbnail-backdrop-dark}"
+    rounded: "{rounded.sm}"
 ---
 
 # Hutch design system
@@ -377,6 +386,7 @@ Each token is a role, not a swatch. Use the role that describes the job (`ink-mu
 - **Sage (`sage`)** carries small labels and eyebrows, link hover and the focus ring; `sage-tint` with `on-sage-tint` makes positive badges.
 - **`marker`** is the brass dot on the status pill. It's brass on the dark pill, and a deeper brass in dark mode, where the pill turns light and plain brass would fade (D18).
 - **`device`** is hardware drawn on the page (the phone frame and its shadow); it stays dark in both modes.
+- **`thumbnail-backdrop`** sits behind photo thumbnails: the warm sunken tone in light mode, a pale sage-grey in dark mode, so a dark item cut out of its photo stays recognizable in a list (D26).
 
 ### Light and dark follow the system
 

@@ -260,8 +260,12 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 **What:**
 - Vision lifts the item out of its photo, on the phone: the object under the frame's centre, else the largest one.
 - The cutout is centred on a transparent square with a 10% margin, so it sits the same in a thumbnail and on the item screen.
-- Its edge is pulled in slightly and feathered, so it looks photographed rather than cut, and it casts a soft shadow on screen.
-- Photos sit on `surface-sunken`, which follows light and dark like the rest of the app. A light backdrop in dark mode (white, then a dimmed grey) was tried and dropped: it overrode the mode for one part of the screen.
+- Vision's mask is a small grid stretched to the photo, so its edge steps. Core Image's edge-preserving upsampling rebuilds it along the photo's own outlines, then steepens it to drop the haze it leaves: about 35 times closer to the true outline in tests.
+- A plain feather was tried first and looked worse: it blurred the steps instead of removing them.
+- Until I've compared both on real items, a long press on the cutout in New item flips to Vision's edge. The switch goes once I decide.
+- The cutout casts a soft shadow on screen.
+- A full-size photo sits on `surface-sunken`, which follows light and dark like the rest of the app. A light backdrop in dark mode (white, then a dimmed grey) was tried and dropped: it overrode the mode for one part of the screen.
+- Thumbnails sit on `thumbnail-backdrop`: warm sunken in light mode, pale sage-grey in dark mode. In a list, small dark items must stay recognizable.
 - New item shows the cutout straight away, with an Undo. Saving confirms it; there's no extra step.
 - Only what's shown is saved: the cutout, or the original after Undo.
 - Photos are stored as HEIC, not JPEG, so a cutout keeps its transparency.
@@ -277,4 +281,4 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 - Vision can't run in the simulator, so tests cover what's around it, and the cutout itself is checked on the phone.
 - Photos saved before this stay JPEG, with no cutout.
 - Tap-to-pick another object waits until my notes show the centre pick is wrong.
-- A dark item is hard to see on the dark-mode backdrop. If my notes show it, the light backdrop comes back.
+- On the item screen, a dark item is hard to see in dark mode. If my notes show it, a lighter backdrop comes back there too.

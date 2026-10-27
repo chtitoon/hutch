@@ -11,6 +11,8 @@ struct AddItemScreen: View {
   @State private var draft: Draft
   @State private var cutout: Cutout
   @State private var keepsBackground = false
+  // Temporary: a long press on the cutout flips to Vision's edge, to compare on real items (D26).
+  @State private var edge = PhotoCutout.Edge.smoothed
   @State private var isSaving = false
   @State private var error: String?
 
@@ -38,6 +40,8 @@ struct AddItemScreen: View {
         VStack(spacing: 0) {
           Photo(image: shownPhoto)
             .overlay(alignment: .bottom) { cutoutButton }
+            .onLongPressGesture(perform: compareEdges)
+            .sensoryFeedback(.selection, trigger: edge)
           form.sheetStyle()
         }
       }
@@ -54,7 +58,7 @@ struct AddItemScreen: View {
     }
     .interactiveDismissDisabled(isSaving)
     .onAppear { library.homeRooms.start() }
-    .task { await liftItem() }
+    .task(id: edge) { await liftItem() }
   }
 
   @ViewBuilder private var cutoutButton: some View {
@@ -69,7 +73,9 @@ struct AddItemScreen: View {
         .foregroundStyle(Palette.inkMuted)
       case .lifted:
         Button(
-          keepsBackground ? "Remove background" : "Background removed · Undo",
+          keepsBackground
+            ? "Remove background"
+            : edge == .vision ? "Vision's edge · Undo" : "Background removed · Undo",
           systemImage: keepsBackground ? "wand.and.sparkles" : "arrow.uturn.backward"
         ) {
           withAnimation { keepsBackground.toggle() }
@@ -122,11 +128,18 @@ struct AddItemScreen: View {
     .background(Palette.background)
   }
 
+  private func compareEdges() {
+    guard case .lifted = cutout else { return }
+    keepsBackground = false
+    cutout = .pending
+    edge = edge == .smoothed ? .vision : .smoothed
+  }
+
   private func liftItem() async {
     guard case .pending = cutout, let image = photo.cgImage else { return }
     cutout = .lifting
     // Not worth an error: when Vision finds nothing, or can't run (the simulator), the photo stays.
-    let lifted = try? await PhotoCutout.cutout(of: image)
+    let lifted = try? await PhotoCutout.cutout(of: image, edge: edge)
     withAnimation {
       cutout = lifted.map { .lifted(UIImage(cgImage: $0)) } ?? .none
     }
