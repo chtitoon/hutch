@@ -139,7 +139,11 @@ struct AddItemScreen: View {
     guard case .pending = cutout, let image = photo.cgImage else { return }
     cutout = .lifting
     // Not worth an error: when Vision finds nothing, or can't run (the simulator), the photo stays.
-    let lifted = try? await PhotoCutout.cutout(of: image, edge: edge)
+    let edge = edge
+    // Background priority, so the keyboard stays responsive while it runs.
+    let lifted = try? await Task.detached(priority: .utility) {
+      try await PhotoCutout.cutout(of: image, edge: edge)
+    }.value
     withAnimation {
       cutout = lifted.map { .lifted(UIImage(cgImage: $0)) } ?? .none
     }

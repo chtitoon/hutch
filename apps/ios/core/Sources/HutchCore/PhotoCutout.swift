@@ -7,6 +7,8 @@ import Vision
 public enum PhotoCutout {
   // Room around the item on each side, as a share of the square's side.
   public static let margin = 0.1
+  // Low GPU priority, so drawing the screen and the keyboard come first.
+  private static var context: CIContext { CIContext(options: [.priorityRequestLow: true]) }
 
   public enum Edge: Sendable {
     // Vision's mask stretched to the photo, as Photos lifts a subject: its edge steps.
@@ -30,7 +32,7 @@ public enum PhotoCutout {
         croppedToInstancesExtent: true
       )
       let lifted = CIImage(cvPixelBuffer: masked)
-      guard let cropped = CIContext().createCGImage(lifted, from: lifted.extent) else { return nil }
+      guard let cropped = context.createCGImage(lifted, from: lifted.extent) else { return nil }
       return square(cropped)
     case .smoothed:
       let mask = try observation.generateScaledMask(for: [instance], scaledToImageFrom: handler)
@@ -82,7 +84,7 @@ public enum PhotoCutout {
       "CIBlendWithMask",
       parameters: [kCIInputBackgroundImageKey: CIImage.empty(), kCIInputMaskImageKey: mask]
     )
-    guard let full = CIContext().createCGImage(lifted, from: photo.extent),
+    guard let full = context.createCGImage(lifted, from: photo.extent),
       let bounds = opaqueBounds(of: full),
       let cropped = full.cropping(to: bounds)
     else { return nil }

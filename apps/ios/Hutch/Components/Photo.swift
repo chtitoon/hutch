@@ -31,6 +31,8 @@ extension View {
   // full photo casts it outside its square, where it's clipped away.
   func itemShadow(radius: CGFloat) -> some View {
     shadow(color: Palette.device.opacity(0.18), radius: radius, y: radius / 2)
+      // Drawn once into one image: a live shadow is redrawn on every frame, and stalled typing.
+      .drawingGroup()
   }
 
   func sheetStyle() -> some View {
