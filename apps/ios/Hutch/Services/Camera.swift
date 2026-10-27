@@ -1,56 +1,110 @@
+import AVFoundation
 import SwiftUI
 import UIKit
 
-/// The system camera without its own controls, so one tap on Hutch's shutter takes the photo.
-struct CameraView: UIViewControllerRepresentable {
-  let shutter: CameraShutter
-  let onPhoto: (UIImage) -> Void
-
-  static var isAvailable: Bool { UIImagePickerController.isSourceTypeAvailable(.camera) }
-
-  func makeUIViewController(context: Context) -> UIImagePickerController {
-    let picker = UIImagePickerController()
-    picker.sourceType = .camera
-    picker.cameraCaptureMode = .photo
-    picker.showsCameraControls = false
-    picker.delegate = context.coordinator
-    shutter.picker = picker
-    return picker
+/// The back camera, with a preview that fills the screen and photos cropped to a part of it.
+@MainActor
+@Observable
+final class Camera: NSObject {
+  static var isAvailable: Bool {
+    AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) != nil
   }
 
-  func updateUIViewController(_ picker: UIImagePickerController, context: Context) {
-    context.coordinator.onPhoto = onPhoto
-    // The preview is 4:3 at the top; scale it to fill the screen, centered.
-    let bounds = picker.view.bounds
-    guard bounds.width > 0 else { return }
-    let previewHeight = bounds.width * 4 / 3
-    let scale = max(1, bounds.height / previewHeight)
-    picker.cameraViewTransform = CGAffineTransform(
-      translationX: 0,
-      y: (bounds.height - previewHeight) / 2
-    ).scaledBy(x: scale, y: scale)
-  }
+  @ObservationIgnored let previewLayer = AVCaptureVideoPreviewLayer()
+  @ObservationIgnored private let session = AVCaptureSession()
+  @ObservationIgnored private let output = AVCapturePhotoOutput()
+  @ObservationIgnored private var pendingPhoto: CheckedContinuation<Data?, Never>?
 
-  func makeCoordinator() -> Coordinator { Coordinator(onPhoto: onPhoto) }
-
-  final class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate
-  {
-    var onPhoto: (UIImage) -> Void
-    init(onPhoto: @escaping (UIImage) -> Void) { self.onPhoto = onPhoto }
-
-    func imagePickerController(
-      _ picker: UIImagePickerController,
-      didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]
-    ) {
-      if let image = info[.originalImage] as? UIImage { onPhoto(image) }
+  func start() async {
+    guard await AVCaptureDevice.requestAccess(for: .video), !session.isRunning else { return }
+    if session.inputs.isEmpty {
+      configure()
     }
+    // Apple suggests starting off the main thread, but the session isn't Sendable, so Swift 6
+    // can't move it. It blocks briefly while the screen slides in. AVCam's capture actor is the fix.
+    session.startRunning()
+  }
+
+  func stop() {
+    session.stopRunning()
+  }
+
+  /// The photo, cropped to `rect` in the preview's coordinates.
+  func capture(inside rect: CGRect) async -> UIImage? {
+    guard session.isRunning, pendingPhoto == nil else { return nil }
+    // AVFoundation maps the preview's rect into the photo, so the crop matches what was framed.
+    let crop = previewLayer.metadataOutputRectConverted(fromLayerRect: rect)
+    let data = await withCheckedContinuation { continuation in
+      pendingPhoto = continuation
+      output.capturePhoto(with: AVCapturePhotoSettings(), delegate: self)
+    }
+    guard let data, let photo = UIImage(data: data) else { return nil }
+    return photo.cropped(toNormalized: crop)
+  }
+
+  private func configure() {
+    session.beginConfiguration()
+    session.sessionPreset = .photo
+    if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
+      let input = try? AVCaptureDeviceInput(device: device),
+      session.canAddInput(input), session.canAddOutput(output)
+    {
+      session.addInput(input)
+      session.addOutput(output)
+    }
+    session.commitConfiguration()
+    previewLayer.session = session
+    previewLayer.videoGravity = .resizeAspectFill
+    // Hutch is portrait only.
+    for connection in [previewLayer.connection, output.connection(with: .video)] {
+      if let connection, connection.isVideoRotationAngleSupported(90) {
+        connection.videoRotationAngle = 90
+      }
+    }
+  }
+
+  private func finish(with data: Data?) {
+    pendingPhoto?.resume(returning: data)
+    pendingPhoto = nil
   }
 }
 
-@MainActor
-final class CameraShutter {
-  weak var picker: UIImagePickerController?
-  func fire() { picker?.takePicture() }
+extension Camera: AVCapturePhotoCaptureDelegate {
+  nonisolated func photoOutput(
+    _ output: AVCapturePhotoOutput,
+    didFinishProcessingPhoto photo: AVCapturePhoto,
+    error: (any Error)?
+  ) {
+    let data = photo.fileDataRepresentation()
+    Task { @MainActor in finish(with: data) }
+  }
+}
+
+/// Shows the camera's preview layer, filling the view.
+struct CameraPreview: UIViewRepresentable {
+  let camera: Camera
+
+  func makeUIView(context: Context) -> PreviewView {
+    let view = PreviewView()
+    view.previewLayer = camera.previewLayer
+    return view
+  }
+
+  func updateUIView(_ view: PreviewView, context: Context) {}
+
+  final class PreviewView: UIView {
+    var previewLayer: CALayer? {
+      didSet {
+        oldValue?.removeFromSuperlayer()
+        if let previewLayer { layer.addSublayer(previewLayer) }
+      }
+    }
+
+    override func layoutSubviews() {
+      super.layoutSubviews()
+      previewLayer?.frame = bounds
+    }
+  }
 }
 
 extension UIImage {
@@ -68,5 +122,18 @@ extension UIImage {
     return UIGraphicsImageRenderer(size: target, format: format).image { _ in
       draw(in: CGRect(origin: .zero, size: target))
     }.cgImage
+  }
+
+  /// `rect` is in 0–1 units of the stored pixels, before any rotation, as AVFoundation gives it.
+  func cropped(toNormalized rect: CGRect) -> UIImage {
+    guard let cgImage else { return self }
+    let pixels = CGRect(
+      x: rect.minX * CGFloat(cgImage.width),
+      y: rect.minY * CGFloat(cgImage.height),
+      width: rect.width * CGFloat(cgImage.width),
+      height: rect.height * CGFloat(cgImage.height)
+    ).integral
+    guard let cropped = cgImage.cropping(to: pixels) else { return self }
+    return UIImage(cgImage: cropped, scale: scale, orientation: imageOrientation)
   }
 }

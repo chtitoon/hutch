@@ -74,37 +74,6 @@ import Testing
   }
 }
 
-@Suite struct PhotoCropTests {
-  // A 3:4 photo on a taller screen: it fills the height, and its sides are cut off.
-  let screen = CGSize(width: 400, height: 800)
-  let photo = CGSize(width: 3000, height: 4000)
-
-  @Test func mapsTheFrameIntoThePhoto() {
-    let frame = CGRect(x: 40, y: 200, width: 320, height: 320)
-    #expect(
-      PhotoCrop.rect(inside: frame, screen: screen, photo: photo)
-        == CGRect(x: 700, y: 1000, width: 1600, height: 1600)
-    )
-  }
-
-  @Test func theWholeScreenIsTheVisiblePart() {
-    let visible = PhotoCrop.rect(
-      inside: CGRect(origin: .zero, size: screen),
-      screen: screen,
-      photo: photo
-    )
-    #expect(visible == CGRect(x: 500, y: 0, width: 2000, height: 4000))
-  }
-
-  @Test func neverReachesOutsideThePhoto() {
-    let frame = CGRect(x: -50, y: -50, width: 600, height: 1000)
-    #expect(
-      PhotoCrop.rect(inside: frame, screen: screen, photo: photo)
-        == CGRect(x: 250, y: 0, width: 2750, height: 4000)
-    )
-  }
-}
-
 @Suite struct PhotoEncoderTests {
   @Test func downscalesToTheLongEdge() throws {
     let context = CGContext(
