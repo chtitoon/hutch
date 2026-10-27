@@ -24,6 +24,16 @@ struct ItemScreen: View {
           }
           Button("Remove from Hutch") { isConfirmingDelete = true }
             .buttonStyle(.outlined)
+            // On the button, so its popover points at it rather than at the whole screen.
+            .confirmationDialog(
+              "Remove \(item.name)?",
+              isPresented: $isConfirmingDelete,
+              titleVisibility: .visible
+            ) {
+              Button("Remove", role: .destructive, action: delete)
+            } message: {
+              Text("Its photo and details are deleted from this iPhone.")
+            }
             .padding(.top, Spacing.s4)
         }
         .sheetStyle()
@@ -32,15 +42,6 @@ struct ItemScreen: View {
     .ignoresSafeArea(edges: .top)
     .background(Palette.background)
     .navigationBarTitleDisplayMode(.inline)
-    .confirmationDialog(
-      "Remove \(item.name)?",
-      isPresented: $isConfirmingDelete,
-      titleVisibility: .visible
-    ) {
-      Button("Remove", role: .destructive, action: delete)
-    } message: {
-      Text("Its photo and details are deleted from this iPhone.")
-    }
     .task { await loadPhoto() }
   }
 
