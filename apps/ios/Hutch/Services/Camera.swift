@@ -24,6 +24,7 @@ final class Camera: NSObject {
   /// As the Camera app shows it: 1 is the main lens, 0.5 the ultra wide.
   private(set) var zoom: CGFloat = 1
   @ObservationIgnored let previewLayer = AVCaptureVideoPreviewLayer()
+  @ObservationIgnored fileprivate weak var previewView: UIView?
   @ObservationIgnored private let session = AVCaptureSession()
   @ObservationIgnored private let output = AVCapturePhotoOutput()
   @ObservationIgnored private var device: AVCaptureDevice?
@@ -43,6 +44,13 @@ final class Camera: NSObject {
 
   func stop() {
     session.stopRunning()
+  }
+
+  /// Where the preview is drawn, in window coordinates (SwiftUI's `.global`). Asked of UIKit:
+  /// SwiftUI reports a view's frame inside the safe area, even when it draws past it.
+  var previewFrame: CGRect {
+    guard let previewView else { return .zero }
+    return previewView.convert(previewView.bounds, to: nil)
   }
 
   func setZoom(_ value: CGFloat) {
@@ -125,6 +133,7 @@ struct CameraPreview: UIViewRepresentable {
   func makeUIView(context: Context) -> PreviewView {
     let view = PreviewView()
     view.previewLayer = camera.previewLayer
+    camera.previewView = view
     return view
   }
 

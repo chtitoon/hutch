@@ -9,7 +9,6 @@ struct CaptureScreen: View {
   @State private var camera = Camera()
   @State private var capture: Capture?
   @State private var pickedPhoto: PhotosPickerItem?
-  @State private var previewFrame = CGRect.zero
   @State private var viewfinderFrame = CGRect.zero
   @State private var zoomAtPinchStart: CGFloat = 1
 
@@ -18,11 +17,6 @@ struct CaptureScreen: View {
       if isCameraAvailable {
         CameraPreview(camera: camera)
           .ignoresSafeArea()
-          .onGeometryChange(for: CGRect.self) {
-            $0.frame(in: .global)
-          } action: {
-            previewFrame = $0
-          }
           .gesture(pinchToZoom)
         Viewfinder { viewfinderFrame = $0 }
       } else {
@@ -82,8 +76,9 @@ struct CaptureScreen: View {
   }
 
   private func takePhoto() {
-    let frame = viewfinderFrame.offsetBy(dx: -previewFrame.minX, dy: -previewFrame.minY)
-    let screen = previewFrame.size
+    let preview = camera.previewFrame
+    let frame = viewfinderFrame.offsetBy(dx: -preview.minX, dy: -preview.minY)
+    let screen = preview.size
     Task {
       if let photo = await camera.capture() {
         capture = Self.crop(photo, to: frame, screen: screen)
