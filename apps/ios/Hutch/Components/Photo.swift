@@ -1,24 +1,27 @@
 import SwiftUI
 
+/// An item's photo, square and full width, shown whole: a camera photo is cropped square when it's
+/// taken, so this is exactly what was saved.
 struct Photo: View {
   let image: UIImage?
 
-  static let height = Spacing.s30 * 2.5
+  // The sheet below rises this far over the photo; the photo leaves room for it.
+  static let sheetOverlap = Spacing.s7
 
   var body: some View {
-    Group {
-      if let image {
-        Image(uiImage: image)
-          .resizable()
-          .scaledToFill()
-      } else {
-        Palette.surfaceSunken
+    // The square sets the size; a fill-scaled image would otherwise overflow it.
+    Palette.surfaceSunken
+      .aspectRatio(1, contentMode: .fit)
+      .overlay {
+        if let image {
+          Image(uiImage: image)
+            .resizable()
+            .scaledToFill()
+        }
       }
-    }
-    .frame(maxWidth: .infinity)
-    .frame(height: Self.height)
-    .clipped()
-    .accessibilityHidden(true)
+      .clipped()
+      .padding(.bottom, Self.sheetOverlap)
+      .accessibilityHidden(true)
   }
 }
 
@@ -31,6 +34,6 @@ extension View {
         Palette.background,
         in: UnevenRoundedRectangle(topLeadingRadius: Radius.lg, topTrailingRadius: Radius.lg)
       )
-      .padding(.top, -Spacing.s7)
+      .padding(.top, -Photo.sheetOverlap)
   }
 }

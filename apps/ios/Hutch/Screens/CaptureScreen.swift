@@ -34,7 +34,7 @@ struct CaptureScreen: View {
     .overlay(alignment: .topLeading) { closeButton }
     .safeAreaInset(edge: .bottom) { controls }
     .sheet(item: $capture) { capture in
-      AddItemScreen(photo: capture.image) { dismiss() }
+      AddItemScreen(capture: capture) { dismiss() }
         .brand()
     }
     .task(id: pickedPhoto) { await loadPickedPhoto() }
@@ -86,21 +86,26 @@ struct CaptureScreen: View {
     let screen = previewFrame.size
     Task {
       if let photo = await camera.capture() {
-        capture = Capture(image: Self.crop(photo, to: frame, screen: screen))
+        capture = Self.crop(photo, to: frame, screen: screen)
       }
     }
   }
 
   // Only what was inside the frame: the hint asks for the item there, so the rest is clutter.
-  private static func crop(_ photo: UIImage, to frame: CGRect, screen: CGSize) -> UIImage {
+  private static func crop(_ photo: UIImage, to frame: CGRect, screen: CGSize) -> Capture {
     // Twice the stored size, so the crop keeps the stored photo's full detail.
     let maxPixels = CGFloat(PhotoEncoder.photoMaxPixels) * 2
     guard !frame.isEmpty, let upright = photo.uprightImage(maxPixels: maxPixels) else {
-      return photo
+      return Capture(image: photo)
     }
     let size = CGSize(width: upright.width, height: upright.height)
     let rect = PhotoCrop.rect(inside: frame, screen: screen, photo: size)
-    return upright.cropping(to: rect).map { UIImage(cgImage: $0) } ?? photo
+    guard let cropped = upright.cropping(to: rect) else { return Capture(image: photo) }
+    var capture = Capture(image: UIImage(cgImage: cropped))
+    #if DEBUG
+      capture.cropCheck = CropCheck(original: upright, crop: rect)
+    #endif
+    return capture
   }
 
   private func loadPickedPhoto() async {
@@ -117,6 +122,9 @@ struct CaptureScreen: View {
 struct Capture: Identifiable {
   let id = UUID()
   let image: UIImage
+  #if DEBUG
+    var cropCheck: CropCheck?
+  #endif
 }
 
 private struct ShutterButtonStyle: ButtonStyle {

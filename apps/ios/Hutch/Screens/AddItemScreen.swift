@@ -2,7 +2,7 @@ import HutchCore
 import SwiftUI
 
 struct AddItemScreen: View {
-  let photo: UIImage
+  let capture: Capture
   // Called once saved, to go back to Home past the camera.
   var onSave: () -> Void = {}
 
@@ -11,18 +11,23 @@ struct AddItemScreen: View {
   @State private var draft: Draft
   @State private var isSaving = false
   @State private var error: String?
+  @State private var isCheckingCrop = false
 
-  init(photo: UIImage, draft: Draft = Draft(), onSave: @escaping () -> Void = {}) {
-    self.photo = photo
+  init(capture: Capture, draft: Draft = Draft(), onSave: @escaping () -> Void = {}) {
+    self.capture = capture
     self.onSave = onSave
     self._draft = State(initialValue: draft)
+  }
+
+  private var photo: UIImage {
+    capture.image
   }
 
   var body: some View {
     NavigationStack {
       ScrollView {
         VStack(spacing: 0) {
-          Photo(image: photo)
+          header
           form.sheetStyle()
         }
       }
@@ -39,6 +44,22 @@ struct AddItemScreen: View {
     }
     .interactiveDismissDisabled(isSaving)
     .onAppear { library.homeRooms.start() }
+  }
+
+  @ViewBuilder
+  private var header: some View {
+    #if DEBUG
+      // Hold the photo to see the whole shot with the crop outlined.
+      if isCheckingCrop, let check = capture.cropCheck {
+        CropCheckView(check: check)
+          .onLongPressGesture { isCheckingCrop = false }
+      } else {
+        Photo(image: photo)
+          .onLongPressGesture { isCheckingCrop = true }
+      }
+    #else
+      Photo(image: photo)
+    #endif
   }
 
   private var form: some View {
@@ -112,7 +133,7 @@ private extension String {
 
 #Preview("With rooms") {
   AddItemScreen(
-    photo: .sample("wrench.and.screwdriver"),
+    capture: Capture(image: .sample("wrench.and.screwdriver")),
     draft: Draft(name: "DeWalt 18V cordless drill", room: "Garage")
   )
   .environment(Library.sample)
@@ -120,7 +141,7 @@ private extension String {
 }
 
 #Preview("No rooms yet") {
-  AddItemScreen(photo: .sample("wrench.and.screwdriver"))
+  AddItemScreen(capture: Capture(image: .sample("wrench.and.screwdriver")))
     .environment(Library(store: nil))
     .brand()
 }
