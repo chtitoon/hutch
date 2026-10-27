@@ -3,14 +3,18 @@ import PhotosUI
 import SwiftUI
 
 struct CaptureScreen: View {
-  var isCameraAvailable = Camera.isAvailable
+  let isCameraAvailable: Bool
 
   @Environment(\.dismiss) private var dismiss
-  @State private var camera = Camera()
+  @State private var camera: Camera
   @State private var capture: Capture?
   @State private var pickedPhoto: PhotosPickerItem?
-  @State private var viewfinderFrame = CGRect.zero
   @State private var zoomAtPinchStart: CGFloat = 1
+
+  init(camera: Camera = Camera(), isCameraAvailable: Bool = Camera.isAvailable) {
+    self._camera = State(initialValue: camera)
+    self.isCameraAvailable = isCameraAvailable
+  }
 
   var body: some View {
     ZStack {
@@ -18,7 +22,7 @@ struct CaptureScreen: View {
         CameraPreview(camera: camera)
           .ignoresSafeArea()
           .gesture(pinchToZoom)
-        Viewfinder { viewfinderFrame = $0 }
+        Viewfinder { camera.viewfinderFrame = $0 }
       } else {
         NoCameraView()
       }
@@ -28,7 +32,7 @@ struct CaptureScreen: View {
     .overlay(alignment: .topLeading) { closeButton }
     .safeAreaInset(edge: .bottom) { controls }
     .sheet(item: $capture) { capture in
-      AddItemScreen(capture: capture) { dismiss() }
+      AddItemScreen(photo: capture.image) { dismiss() }
         .brand()
     }
     .task(id: pickedPhoto) { await loadPickedPhoto() }
@@ -76,31 +80,22 @@ struct CaptureScreen: View {
   }
 
   private func takePhoto() {
-    let preview = camera.previewFrame
-    let frame = viewfinderFrame.offsetBy(dx: -preview.minX, dy: -preview.minY)
-    let screen = preview.size
     Task {
       if let photo = await camera.capture() {
-        capture = Self.crop(photo, to: frame, screen: screen)
+        capture = crop(photo)
       }
     }
   }
 
   // Only what was inside the frame: the hint asks for the item there, so the rest is clutter.
-  private static func crop(_ photo: UIImage, to frame: CGRect, screen: CGSize) -> Capture {
+  private func crop(_ photo: UIImage) -> Capture {
     // Twice the stored size, so the crop keeps the stored photo's full detail.
     let maxPixels = CGFloat(PhotoEncoder.photoMaxPixels) * 2
-    guard !frame.isEmpty, let upright = photo.uprightImage(maxPixels: maxPixels) else {
-      return Capture(image: photo)
-    }
-    let size = CGSize(width: upright.width, height: upright.height)
-    let rect = PhotoCrop.rect(inside: frame, screen: screen, photo: size)
-    guard let cropped = upright.cropping(to: rect) else { return Capture(image: photo) }
-    var capture = Capture(image: UIImage(cgImage: cropped))
-    #if DEBUG
-      capture.cropCheck = CropCheck(original: upright, crop: rect)
-    #endif
-    return capture
+    guard let upright = photo.uprightImage(maxPixels: maxPixels),
+      let rect = camera.crop(ofPhoto: CGSize(width: upright.width, height: upright.height)),
+      let cropped = upright.cropping(to: rect)
+    else { return Capture(image: photo) }
+    return Capture(image: UIImage(cgImage: cropped))
   }
 
   private func loadPickedPhoto() async {
@@ -117,9 +112,6 @@ struct CaptureScreen: View {
 struct Capture: Identifiable {
   let id = UUID()
   let image: UIImage
-  #if DEBUG
-    var cropCheck: CropCheck?
-  #endif
 }
 
 private struct ShutterButtonStyle: ButtonStyle {

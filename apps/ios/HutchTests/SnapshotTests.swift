@@ -52,7 +52,7 @@ import Testing
   // No Apple Home rooms and nothing added yet, so the room is typed.
   @Test func addWithoutRooms() {
     check(
-      AddItemScreen(capture: Capture(image: .sample("wrench.and.screwdriver"))),
+      AddItemScreen(photo: .sample("wrench.and.screwdriver")),
       library: Library(store: nil),
       named: "add-empty"
     )
@@ -61,7 +61,7 @@ import Testing
   @Test func addWithRooms() {
     let draft = Draft(name: "DeWalt 18V cordless drill", room: "Garage")
     check(
-      AddItemScreen(capture: Capture(image: .sample("wrench.and.screwdriver")), draft: draft),
+      AddItemScreen(photo: .sample("wrench.and.screwdriver"), draft: draft),
       library: .sample,
       named: "add"
     )

@@ -1,4 +1,5 @@
 import AVFoundation
+import HutchCore
 import SwiftUI
 import UIKit
 
@@ -24,6 +25,8 @@ final class Camera: NSObject {
   /// As the Camera app shows it: 1 is the main lens, 0.5 the ultra wide.
   private(set) var zoom: CGFloat = 1
   @ObservationIgnored let previewLayer = AVCaptureVideoPreviewLayer()
+  /// Where the viewfinder's square sits, in window coordinates. Photos are cropped to it.
+  @ObservationIgnored var viewfinderFrame = CGRect.zero
   @ObservationIgnored fileprivate weak var previewView: UIView?
   @ObservationIgnored private let session = AVCaptureSession()
   @ObservationIgnored private let output = AVCapturePhotoOutput()
@@ -33,7 +36,9 @@ final class Camera: NSObject {
   @ObservationIgnored private var pendingPhoto: CheckedContinuation<Data?, Never>?
 
   func start() async {
-    guard await AVCaptureDevice.requestAccess(for: .video), !session.isRunning else { return }
+    // No camera, no permission prompt: the simulator, and tests.
+    guard Self.isAvailable, await AVCaptureDevice.requestAccess(for: .video), !session.isRunning
+    else { return }
     if session.inputs.isEmpty {
       configure()
     }
@@ -51,6 +56,15 @@ final class Camera: NSObject {
   var previewFrame: CGRect {
     guard let previewView else { return .zero }
     return previewView.convert(previewView.bounds, to: nil)
+  }
+
+  /// The part of an upright photo of `size` that was inside the viewfinder, or nil before it's
+  /// laid out.
+  func crop(ofPhoto size: CGSize) -> CGRect? {
+    let preview = previewFrame
+    guard !viewfinderFrame.isEmpty, !preview.isEmpty else { return nil }
+    let frame = viewfinderFrame.offsetBy(dx: -preview.minX, dy: -preview.minY)
+    return PhotoCrop.rect(inside: frame, screen: preview.size, photo: size)
   }
 
   func setZoom(_ value: CGFloat) {
