@@ -12,6 +12,7 @@ struct CaptureScreen: View {
   @State private var zoomAtPinchStart: CGFloat = 1
   @State private var shots = 0
   @State private var isFlashing = false
+  @State private var isCapturing = false
 
   init(camera: Camera = Camera(), isCameraAvailable: Bool = Camera.isAvailable) {
     self._camera = State(initialValue: camera)
@@ -67,7 +68,13 @@ struct CaptureScreen: View {
       Spacer()
       Button("Take photo", action: takePhoto)
         .buttonStyle(ShutterButtonStyle())
-        .disabled(!isCameraAvailable)
+        .overlay {
+          if isCapturing {
+            ProgressView()
+              .tint(Palette.deep)
+          }
+        }
+        .disabled(!isCameraAvailable || isCapturing)
       Spacer()
       PhotosPicker(selection: $pickedPhoto, matching: .images) {
         Label("Choose a photo", systemImage: "photo.on.rectangle")
@@ -91,7 +98,9 @@ struct CaptureScreen: View {
     shots += 1
     isFlashing = true
     withAnimation(.easeOut(duration: 0.25)) { isFlashing = false }
+    isCapturing = true
     Task {
+      defer { isCapturing = false }
       // Twice the stored size, so the crop keeps the stored photo's full detail.
       guard let data = await camera.capture(),
         let photo = await PhotoEncoder.uprightImage(

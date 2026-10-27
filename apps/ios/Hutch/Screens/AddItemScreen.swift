@@ -9,14 +9,14 @@ struct AddItemScreen: View {
   @Environment(Library.self) private var library
   @Environment(\.dismiss) private var dismiss
   @State private var draft: Draft
-  @State private var cutout: UIImage?
+  @State private var cutout: Cutout
   @State private var keepsBackground = false
   @State private var isSaving = false
   @State private var error: String?
 
   init(
     photo: UIImage,
-    cutout: UIImage? = nil,
+    cutout: Cutout = .pending,
     draft: Draft = Draft(),
     onSave: @escaping () -> Void = {}
   ) {
@@ -28,7 +28,8 @@ struct AddItemScreen: View {
 
   // Saving with the cutout shown is what confirms it.
   private var shownPhoto: UIImage {
-    keepsBackground ? photo : cutout ?? photo
+    guard !keepsBackground, case .lifted(let image) = cutout else { return photo }
+    return image
   }
 
   var body: some View {
@@ -57,17 +58,29 @@ struct AddItemScreen: View {
   }
 
   @ViewBuilder private var cutoutButton: some View {
-    if cutout != nil {
-      Button(
-        keepsBackground ? "Remove background" : "Background removed · Undo",
-        systemImage: keepsBackground ? "wand.and.sparkles" : "arrow.uturn.backward"
-      ) {
-        withAnimation { keepsBackground.toggle() }
+    Group {
+      switch cutout {
+      case .lifting:
+        Label {
+          Text("Removing background…")
+        } icon: {
+          ProgressView()
+        }
+        .foregroundStyle(Palette.inkMuted)
+      case .lifted:
+        Button(
+          keepsBackground ? "Remove background" : "Background removed · Undo",
+          systemImage: keepsBackground ? "wand.and.sparkles" : "arrow.uturn.backward"
+        ) {
+          withAnimation { keepsBackground.toggle() }
+        }
+        .buttonStyle(.glass)
+      case .pending, .none:
+        EmptyView()
       }
-      .font(Typography.labelMd)
-      .buttonStyle(.glass)
-      .padding(.bottom, Photo.sheetOverlap + Spacing.s3)
     }
+    .font(Typography.labelMd)
+    .padding(.bottom, Photo.sheetOverlap + Spacing.s3)
   }
 
   private var form: some View {
@@ -94,19 +107,29 @@ struct AddItemScreen: View {
   }
 
   private var saveButton: some View {
-    Button(draft.room.trimmed.isEmpty ? "Save" : "Save to \(draft.room.trimmed)", action: save)
-      .buttonStyle(.primary)
-      .disabled(!draft.canSave || isSaving)
-      .padding(.horizontal, Spacing.s5)
-      .padding(.vertical, Spacing.s2)
-      .background(Palette.background)
+    Button(action: save) {
+      if isSaving {
+        ProgressView()
+          .tint(Palette.onDeep)
+      } else {
+        Text(draft.room.trimmed.isEmpty ? "Save" : "Save to \(draft.room.trimmed)")
+      }
+    }
+    .buttonStyle(.primary)
+    .disabled(!draft.canSave || isSaving)
+    .padding(.horizontal, Spacing.s5)
+    .padding(.vertical, Spacing.s2)
+    .background(Palette.background)
   }
 
   private func liftItem() async {
-    guard cutout == nil, let image = photo.cgImage else { return }
+    guard case .pending = cutout, let image = photo.cgImage else { return }
+    cutout = .lifting
     // Not worth an error: when Vision finds nothing, or can't run (the simulator), the photo stays.
-    guard let lifted = try? await PhotoCutout.cutout(of: image) else { return }
-    withAnimation { cutout = UIImage(cgImage: lifted) }
+    let lifted = try? await PhotoCutout.cutout(of: image)
+    withAnimation {
+      cutout = lifted.map { .lifted(UIImage(cgImage: $0)) } ?? .none
+    }
   }
 
   private func save() {
@@ -126,6 +149,15 @@ struct AddItemScreen: View {
       }
     }
   }
+}
+
+// Only `pending` runs Vision, so previews and snapshots can show any other state as is.
+enum Cutout {
+  case pending
+  case lifting
+  case lifted(UIImage)
+  // Vision found nothing, or can't run here.
+  case none
 }
 
 struct Draft: Equatable {
@@ -159,7 +191,7 @@ private extension String {
 #Preview("Background removed") {
   AddItemScreen(
     photo: .sample("wrench.and.screwdriver"),
-    cutout: .sampleCutout("wrench.and.screwdriver"),
+    cutout: .lifted(.sampleCutout("wrench.and.screwdriver")),
     draft: Draft(name: "DeWalt 18V cordless drill", room: "Garage")
   )
   .environment(Library.sample)

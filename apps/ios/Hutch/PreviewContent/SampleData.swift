@@ -28,7 +28,9 @@
 
     static var sampleThumbnails: [Item.ID: UIImage] {
       let symbols = ["wrench.and.screwdriver", "hammer", "tent", "bicycle"]
-      return Dictionary(uniqueKeysWithValues: zip(samples.map(\.id), symbols.map(UIImage.sample)))
+      return Dictionary(
+        uniqueKeysWithValues: zip(samples.map(\.id), symbols.map(UIImage.sampleCutout))
+      )
     }
   }
 

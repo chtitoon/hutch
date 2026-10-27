@@ -64,8 +64,8 @@ struct ItemRow: View {
   }
 
   private var thumbnail: some View {
-    // The sunken surface shows around a cutout, as on the item screen.
-    Palette.surfaceSunken
+    // Pale in both modes, so a dark cut-out item stays recognizable (D26).
+    Palette.thumbnailBackdrop
       .overlay {
         if let image = library.thumbnail(of: item) {
           Image(uiImage: image)

@@ -52,7 +52,7 @@ import Testing
   // No Apple Home rooms and nothing added yet, so the room is typed.
   @Test func addWithoutRooms() {
     check(
-      AddItemScreen(photo: .sample("wrench.and.screwdriver")),
+      AddItemScreen(photo: .sample("wrench.and.screwdriver"), cutout: .none),
       library: Library(store: nil),
       named: "add-empty"
     )
@@ -61,9 +61,18 @@ import Testing
   @Test func addWithRooms() {
     let draft = Draft(name: "DeWalt 18V cordless drill", room: "Garage")
     check(
-      AddItemScreen(photo: .sample("wrench.and.screwdriver"), draft: draft),
+      AddItemScreen(photo: .sample("wrench.and.screwdriver"), cutout: .none, draft: draft),
       library: .sample,
       named: "add"
+    )
+  }
+
+  // While Vision works.
+  @Test func addWhileLifting() {
+    check(
+      AddItemScreen(photo: .sample("wrench.and.screwdriver"), cutout: .lifting),
+      library: .sample,
+      named: "add-lifting"
     )
   }
 
@@ -73,7 +82,7 @@ import Testing
     check(
       AddItemScreen(
         photo: .sample("wrench.and.screwdriver"),
-        cutout: .sampleCutout("wrench.and.screwdriver"),
+        cutout: .lifted(.sampleCutout("wrench.and.screwdriver")),
         draft: draft
       ),
       library: .sample,
