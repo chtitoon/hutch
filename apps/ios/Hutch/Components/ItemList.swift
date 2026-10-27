@@ -64,8 +64,8 @@ struct ItemRow: View {
   }
 
   private var thumbnail: some View {
-    // The backdrop shows around a cutout, as on the item screen.
-    Palette.thumbnailBackdrop
+    // The sunken surface shows around a cutout, as on the item screen.
+    Palette.surfaceSunken
       .overlay {
         if let image = library.thumbnail(of: item) {
           Image(uiImage: image)

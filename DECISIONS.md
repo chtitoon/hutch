@@ -261,8 +261,7 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 - Vision lifts the item out of its photo, on the phone: the object under the frame's centre, else the largest one.
 - The cutout is centred on a transparent square with a 10% margin, so it sits the same in a thumbnail and on the item screen.
 - Its edge is pulled in slightly and feathered, so it looks photographed rather than cut, and it casts a soft shadow on screen.
-- Photos sit on a light backdrop in both modes: on the dark-mode surfaces, dark items disappeared, even at full size.
-- Thumbnails are on white (`thumbnail-backdrop`). A full-size photo is on `photo-backdrop`, a warm grey in dark mode, because a full-width white square glared.
+- Photos sit on `surface-sunken`, which follows light and dark like the rest of the app. A light backdrop in dark mode (white, then a dimmed grey) was tried and dropped: it overrode the mode for one part of the screen.
 - New item shows the cutout straight away, with an Undo. Saving confirms it; there's no extra step.
 - Only what's shown is saved: the cutout, or the original after Undo.
 - Photos are stored as HEIC, not JPEG, so a cutout keeps its transparency.
@@ -278,3 +277,4 @@ Drives whether to rename (the Hutch name is crowded, see D1), invest in multi-pl
 - Vision can't run in the simulator, so tests cover what's around it, and the cutout itself is checked on the phone.
 - Photos saved before this stay JPEG, with no cutout.
 - Tap-to-pick another object waits until my notes show the centre pick is wrong.
+- A dark item is hard to see on the dark-mode backdrop. If my notes show it, the light backdrop comes back.

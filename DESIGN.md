@@ -25,12 +25,6 @@ colors:
   # Recessed panels, neutral badges, the closing card.
   surface-sunken: "#E8E5DD"
   surface-sunken-dark: "#0F1A13"
-  # Behind item photos, light in both modes: a dark item disappears on a dark backdrop.
-  # Dimmed in dark mode, where a full-size white square glares.
-  photo-backdrop: "#FFFFFF"
-  photo-backdrop-dark: "#D9D6CE"
-  # Behind photo thumbnails, white in both modes: small enough not to glare.
-  thumbnail-backdrop: "#FFFFFF"
   # Hairlines, dividers, card edges.
   border: "#DEDAD0"
   border-dark: "#2B3D32"
@@ -336,13 +330,6 @@ components:
     backgroundColor: "{colors.device}"
   phone-frame-dark:
     backgroundColor: "{colors.device-dark}"
-  item-photo:
-    backgroundColor: "{colors.photo-backdrop}"
-  item-photo-dark:
-    backgroundColor: "{colors.photo-backdrop-dark}"
-  item-thumbnail:
-    backgroundColor: "{colors.thumbnail-backdrop}"
-    rounded: "{rounded.sm}"
 ---
 
 # Hutch design system
@@ -390,11 +377,10 @@ Each token is a role, not a swatch. Use the role that describes the job (`ink-mu
 - **Sage (`sage`)** carries small labels and eyebrows, link hover and the focus ring; `sage-tint` with `on-sage-tint` makes positive badges.
 - **`marker`** is the brass dot on the status pill. It's brass on the dark pill, and a deeper brass in dark mode, where the pill turns light and plain brass would fade (D18).
 - **`device`** is hardware drawn on the page (the phone frame and its shadow); it stays dark in both modes.
-- **`photo-backdrop`** and **`thumbnail-backdrop`** sit behind item photos and stay light in dark mode, so a dark item cut out of its photo stays visible (D26).
 
 ### Light and dark follow the system
 
-A color name ending in `-dark` is that role's value when the system is in dark mode: `ink-dark` replaces `ink`. A role without a `-dark` twin (`deep`, `on-deep`, `on-deep-muted`, `sage-on-deep`, `deep-rule`, `accent`, `thumbnail-backdrop`) already sits on forest and keeps one value in both modes. The spec has no modes, so this suffix is Hutch's convention (D18); the generators turn it into each platform's dark appearance. To change a dark color, edit its token. Never invert colors ad hoc or add per-component dark rules.
+A color name ending in `-dark` is that role's value when the system is in dark mode: `ink-dark` replaces `ink`. A role without a `-dark` twin (`deep`, `on-deep`, `on-deep-muted`, `sage-on-deep`, `deep-rule`, `accent`) already sits on forest and keeps one value in both modes. The spec has no modes, so this suffix is Hutch's convention (D18); the generators turn it into each platform's dark appearance. To change a dark color, edit its token. Never invert colors ad hoc or add per-component dark rules.
 
 ### Contrast
 

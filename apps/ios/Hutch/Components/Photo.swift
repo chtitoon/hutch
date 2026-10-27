@@ -10,7 +10,7 @@ struct Photo: View {
 
   var body: some View {
     // The square sets the size; a fill-scaled image would otherwise overflow it.
-    Palette.photoBackdrop
+    Palette.surfaceSunken
       .aspectRatio(1, contentMode: .fit)
       .overlay {
         if let image {

@@ -66,8 +66,6 @@ struct AddItemScreen: View {
       }
       .font(Typography.labelMd)
       .buttonStyle(.glass)
-      // The photo's backdrop stays light in dark mode.
-      .environment(\.colorScheme, .light)
       .padding(.bottom, Photo.sheetOverlap + Spacing.s3)
     }
   }
